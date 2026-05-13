@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Wallet | PR1MΞ</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .option-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-card:active {
+            border-color: var(--neon-purple);
+            transform: scale(0.98);
+        }
+
+        .option-icon {
+            font-size: 1.8rem;
+            margin-right: 15px;
+        }
+
+        .option-info h4 {
+            color: var(--neon-cyan);
+            margin-bottom: 4px;
+        }
+
+        .option-info p {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .step-container {
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        input[type="number"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: #000;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--neon-cyan);
+        }
+
+        .bank-details-box {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px dashed var(--neon-cyan);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .copy-tag {
+            color: var(--neon-cyan);
+            font-size: 0.7rem;
+            float: right;
+            text-transform: uppercase;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .hidden { display: none; }
+
+        .crypto-notice {
+            text-align: center;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="shop.html" class="back-btn">←</a>
+        <h2 id="page-title">Fund Wallet</h2>
+    </div>
+
+    <!-- 1. Selection Screen -->
+    <div id="selectionScreen">
+        <div class="option-card" onclick="showBankFlow()">
+            <div class="option-icon">🏦</div>
+            <div class="option-info">
+                <h4>Bank Transfer</h4>
+                <p>Manual approval</p>
+            </div>
+        </div>
+
+        <div class="option-card" onclick="showCryptoFlow()">
+            <div class="option-icon">₿</div>
+            <div class="option-info">
+                <h4>Crypto Payment</h4>
+                <p>Automatic</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Bank Transfer Flow -->
+    <div id="bankFlow" class="hidden">
+        <div class="step-container">
+            <label>1. How much do you want to deposit? (₦)</label>
+            <input type="number" id="amount" placeholder="Enter amount">
+
+            <label>2. Make transfer to the details below:</label>
+            <div class="bank-details-box">
+                <span class="copy-tag">Official</span>
+                <strong>BANK:</strong> MONIEPOINT<br>
+                <strong>ACC NO:</strong> 9032140540<br>
+                <strong>NAME:</strong> CHRISTOPHER MICHAEL
+            </div>
+
+            <label>3. Upload Proof of Payment (Receipt)</label>
+            <input type="file" id="receipt" accept="image/*">
+
+            <button class="submit-btn" id="submitBtn" onclick="submitToAdmin()">Submit Receipt</button>
+            
+            <p onclick="location.reload()" style="text-align:center; margin-top:20px; font-size:0.8rem; color:var(--neon-cyan); cursor:pointer;">
+                ← Change Payment Method
+            </p>
+        </div>
+    </div>
+
+    <!-- 3. Crypto Placeholder -->
+    <div id="cryptoFlow" class="hidden">
+        <div class="crypto-notice">
+            <div style="font-size: 3rem; margin-bottom: 20px;">⚡️</div>
+            <h3>Redirecting to NOWPayments...</h3>
+            <p style="color:#666; font-size: 0.8rem; margin-top: 10px;">Please wait while we secure your transaction.</p>
+            <button class="submit-btn" style="margin-top: 30px;" onclick="location.reload()">Go Back</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.showBankFlow = function() {
+            document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById('bankFlow').classList.remove('hidden');
+            document.getElementById('page-title').innerText = "Bank Deposit";
+        }
+
+        window.showCryptoFlow = function() {
+            document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById('cryptoFlow').classList.remove('hidden');
+            document.getElementById('page-title').innerText = "Crypto Deposit";
+            
+            setTimeout(() => {
+                alert("NOWPayments Integration Coming Soon!");
+                location.reload();
+            }, 1500);
+        }
+
+        window.submitToAdmin = async function() {
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Please login first!");
+                return;
+            }
+
+            const amt = document.getElementById('amount').value;
+            const file = document.getElementById('receipt').files[0];
+            const btn = document.getElementById('submitBtn');
+
+            if(!amt || !file) {
+                alert("Please enter amount and select your receipt image.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+
+            try {
+                // Log request to 'deposits' collection for Admin approval
+                await addDoc(collection(db, "deposits"), {
+                    uid: user.uid,
+                    email: user.email,
+                    amount: parseFloat(amt),
+                    status: "pending",
+                    timestamp: serverTimestamp(),
+                    type: "bank_transfer"
+                });
+
+                alert("Verification Sent! Your balance will update once the Admin approves the receipt.");
+                window.location.href = 'shop.html';
+            } catch (e) {
+                alert("Error submitting request. Please try again.");
+                btn.disabled = false;
+                btn.innerText = "Submit Receipt";
+            }
+        }
+    </script>
+</body>
+</html>
