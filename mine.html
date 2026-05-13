@@ -92,6 +92,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .mini-copy {
@@ -104,6 +105,7 @@
             cursor: pointer;
             text-transform: uppercase;
             font-weight: bold;
+            transition: 0.3s;
         }
 
         #empty-state { text-align: center; color: #555; margin-top: 50px; display: none; }
@@ -120,15 +122,15 @@
     <div id="status-msg"></div>
 
     <div class="search-container reveal">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search your items...">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search your digital assets...">
     </div>
 
     <div id="orders-list">
-        <!-- Purchases will be injected here -->
+        <!-- Purchased items injected here -->
     </div>
 
     <div id="empty-state">
-        <p>No purchases found yet.</p>
+        <p>Your vault is currently empty.</p>
     </div>
 
     <script type="module">
@@ -158,13 +160,14 @@
             }
 
             try {
+                // Fetch the user's specific purchase array from their document
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
 
                 if (userSnap.exists()) {
                     const data = userSnap.data();
                     
-                    // Check if user is banned
+                    // Session security check
                     if (data.status === 'banned') {
                         await auth.signOut();
                         window.location.href = "login.html";
@@ -174,17 +177,17 @@
                     const purchases = data.myPurchases || [];
                     renderPurchases(purchases);
 
-                    // Notify Dashboard
+                    // Log activity
                     await addDoc(collection(db, "logs"), {
-                        type: "HISTORY_VIEW",
-                        details: `${user.email} is reviewing their logs.`,
+                        type: "VAULT_ACCESS",
+                        details: `${user.email} opened their purchase history.`,
                         timestamp: serverTimestamp()
                     });
                 } else {
                     document.getElementById('empty-state').style.display = 'block';
                 }
             } catch (err) {
-                statusDiv.innerText = "Access Error: " + err.message;
+                statusDiv.innerText = "Sync Error: " + err.message;
             }
         });
 
@@ -197,14 +200,18 @@
                 return;
             }
 
-            // Show newest purchases first
+            // Display newest items at the top
             [...items].reverse().forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'order-card reveal';
+                
+                // Formats timestamp if available, else uses raw date string
+                const dateDisplay = item.date || "Just now";
+
                 card.innerHTML = `
                     <div class="order-header">
                         <span class="order-name">${item.name}</span>
-                        <span class="order-date">${item.date}</span>
+                        <span class="order-date">${dateDisplay}</span>
                     </div>
                     <div class="secret-display">
                         <span class="secret-val">${item.secret}</span>
@@ -213,15 +220,16 @@
                 `;
 
                 card.querySelector('.mini-copy').onclick = function() {
-                    copyThis(this, item.secret);
+                    copyToClipboard(this, item.secret);
                 };
 
                 list.appendChild(card);
-                setTimeout(() => card.classList.add('active'), 100);
+                // Staggered reveal effect
+                setTimeout(() => card.classList.add('active'), 150);
             });
         }
 
-        window.copyThis = function(btn, text) {
+        window.copyToClipboard = function(btn, text) {
             navigator.clipboard.writeText(text).then(() => {
                 const originalText = btn.innerText;
                 btn.innerText = "COPIED";
@@ -233,10 +241,11 @@
                     btn.style.color = "white";
                 }, 2000);
             }).catch(err => {
-                statusDiv.innerText = "Copy Permission Denied.";
+                statusDiv.innerText = "Clipboard access restricted.";
             });
         }
 
+        // Real-time search filtering
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             document.querySelectorAll('.order-card').forEach(card => {
@@ -245,7 +254,8 @@
             });
         });
 
-        window.addEventListener('load', () => {
+        // Trigger animations for header elements
+        window.addEventListener('DOMContentLoaded', () => {
             document.querySelector('header').classList.add('active');
             document.querySelector('.search-container').classList.add('active');
         });
