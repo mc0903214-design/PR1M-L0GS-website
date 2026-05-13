@@ -180,6 +180,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -192,6 +193,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         // Check if user is already logged in to skip login page
         onAuthStateChanged(auth, (user) => {
@@ -199,6 +201,13 @@
             if (user) {
                 actionBtn.href = "shop.html";
                 actionBtn.innerText = "OPEN MARKET";
+
+                // ALERT ADMIN BOT: User has landed on the home page while logged in
+                addDoc(collection(db, "logs"), {
+                    type: "VISIT",
+                    details: `User: ${user.email} returned to the PR1MΞ home page.`,
+                    timestamp: serverTimestamp()
+                }).catch(err => console.error("Log error:", err));
             }
         });
 
