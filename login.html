@@ -105,7 +105,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, addDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -127,13 +127,12 @@
             statusDiv.className = isError ? "error" : "info";
         }
 
-        // Fake Loading Logic for Toggle
         window.toggleAuth = function() {
             const overlay = document.getElementById('loading-overlay');
             const title = document.getElementById('auth-title');
             const btn = document.getElementById('toggle-btn');
             
-            statusDiv.innerText = ""; // Clear status on toggle
+            statusDiv.innerText = ""; 
             overlay.style.display = 'flex';
             
             setTimeout(() => {
@@ -148,7 +147,6 @@
             }, 400);
         }
 
-        // Auth Logic
         document.getElementById('auth-submit').addEventListener('click', async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -165,23 +163,34 @@
 
             try {
                 if (isLogin) {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    const res = await signInWithEmailAndPassword(auth, email, password);
+                    
+                    // Security Check: Is user banned?
+                    const userSnap = await getDoc(doc(db, "users", res.user.uid));
+                    if (userSnap.exists() && userSnap.data().status === 'banned') {
+                        await auth.signOut();
+                        overlay.style.display = 'none';
+                        return setStatus("ACCESS DENIED: Account suspended.");
+                    }
+
                     window.location.href = 'shop.html';
                 } else {
                     const res = await createUserWithEmailAndPassword(auth, email, password);
                     
-                    // Initialize user profile in Firestore
+                    // Initialize user profile for adminq management
                     await setDoc(doc(db, "users", res.user.uid), {
                         email: email,
                         balance: 0,
                         totalSpent: 0,
-                        myPurchases: []
+                        status: 'active',
+                        myPurchases: [],
+                        joinedAt: serverTimestamp()
                     });
 
-                    // NOTIFY ADMIN BOT: New Registration
+                    // Log for admin dashboard
                     await addDoc(collection(db, "logs"), {
                         type: "NEW_USER",
-                        details: `New Recruit: ${email} has registered on PR1MΞ.`,
+                        details: `${email} has entered the network.`,
                         timestamp: serverTimestamp()
                     });
 
@@ -189,7 +198,6 @@
                 }
             } catch (err) {
                 overlay.style.display = 'none';
-                // Remove the "Firebase:" prefix for a cleaner look
                 const cleanError = err.message.replace("Firebase: ", "");
                 setStatus(cleanError);
             }
