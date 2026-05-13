@@ -4,7 +4,8 @@ const cron = require('node-cron');
 require('dotenv').config();
 
 // --- FIREBASE CONFIGURATION ---
-const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+// This handles the newline formatting for the private key automatically
+const privateKey = process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined;
 
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -12,7 +13,7 @@ admin.initializeApp({
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: privateKey
     }),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+    storageBucket: `${process.env.FIREBASE_PROJECT_ID}.firebasestorage.app`
 });
 
 const db = admin.firestore();
