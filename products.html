@@ -11,6 +11,7 @@
             --glass-bg: rgba(255, 255, 255, 0.07);
             --dark-bg: #0a0a0c;
             --error-red: #ff4d4d;
+            --skeletal: rgba(255, 255, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -41,6 +42,34 @@
 
         .back-link { color: var(--neon-cyan); text-decoration: none; font-size: 1.5rem; }
         .cat-title { font-size: 1.4rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- SKELETAL LOADING --- */
+        .skeleton {
+            background: var(--skeletal);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .skeleton::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .sk-img { height: 180px; width: 100%; background: rgba(255,255,255,0.03); }
+        .sk-body { padding: 20px; }
+        .sk-line { height: 15px; background: rgba(255,255,255,0.03); margin-bottom: 10px; border-radius: 4px; }
+        .sk-line.short { width: 60%; }
+        .sk-line.btn { height: 40px; width: 100px; float: right; border-radius: 10px; }
 
         /* --- PRODUCT CARD --- */
         .product-card {
@@ -111,24 +140,42 @@
         }
 
         .buy-btn:active { transform: scale(0.95); opacity: 0.8; }
-        #loading-msg { text-align: center; color: var(--neon-cyan); margin-top: 50px; }
+        #status-msg { text-align: center; color: var(--error-red); font-size: 0.9rem; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <header class="reveal">
+    <header class="reveal active">
         <a href="shop.html" class="back-link">←</a>
         <h1 class="cat-title" id="cat-display">Marketplace</h1>
     </header>
 
-    <div id="loading-msg">Fetching Digital Assets...</div>
+    <div id="status-msg"></div>
+
     <div id="product-list">
-        <!-- Products will be injected here from Firebase -->
+        <!-- Skeletal Loading State -->
+        <div class="skeleton">
+            <div class="sk-img"></div>
+            <div class="sk-body">
+                <div class="sk-line"></div>
+                <div class="sk-line short"></div>
+                <div class="sk-line btn"></div>
+            </div>
+        </div>
+        <div class="skeleton">
+            <div class="sk-img"></div>
+            <div class="sk-body">
+                <div class="sk-line"></div>
+                <div class="sk-line short"></div>
+                <div class="sk-line btn"></div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -140,26 +187,35 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Update Title from URL
+        const statusDiv = document.getElementById('status-msg');
         const params = new URLSearchParams(window.location.search);
         const category = params.get('cat') || "General";
         document.getElementById('cat-display').innerText = category;
 
-        async function loadProducts() {
+        async function loadProducts(user) {
             const list = document.getElementById('product-list');
-            const loader = document.getElementById('loading-msg');
             
             try {
                 const q = query(collection(db, "products"), where("category", "==", category));
                 const querySnapshot = await getDocs(q);
                 
-                loader.style.display = 'none';
+                list.innerHTML = ''; // Remove skeletons
                 
                 if (querySnapshot.empty) {
-                    list.innerHTML = `<p style="text-align:center; color:#555;">No products found in this category.</p>`;
+                    list.innerHTML = `<p style="text-align:center; color:#555; margin-top:50px;">No products found in this category.</p>`;
                     return;
+                }
+
+                // Notify admin of category visit
+                if(user) {
+                    addDoc(collection(db, "logs"), {
+                        type: "MARKET_VISIT",
+                        details: `${user.email} is browsing ${category}`,
+                        timestamp: serverTimestamp()
+                    });
                 }
 
                 querySnapshot.forEach((doc) => {
@@ -179,24 +235,24 @@
                             <p class="prod-desc">${data.description}</p>
                             <div class="purchase-row">
                                 <div class="price"><span>₦</span>${data.price.toLocaleString()}</div>
-                                <a href="buy.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" class="buy-btn">Buy Now</a>
+                                <a href="checkout.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" class="buy-btn">Buy Now</a>
                             </div>
                         </div>
                     `;
                     list.appendChild(card);
-                    
-                    // Trigger animation
                     setTimeout(() => card.classList.add('active'), 100);
                 });
             } catch (error) {
-                console.error("Error loading products:", error);
-                loader.innerText = "Error loading marketplace.";
+                list.innerHTML = '';
+                statusDiv.innerText = "Error loading marketplace: " + error.message;
             }
         }
 
-        loadProducts();
+        onAuthStateChanged(auth, (user) => {
+            loadProducts(user);
+        });
 
-        // Reveal Logic for static elements
+        // Reveal Logic
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
