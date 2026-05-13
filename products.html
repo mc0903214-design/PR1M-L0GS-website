@@ -111,6 +111,7 @@
 
         .stock-low { color: var(--error-red); border-color: var(--error-red); }
         .stock-ok { color: #00ff88; }
+        .stock-single { color: var(--neon-cyan); border-color: var(--neon-cyan); }
 
         .product-body { padding: 20px; }
         .prod-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--neon-cyan); }
@@ -202,14 +203,13 @@
                 const q = query(collection(db, "products"), where("category", "==", category));
                 const querySnapshot = await getDocs(q);
                 
-                list.innerHTML = ''; // Remove skeletons
+                list.innerHTML = ''; 
                 
                 if (querySnapshot.empty) {
                     list.innerHTML = `<p style="text-align:center; color:#555; margin-top:50px;">No products found in this category.</p>`;
                     return;
                 }
 
-                // Notify admin of category visit
                 if(user) {
                     addDoc(collection(db, "logs"), {
                         type: "MARKET_VISIT",
@@ -220,8 +220,23 @@
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    const stockClass = data.stock < 7 ? 'stock-low' : 'stock-ok';
-                    const stockText = data.stock < 7 ? `Only ${data.stock} Left` : 'Available';
+                    let stockClass = 'stock-ok';
+                    let stockText = 'Available';
+
+                    // Handling SINGLE vs MULTIPLE stock display logic
+                    if (data.mode === "SINGLE") {
+                        stockClass = 'stock-single';
+                        stockText = 'AVAILABLE';
+                    } else {
+                        // Multiple mode: show actual count
+                        const count = data.stockCount || 0;
+                        if (count < 7) {
+                            stockClass = 'stock-low';
+                            stockText = `Only ${count} Left`;
+                        } else {
+                            stockText = `${count} In Stock`;
+                        }
+                    }
 
                     const card = document.createElement('div');
                     card.className = 'product-card reveal';
@@ -252,7 +267,6 @@
             loadProducts(user);
         });
 
-        // Reveal Logic
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
