@@ -16,37 +16,35 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-const bucket = admin.storage().bucket();
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const OWNER_ID = process.env.OWNER_ID;
 
-// --- SESSION & AUTH MIDDLEWARE ---
+// --- SESSION ---
 bot.use(session());
 
-// --- START COMMAND (HELP MENU) ---
+// --- KEYBOARD REPLIES MENU ---
+const adminMenu = Markup.keyboard([
+    ['👥 Users', '💰 Deposits'],
+    ['🛒 Products', '📊 Analytics'],
+    ['📩 Support', '🧾 Logs']
+]).resize();
+
+// --- START COMMAND & COMMAND LIST REGISTRATION ---
 bot.start(async (ctx) => {
-    const helpMessage = `
-💠 𝗣𝗥𝟭𝗠Ξ 𝗔𝗗𝗠𝗜𝗡 𝗖𝗢𝗡𝗧𝗥𝗢𝗟
-Available Commands:
+    // This sets the menu that appears when the user clicks the "/" button
+    await ctx.telegram.setMyCommands([
+        { command: 'start', description: 'Open Admin Dashboard' },
+        { command: 'wallet', description: 'Update Balance: /wallet <email> <amt>' },
+        { command: 'ban', description: 'Ban User: /ban <email>' },
+        { command: 'unban', description: 'Unban User: /unban <email>' },
+        { command: 'stats', description: 'View Analytics' }
+    ]);
 
-👥 𝗨𝗦𝗘𝗥 𝗠𝗚𝗠𝗧
-/wallet <email> <amt> - Set user balance
-/ban <email> - Restrict user access
-/unban <email> - Restore user access
-
-🛠 𝗦𝗬𝗦𝗧𝗘𝗠
-/start - Show this help menu
-/stats - View quick analytics
-
-Use the dashboard below for visual management:
-    `;
-    return ctx.reply(helpMessage, Markup.inlineKeyboard([
-        [Markup.button.callback('👥 Users', 'm_users'), Markup.button.callback('💰 Deposits', 'm_deps')],
-        [Markup.button.callback('🛒 Products', 'm_prods'), Markup.button.callback('📊 Analytics', 'm_stats')],
-        [Markup.button.callback('📩 Support', 'm_supp'), Markup.button.callback('🧾 Logs', 'm_logs')]
-    ]));
+    const welcomeMsg = `💠 𝗣𝗥𝟭𝗠Ξ 𝗔𝗗𝗠𝗜𝗡 𝗡𝗘𝗧𝗪𝗢𝗥𝗞\n\nUse the keyboard buttons below to manage the system.`;
+    return ctx.reply(welcomeMsg, adminMenu);
 });
 
+// --- AUTH MIDDLEWARE (Moved below Start to ensure commands register) ---
 bot.use(async (ctx, next) => {
     const userId = ctx.from?.id?.toString();
     if (userId === OWNER_ID) return next();
@@ -56,9 +54,11 @@ bot.use(async (ctx, next) => {
 
     if (ctx.message && ctx.message.text === '1100') {
         ctx.session = { authTime: now };
-        await ctx.reply('⚡ 𝗔𝗖𝗖𝗘𝗦𝗦 𝗚𝗥𝗔𝗡𝗧𝗘𝗗.');
-        return ctx.reply('Use /start to begin.');
+        await ctx.reply('⚡ 𝗔𝗖𝗖𝗘𝗦𝗦 𝗚𝗥𝗔𝗡𝗧𝗘𝗗.', adminMenu);
+        return;
     }
+    // Only prompt for password if not authorized
+    if (ctx.callbackQuery) return ctx.answerCbQuery('Session Expired. Enter Password.');
     return ctx.reply('🛑 𝗔𝗖𝗖𝗘𝗦𝗦 𝗗𝗘𝗡𝗜𝗘𝗗. Enter system password:');
 });
 
@@ -73,74 +73,27 @@ const logAction = async (type, details) => {
     });
 
     await db.collection('logs').add({
-        id: logId,
-        type,
-        details,
+        id: logId, type, details,
         timestamp: admin.firestore.FieldValue.serverTimestamp()
     });
     bot.telegram.sendMessage(OWNER_ID, `🧾 [𝗟𝗢𝗚 #${logId}]\n⚡ ${type}\n📄 ${details}`);
 };
 
-// --- USER & WALLET MGMT ---
-bot.command('wallet', async (ctx) => {
-    const args = ctx.message.text.split(' ');
-    const email = args[1];
-    const amount = args[2];
-    
-    if (!email || isNaN(amount)) return ctx.reply('⚠️ Usage: /wallet user@example.com 5000');
-    
-    const snap = await db.collection('users').where('email', '==', email).limit(1).get();
-    if (snap.empty) return ctx.reply('❌ User not found.');
-    
-    await snap.docs[0].ref.update({ balance: parseFloat(amount) });
-    await logAction('WALLET_MANUAL_SET', `Email: ${email} | New: ₦${amount}`);
-    ctx.reply(`✅ Wallet updated for ${email}`);
-});
-
-// --- DEPOSIT SYSTEM (COMPATIBLE WITH FUND.HTML) ---
-bot.action('m_deps', async (ctx) => {
+// --- HANDLERS FOR KEYBOARD REPLIES ---
+bot.hears('💰 Deposits', async (ctx) => {
     const snap = await db.collection('deposits').where('status', '==', 'pending').get();
     if (snap.empty) return ctx.reply('No pending deposits.');
     
     for (const doc of snap.docs) {
         const d = doc.data();
-        const text = `🧾 𝗣𝗘𝗡𝗗𝗜𝗡𝗚 𝗗𝗘𝗣𝗢𝗦𝗜𝗧\n👤 User: ${d.email}\n💰 Amount: ₦${d.amount.toLocaleString()}\n📅 Date: ${d.timestamp?.toDate().toLocaleString() || 'N/A'}`;
-        
+        const text = `🧾 𝗣𝗘𝗡𝗗𝗜𝗡𝗚 𝗗𝗘𝗣𝗢𝗦𝗜𝗧\n👤 User: ${d.email}\n💰 Amount: ₦${d.amount.toLocaleString()}`;
         await ctx.reply(text, Markup.inlineKeyboard([
             [Markup.button.callback('✅ APPROVE', `app_${doc.id}`), Markup.button.callback('❌ DECLINE', `dec_${doc.id}`)]
         ]));
     }
 });
 
-bot.action(/app_(.+)/, async (ctx) => {
-    const id = ctx.match[1];
-    const ref = db.collection('deposits').doc(id);
-    const snap = await ref.get();
-    if (!snap.exists) return ctx.answerCbQuery('Deposit record not found.');
-    
-    const d = snap.data();
-    const uSnap = await db.collection('users').where('email', '==', d.email).limit(1).get();
-    
-    if (!uSnap.empty) {
-        await uSnap.docs[0].ref.update({ 
-            balance: admin.firestore.FieldValue.increment(d.amount) 
-        });
-        await ref.update({ status: 'approved' }); // Updates fund.html history
-        await logAction('DEPOSIT_APPROVE', `${d.email} | +₦${d.amount}`);
-        await ctx.editMessageText(`✅ Approved: ₦${d.amount} for ${d.email}`);
-    } else {
-        ctx.reply('❌ Error: User account missing.');
-    }
-});
-
-bot.action(/dec_(.+)/, async (ctx) => {
-    const id = ctx.match[1];
-    await db.collection('deposits').doc(id).update({ status: 'declined' });
-    await ctx.editMessageText('❌ Deposit Declined.');
-});
-
-// --- PRODUCT SYSTEM (PR1MΞ L0GS SPECIFIC) ---
-bot.action('m_prods', (ctx) => {
+bot.hears('🛒 Products', (ctx) => {
     ctx.session.flow = 'add_prod';
     ctx.reply('Select Store Category:', Markup.inlineKeyboard([
         [Markup.button.callback('🚀 Social Logs', 'cat_Logs'), Markup.button.callback('🔐 VPNs', 'cat_VPNs')],
@@ -148,64 +101,79 @@ bot.action('m_prods', (ctx) => {
     ]));
 });
 
+bot.hears('📊 Analytics', async (ctx) => {
+    const users = await db.collection('users').get();
+    const deposits = await db.collection('deposits').where('status', '==', 'approved').get();
+    ctx.reply(`📊 PR1MΞ STATS\n\n👥 Total Users: ${users.size}\n💰 Approved Deposits: ${deposits.size}`);
+});
+
+// --- INLINE ACTION HANDLERS (Fix for buttons not working) ---
+bot.action(/app_(.+)/, async (ctx) => {
+    try {
+        const id = ctx.match[1];
+        const ref = db.collection('deposits').doc(id);
+        const snap = await ref.get();
+        if (!snap.exists) return ctx.answerCbQuery('Not found.');
+
+        const d = snap.data();
+        const uSnap = await db.collection('users').where('email', '==', d.email).limit(1).get();
+
+        if (!uSnap.empty) {
+            await uSnap.docs[0].ref.update({ balance: admin.firestore.FieldValue.increment(d.amount) });
+            await ref.update({ status: 'approved' });
+            await logAction('DEPOSIT_APPROVE', `${d.email} | +₦${d.amount}`);
+            await ctx.editMessageText(`✅ Approved: ₦${d.amount} for ${d.email}`);
+        }
+        await ctx.answerCbQuery('Approved!');
+    } catch (e) { console.log(e); }
+});
+
+bot.action(/dec_(.+)/, async (ctx) => {
+    const id = ctx.match[1];
+    await db.collection('deposits').doc(id).update({ status: 'declined' });
+    await ctx.editMessageText('❌ Deposit Declined.');
+    await ctx.answerCbQuery('Declined.');
+});
+
 bot.action(/cat_(.+)/, (ctx) => {
     ctx.session.category = ctx.match[1];
     ctx.session.step = 1;
-    ctx.reply(`Adding to ${ctx.session.category}.\nEnter Product Name:`);
+    ctx.editMessageText(`Adding to ${ctx.session.category}.\nEnter Product Name:`);
 });
 
-bot.on('text', async (ctx, next) => {
-    if (ctx.session?.flow !== 'add_prod') return next();
-    
-    const step = ctx.session.step;
-    const text = ctx.message.text;
+// --- COMMANDS ---
+bot.command('wallet', async (ctx) => {
+    const args = ctx.message.text.split(' ');
+    if (args.length < 3) return ctx.reply('⚠️ Usage: /wallet user@example.com 5000');
+    const snap = await db.collection('users').where('email', '==', args[1]).limit(1).get();
+    if (snap.empty) return ctx.reply('❌ User not found.');
+    await snap.docs[0].ref.update({ balance: parseFloat(args[2]) });
+    ctx.reply(`✅ Wallet updated for ${args[1]}`);
+});
 
-    if (step === 1) {
-        ctx.session.name = text;
-        ctx.session.step = 2;
-        ctx.reply('Enter Price (Numbers only):');
-    } else if (step === 2) {
-        ctx.session.price = parseFloat(text);
-        ctx.session.step = 3;
-        ctx.reply('Enter Image URL (Cyberpunk style preferred):');
-    } else if (step === 3) {
-        ctx.session.img = text;
-        ctx.session.step = 4;
-        ctx.reply('Sale Mode? (SINGLE / MULTIPLE)');
-    } else if (step === 4) {
-        ctx.session.mode = text.toUpperCase();
-        ctx.session.step = 5;
-        ctx.reply('Paste Stock Data (If Multiple, separate items with commas):');
-    } else if (step === 5) {
+// --- PRODUCT FLOW ---
+bot.on('text', async (ctx, next) => {
+    if (ctx.session?.flow !== 'add_prod' || !ctx.session.step) return next();
+    
+    const text = ctx.message.text;
+    if (ctx.session.step === 1) {
+        ctx.session.name = text; ctx.session.step = 2; ctx.reply('Enter Price:');
+    } else if (ctx.session.step === 2) {
+        ctx.session.price = parseFloat(text); ctx.session.step = 3; ctx.reply('Enter Image URL:');
+    } else if (ctx.session.step === 3) {
+        ctx.session.img = text; ctx.session.step = 4; ctx.reply('Sale Mode? (SINGLE/MULTIPLE)');
+    } else if (ctx.session.step === 4) {
+        ctx.session.mode = text.toUpperCase(); ctx.session.step = 5; ctx.reply('Paste Stock Data:');
+    } else if (ctx.session.step === 5) {
         const stock = ctx.session.mode === 'MULTIPLE' ? text.split(',').map(s => s.trim()) : [text];
-        
         await db.collection('products').add({
-            name: ctx.session.name,
-            price: ctx.session.price,
-            image: ctx.session.img,
-            category: ctx.session.category,
-            mode: ctx.session.mode,
-            stock: stock,
-            stockCount: stock.length,
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
+            name: ctx.session.name, price: ctx.session.price, image: ctx.session.img,
+            category: ctx.session.category, mode: ctx.session.mode, stock: stock,
+            stockCount: stock.length, createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
-        
-        await logAction('PRODUCT_ADD', `${ctx.session.category}: ${ctx.session.name}`);
-        ctx.reply('✅ Product deployed to storefront.');
+        ctx.reply('✅ Product deployed.', adminMenu);
         ctx.session.flow = null;
     }
-});
-
-// --- ANALYTICS ---
-bot.command('stats', async (ctx) => {
-    const users = await db.collection('users').get();
-    const sales = await db.collection('logs').where('type', '==', 'PURCHASE').get();
-    ctx.reply(`📊 PR1MΞ STATS\n\n👥 Total Users: ${users.size}\n🛒 Total Sales: ${sales.size}`);
-});
-
-cron.schedule('0 0 * * *', async () => {
-    const today = new Date().toLocaleDateString();
-    bot.telegram.sendMessage(OWNER_ID, `📊 DAILY REPORT - ${today}\nSystem fully operational.`);
 });
 
 bot.launch().then(() => console.log('PR1MΞ Admin Bot Online'));
