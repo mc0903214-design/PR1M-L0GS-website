@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | My Purchases</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- SLOW REVEAL --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        /* --- SEARCH BAR --- */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-bar:focus { border-color: var(--neon-cyan); }
+
+        /* --- PURCHASE LIST --- */
+        .order-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .order-name { font-weight: bold; color: var(--neon-cyan); font-size: 1rem; }
+        .order-date { font-size: 0.7rem; color: #555; }
+
+        .secret-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #ccc;
+            word-break: break-all;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-copy {
+            background: var(--neon-purple);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        #empty-state { text-align: center; color: #555; margin-top: 50px; display: none; }
+    </style>
+</head>
+<body>
+
+    <header class="reveal">
+        <a href="shop.html" class="back-btn">←</a>
+        <h2 style="font-size: 1.2rem; letter-spacing: 1px;">PURCHASE HISTORY</h2>
+    </header>
+
+    <div class="search-container reveal">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search your items...">
+    </div>
+
+    <div id="orders-list">
+        <!-- Purchases will be injected here -->
+    </div>
+
+    <div id="empty-state">
+        <p>No purchases found yet.</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+                const purchases = userSnap.data().myPurchases || [];
+                renderPurchases(purchases);
+            } else {
+                document.getElementById('empty-state').style.display = 'block';
+            }
+        });
+
+        function renderPurchases(items) {
+            const list = document.getElementById('orders-list');
+            list.innerHTML = '';
+            
+            if (items.length === 0) {
+                document.getElementById('empty-state').style.display = 'block';
+                return;
+            }
+
+            items.reverse().forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'order-card reveal';
+                card.innerHTML = `
+                    <div class="order-header">
+                        <span class="order-name">${item.name}</span>
+                        <span class="order-date">${item.date}</span>
+                    </div>
+                    <div class="secret-display">
+                        <span class="secret-val">${item.secret}</span>
+                        <button class="mini-copy">Copy</button>
+                    </div>
+                `;
+
+                // Add Copy Logic
+                card.querySelector('.mini-copy').onclick = function() {
+                    copyThis(this, item.secret);
+                };
+
+                list.appendChild(card);
+                
+                // Trigger reveal animation
+                setTimeout(() => card.classList.add('active'), 50);
+            });
+        }
+
+        // Copy Function
+        window.copyThis = function(btn, text) {
+            navigator.clipboard.writeText(text);
+            const originalText = btn.innerText;
+            btn.innerText = "DONE";
+            btn.style.background = "#00ff88";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "var(--neon-purple)";
+            }, 2000);
+        }
+
+        // Basic Search Functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.order-card').forEach(card => {
+                const name = card.querySelector('.order-name').innerText.toLowerCase();
+                card.style.display = name.includes(term) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
