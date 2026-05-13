@@ -162,20 +162,29 @@
                 const userSnap = await getDoc(userRef);
 
                 if (userSnap.exists()) {
-                    const purchases = userSnap.data().myPurchases || [];
+                    const data = userSnap.data();
+                    
+                    // Check if user is banned
+                    if (data.status === 'banned') {
+                        await auth.signOut();
+                        window.location.href = "login.html";
+                        return;
+                    }
+
+                    const purchases = data.myPurchases || [];
                     renderPurchases(purchases);
 
-                    // NOTIFY ADMIN: User is viewing history
+                    // Notify Dashboard
                     await addDoc(collection(db, "logs"), {
                         type: "HISTORY_VIEW",
-                        details: `User: ${user.email} is viewing their purchase history.`,
+                        details: `${user.email} is reviewing their logs.`,
                         timestamp: serverTimestamp()
                     });
                 } else {
                     document.getElementById('empty-state').style.display = 'block';
                 }
             } catch (err) {
-                statusDiv.innerText = "Error loading history: " + err.message;
+                statusDiv.innerText = "Access Error: " + err.message;
             }
         });
 
@@ -188,7 +197,8 @@
                 return;
             }
 
-            items.reverse().forEach(item => {
+            // Show newest purchases first
+            [...items].reverse().forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'order-card reveal';
                 card.innerHTML = `
@@ -202,34 +212,31 @@
                     </div>
                 `;
 
-                // Add Copy Logic
                 card.querySelector('.mini-copy').onclick = function() {
                     copyThis(this, item.secret);
                 };
 
                 list.appendChild(card);
-                
-                // Trigger reveal animation
-                setTimeout(() => card.classList.add('active'), 50);
+                setTimeout(() => card.classList.add('active'), 100);
             });
         }
 
-        // Copy Function
         window.copyThis = function(btn, text) {
             navigator.clipboard.writeText(text).then(() => {
                 const originalText = btn.innerText;
-                btn.innerText = "DONE";
+                btn.innerText = "COPIED";
                 btn.style.background = "#00ff88";
+                btn.style.color = "#000";
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.style.background = "var(--neon-purple)";
+                    btn.style.color = "white";
                 }, 2000);
             }).catch(err => {
-                statusDiv.innerText = "Copy failed: " + err.message;
+                statusDiv.innerText = "Copy Permission Denied.";
             });
         }
 
-        // Basic Search Functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             document.querySelectorAll('.order-card').forEach(card => {
