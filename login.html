@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Access</title>
+    <style>
+        :root { --neon-cyan: #00f3ff; --neon-purple: #bc13fe; --glass: rgba(255, 255, 255, 0.05); }
+        body { 
+            background: #0a0a0c; 
+            color: white; 
+            font-family: sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+        }
+        .auth-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+        /* --- FAKE LOADING OVERLAY --- */
+        #loading-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 12, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .loader-bar {
+            width: 50%;
+            height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: pulse 0.4s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.2; transform: scaleX(0.5); }
+            100% { opacity: 1; transform: scaleX(1); }
+        }
+
+        h2 { text-align: center; margin-bottom: 20px; color: var(--neon-cyan); letter-spacing: 2px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #000;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+        }
+        input:focus { border-color: var(--neon-cyan); }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .toggle-text { text-align: center; font-size: 0.8rem; margin-top: 15px; color: #888; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div id="loading-overlay"><div class="loader-bar"></div></div>
+        
+        <h2 id="auth-title">LOGIN</h2>
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+        
+        <button class="submit-btn" id="auth-submit">CONTINUE</button>
+        <p class="toggle-text" id="toggle-btn" onclick="toggleAuth()">Don't have an account? Signup</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Fake Loading Logic for Toggle
+        window.toggleAuth = function() {
+            const overlay = document.getElementById('loading-overlay');
+            const title = document.getElementById('auth-title');
+            const btn = document.getElementById('toggle-btn');
+            
+            overlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                if (title.innerText === 'LOGIN') {
+                    title.innerText = 'SIGNUP';
+                    btn.innerText = 'Already have an account? Login';
+                } else {
+                    title.innerText = 'LOGIN';
+                    btn.innerText = "Don't have an account? Signup";
+                }
+                overlay.style.display = 'none';
+            }, 400); // 400ms fake loading
+        }
+
+        // Auth Logic
+        document.getElementById('auth-submit').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const isLogin = document.getElementById('auth-title').innerText === 'LOGIN';
+
+            if(!email || !password) return alert("Fill all fields");
+
+            try {
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    window.location.href = 'shop.html';
+                } else {
+                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    // Initialize user profile in Firestore
+                    await setDoc(doc(db, "users", res.user.uid), {
+                        email: email,
+                        balance: 0,
+                        totalSpent: 0,
+                        myPurchases: []
+                    });
+                    window.location.href = 'shop.html';
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    </script>
+</body>
+</html>
