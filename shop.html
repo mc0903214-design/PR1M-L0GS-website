@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ Market</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        /* --- SLOW SCROLL REVEAL ANIMATION --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- PROFESSIONAL HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5px 20px 5px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* --- HAMBURGER MENU --- */
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 5px;
+        }
+
+        .side-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100%;
+            background: rgba(10, 10, 12, 0.98);
+            backdrop-filter: blur(25px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 80px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .side-nav.active {
+            right: 0;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 15px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:active {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 999;
+        }
+
+        .nav-overlay.active { display: block; }
+
+        /* --- SUPPORT MODAL --- */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 400px;
+            background: #121214;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 25px;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--neon-cyan); }
+        .modal textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px;
+            color: white;
+            resize: none;
+            margin-bottom: 15px;
+        }
+
+        /* --- LIVE TICKER --- */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 0;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 20s linear infinite;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .ticker span { margin-right: 50px; }
+        .ticker b { color: var(--neon-cyan); }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* --- WALLET SECTION --- */
+        .wallet-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-label {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .balance-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 5px 0 15px 0;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .fund-btn {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            border: none;
+            padding: 14px 40px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            display: inline-block;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        /* --- GRID LAYOUT --- */
+        .section-title {
+            font-size: 0.9rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .category-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 15px;
+            border-radius: 18px;
+            text-align: center;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .category-card:active {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.05);
+            transform: scale(0.95);
+        }
+
+        .category-icon {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .category-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: #eee;
+        }
+
+        .bot-card {
+            grid-column: span 2;
+            background: linear-gradient(145deg, rgba(255,255,255,0.07), rgba(188, 19, 254, 0.05));
+            border: 1px solid rgba(188, 19, 254, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="nav-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="prof.html" class="nav-item">👤 Profile</a>
+        <a href="mine.html" class="nav-item">🛍️ My Purchases</a>
+        <a href="fund.html" class="nav-item">💳 Fund Wallet</a>
+        <a href="javascript:void(0)" class="nav-item" onclick="openSupport()">🆘 Contact Support</a>
+        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; opacity: 0.5;">🚪 Logout</a>
+    </nav>
+
+    <!-- Support Modal -->
+    <div class="modal" id="supportModal">
+        <h2>🆘 Open Ticket</h2>
+        <textarea id="ticketMsg" placeholder="Describe your issue or request..."></textarea>
+        <button class="fund-btn" style="width: 100%;" id="sendTicket">Send to Admins</button>
+        <button class="menu-btn" style="width: 100%; font-size: 0.8rem; margin-top: 10px;" onclick="closeSupport()">Cancel</button>
+    </div>
+
+    <header class="reveal">
+        <div class="logo">PR1MΞ</div>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <div class="ticker-wrap reveal">
+        <div class="ticker">
+            <span>🚀 New <b>Logs</b> uploaded to market</span>
+            <span>📱 <b>CL Numbers</b> stock updated</span>
+            <span>🤖 <b>Bots</b> status: Operational</span>
+            <span>🇺🇸 <b>USA Accounts</b> limited stock remaining</span>
+        </div>
+    </div>
+
+    <!-- Wallet Section -->
+    <div class="wallet-container reveal">
+        <div class="balance-label">Available Funds</div>
+        <div class="balance-amount">₦<span id="balance">0.00</span></div>
+        <a href="fund.html" class="fund-btn">Fund Wallet</a>
+    </div>
+
+    <div class="section-title reveal">Marketplace</div>
+
+    <!-- Category Grid -->
+    <div class="category-grid">
+        <div class="category-card reveal" onclick="location.href='products.html?cat=Logs'">
+            <span class="category-icon">🚀</span><div class="category-name">Logs</div>
+        </div>
+        <div class="category-card reveal" onclick="location.href='products.html?cat=Working Pics'">
+            <span class="category-icon">📂</span><div class="category-name">Working Pics</div>
+        </div>
+        <div class="category-card reveal" onclick="location.href='products.html?cat=VPNs and TV'">
+            <span class="category-icon">🔐/📺</span><div class="category-name">VPNs/TV</div>
+        </div>
+        <div class="category-card reveal" onclick="location.href='products.html?cat=iCloud'">
+            <span class="category-icon"></span><div class="category-name">iCloud</div>
+        </div>
+        <div class="category-card reveal" onclick="location.href='products.html?cat=FMT and Updates'">
+            <span class="category-icon">📝</span><div class="category-name">FMT & Updates</div>
+        </div>
+        <div class="category-card reveal" onclick="location.href='products.html?cat=CL Numbers'">
+            <span class="category-icon">📱</span><div class="category-name">CL Numbers</div>
+        </div>
+        <div class="category-card bot-card reveal" onclick="location.href='products.html?cat=Bots'">
+            <span class="category-icon">🤖</span><div class="category-name">Bots & Automations</div>
+        </div>
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // Track Auth & Wallet Balance
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                const userRef = doc(db, "users", user.uid);
+                onSnapshot(userRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        document.getElementById('balance').innerText = (data.balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
+                    }
+                });
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- SUPPORT TICKET SYSTEM ---
+        window.openSupport = function() {
+            toggleMenu();
+            document.getElementById('supportModal').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+        window.closeSupport = function() {
+            document.getElementById('supportModal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        document.getElementById('sendTicket').addEventListener('click', async () => {
+            const msg = document.getElementById('ticketMsg').value;
+            if(!msg) return alert('Please enter a message');
+
+            try {
+                await addDoc(collection(db, "support"), {
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    message: msg,
+                    status: "open",
+                    timestamp: serverTimestamp()
+                });
+                alert('Ticket sent! Admins will contact you via Telegram/Website.');
+                document.getElementById('ticketMsg').value = '';
+                closeSupport();
+            } catch (e) {
+                alert('Error sending ticket.');
+            }
+        });
+
+        // Logout Implementation
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            });
+        });
+
+        // Menu Toggle
+        window.toggleMenu = function() {
+            document.getElementById('sideNav').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // Scroll Reveal Logic
+        const observerOptions = { threshold: 0.05 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
