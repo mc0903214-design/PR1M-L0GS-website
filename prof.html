@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Profile</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- REVEAL ANIMATION --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        /* --- PROFILE CARD --- */
+        .profile-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .username { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; word-break: break-all; }
+        .user-id { font-size: 0.75rem; color: #666; letter-spacing: 1px; }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--neon-cyan); }
+        .stat-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        /* --- SETTINGS LIST --- */
+        .settings-group {
+            margin-top: 30px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px;
+            background: var(--glass-bg);
+            border-radius: 15px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: white;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .settings-item:active {
+            border-color: var(--neon-purple);
+            background: rgba(188, 19, 254, 0.05);
+        }
+
+        .item-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
+        .item-info p { font-size: 0.75rem; color: #666; }
+        .chevron { color: #444; }
+
+        .logout-btn {
+            margin-top: 30px;
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.2);
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="reveal">
+        <a href="shop.html" class="back-btn">←</a>
+        <h2 style="font-size: 1.2rem; letter-spacing: 1px;">MY PROFILE</h2>
+    </header>
+
+    <div class="profile-card reveal">
+        <div class="avatar" id="avatar-initial">?</div>
+        <div class="username" id="display-name">Loading...</div>
+        <div class="user-id">UID: <span id="uid-display">-------</span></div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-val" id="total-purchases">0</span>
+                <span class="stat-label">Orders</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-val" id="total-spent">₦0</span>
+                <span class="stat-label">Spent</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-group">
+        <div class="reveal">
+            <div class="settings-item">
+                <div class="item-info">
+                    <h4>Account Email</h4>
+                    <p id="user-email">loading...</p>
+                </div>
+                <span class="chevron">›</span>
+            </div>
+        </div>
+
+        <div class="reveal">
+            <a href="fund.html" class="settings-item">
+                <div class="item-info">
+                    <h4>Wallet Balance</h4>
+                    <p id="current-balance">₦0</p>
+                </div>
+                <span class="chevron">›</span>
+            </a>
+        </div>
+
+        <div class="reveal">
+            <a href="mine.html" class="settings-item">
+                <div class="item-info">
+                    <h4>Purchase History</h4>
+                    <p>View your digital keys and logs</p>
+                </div>
+                <span class="chevron">›</span>
+            </a>
+        </div>
+    </div>
+
+    <button class="logout-btn reveal" id="logout-trigger">Secure Logout</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Basic Auth Info
+                document.getElementById('display-name').innerText = user.email.split('@')[0].toUpperCase();
+                document.getElementById('user-email').innerText = user.email;
+                document.getElementById('uid-display').innerText = user.uid.substring(0, 8).toUpperCase();
+                document.getElementById('avatar-initial').innerText = user.email.charAt(0).toUpperCase();
+
+                // Firestore Info
+                const userRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('total-spent').innerText = `₦${(data.totalSpent || 0).toLocaleString()}`;
+                    document.getElementById('current-balance').innerText = `Current: ₦${(data.balance || 0).toLocaleString()}`;
+                    document.getElementById('total-purchases').innerText = (data.myPurchases || []).length;
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        document.getElementById('logout-trigger').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            });
+        });
+
+        // Reveal Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
