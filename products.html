@@ -112,6 +112,7 @@
         .stock-low { color: var(--error-red); border-color: var(--error-red); }
         .stock-ok { color: #00ff88; }
         .stock-single { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .stock-out { color: #888; border-color: #444; }
 
         .product-body { padding: 20px; }
         .prod-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--neon-cyan); }
@@ -138,6 +139,12 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             transition: 0.3s;
+        }
+
+        .buy-btn.disabled {
+            background: #333;
+            pointer-events: none;
+            color: #666;
         }
 
         .buy-btn:active { transform: scale(0.95); opacity: 0.8; }
@@ -193,27 +200,30 @@
 
         const statusDiv = document.getElementById('status-msg');
         const params = new URLSearchParams(window.location.search);
-        const category = params.get('cat') || "General";
+        // Extracts the category (cat) from URL: e.g., products.html?cat=Logs
+        const category = params.get('cat') || "Logs"; 
         document.getElementById('cat-display').innerText = category;
 
         async function loadProducts(user) {
             const list = document.getElementById('product-list');
             
             try {
+                // Queries for products specifically in the selected category
                 const q = query(collection(db, "products"), where("category", "==", category));
                 const querySnapshot = await getDocs(q);
                 
                 list.innerHTML = ''; 
                 
                 if (querySnapshot.empty) {
-                    list.innerHTML = `<p style="text-align:center; color:#555; margin-top:50px;">No products found in this category.</p>`;
+                    list.innerHTML = `<p style="text-align:center; color:#555; margin-top:50px;">No digital assets found in "${category}".</p>`;
                     return;
                 }
 
+                // Log user market activity
                 if(user) {
                     addDoc(collection(db, "logs"), {
-                        type: "MARKET_VISIT",
-                        details: `${user.email} is browsing ${category}`,
+                        type: "CATEGORY_BROWSE",
+                        details: `${user.email} opened ${category} catalog`,
                         timestamp: serverTimestamp()
                     });
                 }
@@ -221,20 +231,26 @@
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     let stockClass = 'stock-ok';
-                    let stockText = 'Available';
+                    let stockText = 'AVAILABLE';
+                    let btnDisabled = "";
 
-                    // Handling SINGLE vs MULTIPLE stock display logic
+                    // Calculate Stock UI based on Product Mode
                     if (data.mode === "SINGLE") {
+                        // Single secret item (Unlimited or always visible until manually removed)
                         stockClass = 'stock-single';
-                        stockText = 'AVAILABLE';
+                        stockText = 'READY';
                     } else {
-                        // Multiple mode: show actual count
+                        // Multi-item stock (Managed by count)
                         const count = data.stockCount || 0;
-                        if (count < 7) {
+                        if (count <= 0) {
+                            stockClass = 'stock-out';
+                            stockText = 'OUT OF STOCK';
+                            btnDisabled = "disabled";
+                        } else if (count < 5) {
                             stockClass = 'stock-low';
-                            stockText = `Only ${count} Left`;
+                            stockText = `${count} ITEMS LEFT`;
                         } else {
-                            stockText = `${count} In Stock`;
+                            stockText = `${count} IN STOCK`;
                         }
                     }
 
@@ -242,24 +258,29 @@
                     card.className = 'product-card reveal';
                     card.innerHTML = `
                         <div class="preview-img">
-                            <img src="${data.image || 'https://via.placeholder.com/400x180/1a1a2e/00f3ff?text=PR1MΞ'}" alt="Preview">
+                            <img src="${data.image || 'https://via.placeholder.com/400x180/1a1a2e/00f3ff?text=PR1MΞ+ASSET'}" alt="Preview">
                             <div class="stock-badge ${stockClass}">${stockText}</div>
                         </div>
                         <div class="product-body">
                             <div class="prod-name">${data.name}</div>
-                            <p class="prod-desc">${data.description}</p>
+                            <p class="prod-desc">${data.category} Digital Delivery Asset</p>
                             <div class="purchase-row">
                                 <div class="price"><span>₦</span>${data.price.toLocaleString()}</div>
-                                <a href="checkout.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" class="buy-btn">Buy Now</a>
+                                <a href="checkout.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" 
+                                   class="buy-btn ${btnDisabled}">
+                                   ${btnDisabled ? 'Sold Out' : 'Get Access'}
+                                </a>
                             </div>
                         </div>
                     `;
                     list.appendChild(card);
+                    
+                    // Trigger the reveal animation
                     setTimeout(() => card.classList.add('active'), 100);
                 });
             } catch (error) {
                 list.innerHTML = '';
-                statusDiv.innerText = "Error loading marketplace: " + error.message;
+                statusDiv.innerText = "Connection lost: " + error.message;
             }
         }
 
@@ -267,11 +288,12 @@
             loadProducts(user);
         });
 
+        // Intersection Observer for the glassmorphism scroll effect
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
             });
-        }, { threshold: 0.05 });
+        }, { threshold: 0.1 });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
