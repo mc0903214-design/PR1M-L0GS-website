@@ -125,7 +125,7 @@
         <div id="step-processing" style="display: none;">
             <div class="loader"></div>
             <h2>Processing</h2>
-            <p>Verifying wallet and securing your item...</p>
+            <p>Securing your asset from the network...</p>
         </div>
 
         <!-- STEP 3: SUCCESS -->
@@ -175,12 +175,14 @@
         const params = new URLSearchParams(window.location.search);
         const itemName = params.get('name') || "Digital Asset";
         const itemPrice = parseFloat(params.get('price')) || 0;
-        const itemId = params.get('id') || "default_id";
+        const itemId = params.get('id'); // This must be the Firestore Document ID
 
         document.getElementById('prod-name').innerText = itemName;
         document.getElementById('prod-price').innerText = itemPrice.toLocaleString();
 
         window.startProcessing = async function() {
+            if (!itemId) return showError("Invalid product ID.");
+
             document.getElementById('step-confirm').style.display = 'none';
             document.getElementById('step-processing').style.display = 'block';
 
@@ -191,44 +193,70 @@
                 }
 
                 try {
-                    const userRef = doc(db, "users", user.uid);
-                    const userSnap = await getDoc(userRef);
+                    // 1. Fetch Product and User Data simultaneously
+                    const prodRef = doc(db, "products", itemId);
+                    const [prodSnap, userSnap] = await Promise.all([
+                        getDoc(prodRef),
+                        getDoc(doc(db, "users", user.uid))
+                    ]);
 
-                    if (userSnap.exists()) {
-                        const userData = userSnap.data();
-                        const balance = userData.balance || 0;
-                        const userEmail = userData.email || "Unknown User";
+                    if (!prodSnap.exists()) return showError("Asset no longer exists.");
+                    const pData = prodSnap.data();
 
-                        if (balance >= itemPrice) {
-                            const generatedSecret = "SESSION_KEY_" + Math.random().toString(36).substr(2, 9).toUpperCase();
-
-                            // 1. Deduct and Record Transaction for User
-                            await updateDoc(userRef, {
-                                balance: increment(-itemPrice),
-                                totalSpent: increment(itemPrice),
-                                myPurchases: arrayUnion({
-                                    name: itemName,
-                                    price: itemPrice,
-                                    date: new Date().toLocaleDateString(),
-                                    secret: generatedSecret
-                                })
-                            });
-
-                            // 2. CONNECT TO ADMIN BOT: Send purchase log
-                            await addDoc(collection(db, "logs"), {
-                                type: "PURCHASE",
-                                details: `User: ${userEmail} bought ${itemName} for ₦${itemPrice.toLocaleString()}`,
-                                timestamp: serverTimestamp()
-                            });
-
-                            showSuccess(generatedSecret);
-                        } else {
-                            showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
-                        }
+                    if (pData.stockCount < 1 || !pData.stock || pData.stock.length === 0) {
+                        return showError("This item is currently out of stock.");
                     }
+
+                    if (!userSnap.exists()) return showError("User profile not found.");
+                    const userData = userSnap.data();
+
+                    if (userData.balance < itemPrice) {
+                        return showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
+                    }
+
+                    // 2. DISPENSE LOGIC (Handle SINGLE vs MULTIPLE)
+                    let secretToGive;
+                    let newStockList = [...pData.stock];
+
+                    if (pData.mode === "SINGLE") {
+                        // In single mode, the whole stock is one secret, but it doesn't run out until stockCount is 0
+                        secretToGive = pData.stock[0];
+                    } else {
+                        // In multiple mode, we pop one item out of the array
+                        secretToGive = newStockList.shift();
+                    }
+
+                    // 3. EXECUTE TRANSACTION
+                    // A. Update User
+                    await updateDoc(doc(db, "users", user.uid), {
+                        balance: increment(-itemPrice),
+                        totalSpent: increment(itemPrice),
+                        myPurchases: arrayUnion({
+                            name: itemName,
+                            price: itemPrice,
+                            date: new Date().toLocaleDateString(),
+                            secret: secretToGive
+                        })
+                    });
+
+                    // B. Update Product Stock
+                    await updateDoc(prodRef, {
+                        stock: newStockList,
+                        stockCount: increment(-1)
+                    });
+
+                    // C. Log for adminq dashboard
+                    await addDoc(collection(db, "logs"), {
+                        type: "PURCHASE",
+                        details: `${userData.email} purchased ${itemName} for ₦${itemPrice.toLocaleString()}`,
+                        timestamp: serverTimestamp()
+                    });
+
+                    showSuccess(secretToGive);
+
                 } catch (e) {
                     console.error(e);
-                    showError("Transaction error. Try again later.");
+                    showError("Transaction error. Connection lost.");
                 }
             });
         }
