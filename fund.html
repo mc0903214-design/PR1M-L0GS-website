@@ -104,10 +104,6 @@
             outline: none;
         }
 
-        input:focus {
-            border-color: var(--neon-cyan);
-        }
-
         .bank-details-box {
             background: rgba(0, 243, 255, 0.05);
             border: 1px dashed var(--neon-cyan);
@@ -119,11 +115,13 @@
             line-height: 1.6;
         }
 
-        .copy-tag {
-            color: var(--neon-cyan);
-            font-size: 0.7rem;
-            float: right;
-            text-transform: uppercase;
+        .pay-exactly {
+            color: #ffcc00;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
         }
 
         .submit-btn {
@@ -138,12 +136,46 @@
             cursor: pointer;
         }
 
-        .hidden { display: none; }
-
-        .crypto-notice {
-            text-align: center;
-            padding: 40px 20px;
+        /* --- TRANSACTION LIST --- */
+        .history-section {
+            margin-top: 40px;
         }
+
+        .history-title {
+            font-size: 0.9rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .transaction-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tx-info h5 { font-size: 0.9rem; color: #eee; }
+        .tx-info p { font-size: 0.7rem; color: #666; }
+        
+        .status-badge {
+            font-size: 0.65rem;
+            padding: 4px 8px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .pending { color: #ffcc00; background: rgba(255, 204, 0, 0.1); }
+        .approved { color: #00ff88; background: rgba(0, 255, 136, 0.1); }
+        .declined { color: #ff4d4d; background: rgba(255, 77, 77, 0.1); }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -155,11 +187,11 @@
 
     <!-- 1. Selection Screen -->
     <div id="selectionScreen">
-        <div class="option-card" onclick="showBankFlow()">
+        <div class="option-card" onclick="showAmountStep()">
             <div class="option-icon">🏦</div>
             <div class="option-info">
                 <h4>Bank Transfer</h4>
-                <p>Manual approval</p>
+                <p>Manual approval by Admin</p>
             </div>
         </div>
 
@@ -167,50 +199,61 @@
             <div class="option-icon">₿</div>
             <div class="option-info">
                 <h4>Crypto Payment</h4>
-                <p>Automatic</p>
+                <p>Automated via NOWPayments</p>
             </div>
         </div>
     </div>
 
-    <!-- 2. Bank Transfer Flow -->
+    <!-- 2. Step 1: Enter Amount -->
+    <div id="amountStep" class="hidden">
+        <div class="step-container">
+            <label>How much do you want to deposit? (₦)</label>
+            <input type="number" id="depositAmount" placeholder="Min: ₦500" min="500">
+            <button class="submit-btn" onclick="showBankDetails()">Continue to Details</button>
+            <p onclick="location.reload()" style="text-align:center; margin-top:20px; font-size:0.8rem; color:var(--neon-cyan); cursor:pointer;">← Go Back</p>
+        </div>
+    </div>
+
+    <!-- 3. Step 2: Bank Details & Upload -->
     <div id="bankFlow" class="hidden">
         <div class="step-container">
-            <label>1. How much do you want to deposit? (₦)</label>
-            <input type="number" id="amount" placeholder="Enter amount">
-
-            <label>2. Make transfer to the details below:</label>
+            <span class="pay-exactly">PAY EXACTLY: ₦<span id="displayAmount">0</span></span>
+            
+            <label>Transfer to the following account:</label>
             <div class="bank-details-box">
-                <span class="copy-tag">Official</span>
                 <strong>BANK:</strong> MONIEPOINT<br>
                 <strong>ACC NO:</strong> 9032140540<br>
                 <strong>NAME:</strong> CHRISTOPHER MICHAEL
             </div>
 
-            <label>3. Upload Proof of Payment (Receipt)</label>
+            <label>Upload Payment Receipt (Screenshot)</label>
             <input type="file" id="receipt" accept="image/*">
 
-            <button class="submit-btn" id="submitBtn" onclick="submitToAdmin()">Submit Receipt</button>
-            
-            <p onclick="location.reload()" style="text-align:center; margin-top:20px; font-size:0.8rem; color:var(--neon-cyan); cursor:pointer;">
-                ← Change Payment Method
-            </p>
+            <button class="submit-btn" id="submitBtn" onclick="submitToAdmin()">Submit for Approval</button>
         </div>
     </div>
 
-    <!-- 3. Crypto Placeholder -->
+    <!-- 4. Crypto Flow -->
     <div id="cryptoFlow" class="hidden">
-        <div class="crypto-notice">
-            <div style="font-size: 3rem; margin-bottom: 20px;">⚡️</div>
-            <h3>Redirecting to NOWPayments...</h3>
-            <p style="color:#666; font-size: 0.8rem; margin-top: 10px;">Please wait while we secure your transaction.</p>
-            <button class="submit-btn" style="margin-top: 30px;" onclick="location.reload()">Go Back</button>
+        <div style="text-align:center; padding: 40px 0;">
+            <h3>Redirecting to Secure Gateway...</h3>
+            <p style="color:#666; margin-top:10px;">NOWPayments initialization.</p>
+        </div>
+    </div>
+
+    <!-- 5. Transaction History -->
+    <div class="history-section">
+        <div class="history-title">Recent Transactions</div>
+        <div id="transactionList">
+            <!-- Loaded via JS -->
+            <p style="color:#444; font-size:0.8rem; text-align:center;">Loading history...</p>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -225,60 +268,97 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        window.showBankFlow = function() {
+        let userUID = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userUID = user.uid;
+                loadTransactions(user.uid);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        window.showAmountStep = function() {
             document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById('amountStep').classList.remove('hidden');
+        }
+
+        window.showBankDetails = function() {
+            const amt = document.getElementById('depositAmount').value;
+            if (!amt || amt < 500) return alert("Minimum deposit is ₦500");
+            
+            document.getElementById('displayAmount').innerText = parseFloat(amt).toLocaleString();
+            document.getElementById('amountStep').classList.add('hidden');
             document.getElementById('bankFlow').classList.remove('hidden');
-            document.getElementById('page-title').innerText = "Bank Deposit";
+            document.getElementById('page-title').innerText = "Submit Receipt";
         }
 
         window.showCryptoFlow = function() {
             document.getElementById('selectionScreen').classList.add('hidden');
             document.getElementById('cryptoFlow').classList.remove('hidden');
-            document.getElementById('page-title').innerText = "Crypto Deposit";
-            
-            setTimeout(() => {
-                alert("NOWPayments Integration Coming Soon!");
-                location.reload();
-            }, 1500);
+            setTimeout(() => { alert("Crypto payments integrated in next update."); location.reload(); }, 2000);
         }
 
         window.submitToAdmin = async function() {
-            const user = auth.currentUser;
-            if (!user) {
-                alert("Please login first!");
-                return;
-            }
-
-            const amt = document.getElementById('amount').value;
+            const amt = document.getElementById('depositAmount').value;
             const file = document.getElementById('receipt').files[0];
             const btn = document.getElementById('submitBtn');
 
-            if(!amt || !file) {
-                alert("Please enter amount and select your receipt image.");
-                return;
-            }
+            if(!file) return alert("Please upload a receipt screenshot");
 
             btn.disabled = true;
-            btn.innerText = "Processing...";
+            btn.innerText = "Sending...";
 
             try {
-                // Log request to 'deposits' collection for Admin approval
+                // Submit main deposit request
                 await addDoc(collection(db, "deposits"), {
-                    uid: user.uid,
-                    email: user.email,
+                    uid: userUID,
+                    email: auth.currentUser.email,
                     amount: parseFloat(amt),
                     status: "pending",
-                    timestamp: serverTimestamp(),
-                    type: "bank_transfer"
+                    type: "Bank Transfer",
+                    timestamp: serverTimestamp()
                 });
 
-                alert("Verification Sent! Your balance will update once the Admin approves the receipt.");
-                window.location.href = 'shop.html';
+                // ALERT ADMIN BOT via logs collection
+                await addDoc(collection(db, "logs"), {
+                    type: "DEPOSIT_REQUEST",
+                    details: `New Bank Deposit request from ${auth.currentUser.email} for ₦${amt}`,
+                    timestamp: serverTimestamp()
+                });
+
+                alert("Submitted! Please wait for Admin approval.");
+                location.reload();
             } catch (e) {
-                alert("Error submitting request. Please try again.");
+                alert("Submission failed.");
                 btn.disabled = false;
-                btn.innerText = "Submit Receipt";
             }
+        }
+
+        function loadTransactions(uid) {
+            const q = query(collection(db, "deposits"), where("uid", "==", uid), orderBy("timestamp", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const list = document.getElementById('transactionList');
+                if (snapshot.empty) {
+                    list.innerHTML = '<p style="color:#444; font-size:0.8rem; text-align:center;">No recent deposits found.</p>';
+                    return;
+                }
+                list.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Just now';
+                    list.innerHTML += `
+                        <div class="transaction-item">
+                            <div class="tx-info">
+                                <h5>₦${data.amount.toLocaleString()}</h5>
+                                <p>${data.type} • ${date}</p>
+                            </div>
+                            <span class="status-badge ${data.status}">${data.status}</span>
+                        </div>
+                    `;
+                });
+            });
         }
     </script>
 </body>
