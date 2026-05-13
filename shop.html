@@ -376,9 +376,20 @@
         let currentUser = null;
 
         // Track Auth & Wallet Balance
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
+                
+                // ALERT ADMIN BOT: User entered the market
+                try {
+                    await addDoc(collection(db, "logs"), {
+                        type: "MARKET_ACCESS",
+                        details: `User: ${user.email} entered the shop.`,
+                        timestamp: serverTimestamp()
+                    });
+                } catch (e) { console.error("Logging failed"); }
+
+                // Live Listen for Balance Updates
                 const userRef = doc(db, "users", user.uid);
                 onSnapshot(userRef, (docSnap) => {
                     if (docSnap.exists()) {
@@ -407,6 +418,7 @@
             if(!msg) return alert('Please enter a message');
 
             try {
+                // Main Support Entry
                 await addDoc(collection(db, "support"), {
                     uid: currentUser.uid,
                     email: currentUser.email,
@@ -414,7 +426,15 @@
                     status: "open",
                     timestamp: serverTimestamp()
                 });
-                alert('Ticket sent! Admins will contact you via Telegram/Website.');
+
+                // ALERT ADMIN BOT: New Support Ticket
+                await addDoc(collection(db, "logs"), {
+                    type: "SUPPORT_TICKET",
+                    details: `New ticket from ${currentUser.email}: ${msg.substring(0, 30)}...`,
+                    timestamp: serverTimestamp()
+                });
+
+                alert('Ticket sent! Admins will contact you soon.');
                 document.getElementById('ticketMsg').value = '';
                 closeSupport();
             } catch (e) {
@@ -423,8 +443,17 @@
         });
 
         // Logout Implementation
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
+            if(currentUser) {
+                try {
+                    await addDoc(collection(db, "logs"), {
+                        type: "LOGOUT",
+                        details: `User: ${currentUser.email} logged out via shop menu.`,
+                        timestamp: serverTimestamp()
+                    });
+                } catch(e) {}
+            }
             signOut(auth).then(() => {
                 window.location.href = 'index.html';
             });
