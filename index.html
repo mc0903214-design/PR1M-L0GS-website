@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ Market | Home</title>
+    <style>
+        :root { 
+            --neon-cyan: #00f3ff; 
+            --neon-purple: #bc13fe; 
+            --dark-bg: #0a0a0c; 
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        /* --- SLOW SCROLL REVEAL --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            margin-top: 10vh;
+            margin-bottom: 60px;
+        }
+
+        h1 { 
+            font-size: 4rem; 
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px var(--neon-cyan); 
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .tagline { 
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .description {
+            color: #888;
+            max-width: 300px;
+            margin: 0 auto 40px auto;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .enter-btn {
+            padding: 18px 50px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.3);
+            transition: 0.3s ease;
+            display: inline-block;
+        }
+
+        .enter-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- INFO CARDS --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            background: rgba(0, 243, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: var(--neon-cyan);
+        }
+
+        .info-text h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: #eee;
+        }
+
+        .info-text p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="hero reveal">
+        <div class="tagline">The Digital Frontier</div>
+        <h1>PR1MΞ</h1>
+        <p class="description">Your elite marketplace for premium logs, secure VPNs, and advanced utility tools and bots. Quality verified. Instant delivery.</p>
+        <a href="login.html" id="main-action" class="enter-btn">ENTER MARKET</a>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card reveal">
+            <div class="info-icon">⚡</div>
+            <div class="info-text">
+                <h3>Instant Delivery</h3>
+                <p>Digital assets are delivered immediately to your account after purchase.</p>
+            </div>
+        </div>
+
+        <div class="info-card reveal">
+            <div class="info-icon">🔐</div>
+            <div class="info-text">
+                <h3>Premium Logs, VPNs & tools</h3>
+                <p>High-quality social media logs, private network access & tools.</p>
+            </div>
+        </div>
+
+        <div class="info-card reveal">
+            <div class="info-icon">🤖</div>
+            <div class="info-text">
+                <h3>Utility Automations</h3>
+                <p>Advanced bots for smooth workings 😜.</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Check if user is already logged in to skip login page
+        onAuthStateChanged(auth, (user) => {
+            const actionBtn = document.getElementById('main-action');
+            if (user) {
+                actionBtn.href = "shop.html";
+                actionBtn.innerText = "OPEN MARKET";
+            }
+        });
+
+        // Scroll Reveal Logic
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        
+        window.addEventListener('load', () => {
+            document.querySelector('.hero').classList.add('active');
+        });
+    </script>
+</body>
+</html>
