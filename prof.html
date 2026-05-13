@@ -193,7 +193,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -215,36 +215,39 @@
             statusMsg.className = isError ? "error" : "info";
         }
 
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Basic Auth Info
+                // UI Header Info
                 document.getElementById('display-name').innerText = user.email.split('@')[0].toUpperCase();
                 document.getElementById('user-email-header').innerText = user.email;
                 document.getElementById('uid-display').innerText = user.uid.substring(0, 8).toUpperCase();
                 document.getElementById('avatar-initial').innerText = user.email.charAt(0).toUpperCase();
 
-                try {
-                    // Firestore Info
-                    const userRef = doc(db, "users", user.uid);
-                    const docSnap = await getDoc(userRef);
-
+                // Live Listen for User Data
+                const userRef = doc(db, "users", user.uid);
+                onSnapshot(userRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
+
+                        // Security Check: If admin bans user, kick them out immediately
+                        if (data.status === 'banned') {
+                            signOut(auth).then(() => window.location.href = 'login.html');
+                            return;
+                        }
+
                         document.getElementById('total-spent').innerText = `₦${(data.totalSpent || 0).toLocaleString()}`;
                         document.getElementById('current-balance').innerText = `₦${(data.balance || 0).toLocaleString()}`;
                         document.getElementById('total-purchases').innerText = (data.myPurchases || []).length;
                     }
+                });
 
-                    // ALERT ADMIN BOT: Profile Visit
-                    await addDoc(collection(db, "logs"), {
-                        type: "PROFILE_VIEW",
-                        details: `User: ${user.email} is viewing their profile.`,
-                        timestamp: serverTimestamp()
-                    });
+                // Dashboard Notification
+                addDoc(collection(db, "logs"), {
+                    type: "PROFILE_VIEW",
+                    details: `${user.email} is checking their profile stats.`,
+                    timestamp: serverTimestamp()
+                });
 
-                } catch (err) {
-                    setStatus("Error loading profile data.");
-                }
             } else {
                 window.location.href = 'login.html';
             }
@@ -256,22 +259,19 @@
                 try {
                     await addDoc(collection(db, "logs"), {
                         type: "LOGOUT",
-                        details: `User: ${user.email} has logged out.`,
+                        details: `${user.email} has logged out safely.`,
                         timestamp: serverTimestamp()
                     });
-                } catch (e) {
-                    console.error("Log error", e);
-                }
+                } catch (e) { console.log(e); }
             }
             
             signOut(auth).then(() => {
                 window.location.href = 'index.html';
             }).catch(err => {
-                setStatus("Logout failed. Please refresh.");
+                setStatus("Logout interrupted. Try again.");
             });
         });
 
-        // Reveal Logic
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
