@@ -62,6 +62,17 @@
             outline: none;
         }
         input:focus { border-color: var(--neon-cyan); }
+        
+        /* --- STATUS MESSAGE AREA --- */
+        #status-msg {
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            text-align: center;
+            min-height: 1.2rem;
+        }
+        .error { color: #ff4d4d; }
+        .info { color: var(--neon-cyan); }
+
         .submit-btn {
             width: 100%;
             padding: 12px;
@@ -82,6 +93,8 @@
         <div id="loading-overlay"><div class="loader-bar"></div></div>
         
         <h2 id="auth-title">LOGIN</h2>
+        <div id="status-msg"></div> <!-- On-page notification area -->
+        
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
         
@@ -92,7 +105,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -107,12 +120,20 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        const statusDiv = document.getElementById('status-msg');
+
+        function setStatus(text, isError = true) {
+            statusDiv.innerText = text;
+            statusDiv.className = isError ? "error" : "info";
+        }
+
         // Fake Loading Logic for Toggle
         window.toggleAuth = function() {
             const overlay = document.getElementById('loading-overlay');
             const title = document.getElementById('auth-title');
             const btn = document.getElementById('toggle-btn');
             
+            statusDiv.innerText = ""; // Clear status on toggle
             overlay.style.display = 'flex';
             
             setTimeout(() => {
@@ -124,7 +145,7 @@
                     btn.innerText = "Don't have an account? Signup";
                 }
                 overlay.style.display = 'none';
-            }, 400); // 400ms fake loading
+            }, 400);
         }
 
         // Auth Logic
@@ -132,8 +153,15 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const isLogin = document.getElementById('auth-title').innerText === 'LOGIN';
+            const overlay = document.getElementById('loading-overlay');
 
-            if(!email || !password) return alert("Fill all fields");
+            if(!email || !password) {
+                setStatus("Please fill all fields.");
+                return;
+            }
+
+            overlay.style.display = 'flex';
+            statusDiv.innerText = "";
 
             try {
                 if (isLogin) {
@@ -141,6 +169,7 @@
                     window.location.href = 'shop.html';
                 } else {
                     const res = await createUserWithEmailAndPassword(auth, email, password);
+                    
                     // Initialize user profile in Firestore
                     await setDoc(doc(db, "users", res.user.uid), {
                         email: email,
@@ -148,10 +177,21 @@
                         totalSpent: 0,
                         myPurchases: []
                     });
+
+                    // NOTIFY ADMIN BOT: New Registration
+                    await addDoc(collection(db, "logs"), {
+                        type: "NEW_USER",
+                        details: `New Recruit: ${email} has registered on PR1MΞ.`,
+                        timestamp: serverTimestamp()
+                    });
+
                     window.location.href = 'shop.html';
                 }
             } catch (err) {
-                alert(err.message);
+                overlay.style.display = 'none';
+                // Remove the "Firebase:" prefix for a cleaner look
+                const cleanError = err.message.replace("Firebase: ", "");
+                setStatus(cleanError);
             }
         });
     </script>
