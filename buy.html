@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Checkout</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .checkout-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+        }
+
+        .status-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+        h2 { font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 1px; }
+        p { color: #888; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5; }
+
+        .confirm-btn {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            color: #555;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .secret-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed var(--neon-cyan);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .secret-text {
+            display: block;
+            font-family: 'Courier New', monospace;
+            color: var(--neon-cyan);
+            word-break: break-all;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .copy-btn {
+            background: var(--neon-cyan);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .loader {
+            width: 40px; height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: var(--neon-purple);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-card" id="checkout-ui">
+        
+        <!-- STEP 1: CONFIRMATION -->
+        <div id="step-confirm">
+            <span class="status-icon">🛒</span>
+            <h2>Confirm Purchase</h2>
+            <p id="confirm-msg">Buy <strong id="prod-name" style="color:var(--neon-cyan)">Digital Asset</strong> for <strong style="color:white">₦<span id="prod-price">0</span></strong>?</p>
+            <button class="confirm-btn" onclick="startProcessing()">Confirm & Pay</button>
+            <br>
+            <a href="shop.html" class="cancel-btn">Cancel</a>
+        </div>
+
+        <!-- STEP 2: PROCESSING -->
+        <div id="step-processing" style="display: none;">
+            <div class="loader"></div>
+            <h2>Processing</h2>
+            <p>Verifying wallet and securing your item...</p>
+        </div>
+
+        <!-- STEP 3: SUCCESS -->
+        <div id="step-success" style="display: none;">
+            <span class="status-icon">✅</span>
+            <h2>Success</h2>
+            <p>Funds deducted. Here is your secret:</p>
+            <div class="secret-container">
+                <span class="secret-text" id="raw-secret">WAITING...</span>
+                <button class="copy-btn" onclick="copySecret()">Copy</button>
+            </div>
+            <br>
+            <a href="shop.html" class="cancel-btn" style="display:block; margin-top:20px;">Back to Market</a>
+        </div>
+
+        <!-- STEP 4: ERROR -->
+        <div id="step-error" style="display: none;">
+            <span class="status-icon">❌</span>
+            <h2>Failed</h2>
+            <p id="error-desc">Insufficient balance or item out of stock.</p>
+            <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Fund Wallet</a>
+            <br>
+            <a href="shop.html" class="cancel-btn">Back to Shop</a>
+        </div>
+
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const itemName = params.get('name') || "Digital Asset";
+        const itemPrice = parseFloat(params.get('price')) || 0;
+        const itemId = params.get('id') || "default_id";
+
+        document.getElementById('prod-name').innerText = itemName;
+        document.getElementById('prod-price').innerText = itemPrice.toLocaleString();
+
+        window.startProcessing = async function() {
+            document.getElementById('step-confirm').style.display = 'none';
+            document.getElementById('step-processing').style.display = 'block';
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    showError("Please login to continue", "login.html", "Login");
+                    return;
+                }
+
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+
+                    if (userSnap.exists()) {
+                        const balance = userSnap.data().balance || 0;
+
+                        if (balance >= itemPrice) {
+                            // Deduct and Record Transaction
+                            await updateDoc(userRef, {
+                                balance: increment(-itemPrice),
+                                totalSpent: increment(itemPrice),
+                                myPurchases: arrayUnion({
+                                    name: itemName,
+                                    price: itemPrice,
+                                    date: new Date().toLocaleDateString(),
+                                    secret: "SESSION_KEY_" + Math.random().toString(36).substr(2, 9).toUpperCase()
+                                })
+                            });
+
+                            showSuccess("SESSION_KEY_" + Math.random().toString(36).substr(2, 9).toUpperCase());
+                        } else {
+                            showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
+                        }
+                    }
+                } catch (e) {
+                    showError("Transaction error. Try again later.");
+                }
+            });
+        }
+
+        function showSuccess(secret) {
+            document.getElementById('step-processing').style.display = 'none';
+            document.getElementById('step-success').style.display = 'block';
+            document.getElementById('raw-secret').innerText = secret;
+        }
+
+        function showError(msg, link = "shop.html", btnText = "Back to Shop") {
+            document.getElementById('step-processing').style.display = 'none';
+            document.getElementById('step-error').style.display = 'block';
+            document.getElementById('error-desc').innerText = msg;
+            const actionBtn = document.getElementById('error-action');
+            actionBtn.href = link;
+            actionBtn.innerText = btnText;
+        }
+
+        window.copySecret = function() {
+            const text = document.getElementById('raw-secret').innerText;
+            navigator.clipboard.writeText(text);
+            const btn = document.querySelector('.copy-btn');
+            btn.innerText = "COPIED";
+            setTimeout(() => btn.innerText = "COPY", 2000);
+        }
+    </script>
+</body>
+</html>
