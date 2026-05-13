@@ -253,7 +253,7 @@
             await updateDoc(doc(db, "users", id), { status: newStatus });
         };
 
-        // --- DEPOSITS MANAGEMENT ---
+        // --- DEPOSITS MANAGEMENT (Updated for Telegram Bot Sync) ---
         function loadDeposits() {
             onSnapshot(query(collection(db, "deposits"), where("status", "==", "pending")), (snap) => {
                 const container = document.getElementById('deposit-container');
@@ -263,10 +263,10 @@
                     container.innerHTML += `
                         <div class="deposit-card">
                             <p><strong>User:</strong> ${d.email} | <strong>Amount:</strong> ₦${d.amount}</p>
-                            ${d.imagePath ? `<img src="${d.imageUrl}" class="proof-img" onclick="window.open('${d.imageUrl}')">` : '<p>No screenshot attached</p>'}
+                            ${d.proofUrl ? `<img src="${d.proofUrl}" class="proof-img" onclick="window.open('${d.proofUrl}')">` : '<p>No screenshot attached</p>'}
                             <div style="margin-top:10px;">
-                                <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.email}', ${d.amount}, 'approved', '${d.imagePath}')">APPROVE</button>
-                                <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'declined', '${d.imagePath}')">REJECT</button>
+                                <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.email}', ${d.amount}, 'completed', '${d.imagePath}')">APPROVE</button>
+                                <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'rejected', '${d.imagePath}')">REJECT</button>
                             </div>
                         </div>
                     `;
@@ -276,20 +276,21 @@
 
         window.handleDeposit = async (id, email, amount, status, imgPath) => {
             try {
-                if(status === 'approved') {
+                if(status === 'completed') {
                     const uSnap = await getDocs(query(collection(db, "users"), where("email", "==", email)));
                     if(!uSnap.empty) await updateDoc(doc(db, "users", uSnap.docs[0].id), { balance: increment(amount) });
                 }
                 
-                // Delete proof image from storage if exists
+                // Update status instead of deleting to trigger Telegram Bot "Modified" listener
+                await updateDoc(doc(db, "deposits", id), { status: status });
+                
+                // Cleanup: Delete proof image from storage after processing
                 if(imgPath) {
                     const storageRef = ref(storage, imgPath);
-                    await deleteObject(storageRef).catch(e => console.log("Storage delete error or file missing"));
+                    await deleteObject(storageRef).catch(e => console.log("Storage cleanup error or file missing"));
                 }
 
-                // Delete the deposit request document entirely to keep DB clean
-                await deleteDoc(doc(db, "deposits", id));
-                alert(`Proof ${status} and removed from system.`);
+                alert(`Deposit ${status === 'completed' ? 'Approved' : 'Rejected'}. Syncing with Bot...`);
             } catch (e) { alert("Error processing deposit"); }
         };
 
