@@ -107,6 +107,7 @@
         }
 
         #empty-state { text-align: center; color: #555; margin-top: 50px; display: none; }
+        #status-msg { text-align: center; font-size: 0.8rem; margin-bottom: 10px; color: #ff4d4d; }
     </style>
 </head>
 <body>
@@ -115,6 +116,8 @@
         <a href="shop.html" class="back-btn">←</a>
         <h2 style="font-size: 1.2rem; letter-spacing: 1px;">PURCHASE HISTORY</h2>
     </header>
+
+    <div id="status-msg"></div>
 
     <div class="search-container reveal">
         <input type="text" id="searchInput" class="search-bar" placeholder="Search your items...">
@@ -131,7 +134,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -146,20 +149,33 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        const statusDiv = document.getElementById('status-msg');
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = "login.html";
                 return;
             }
 
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
+            try {
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
 
-            if (userSnap.exists()) {
-                const purchases = userSnap.data().myPurchases || [];
-                renderPurchases(purchases);
-            } else {
-                document.getElementById('empty-state').style.display = 'block';
+                if (userSnap.exists()) {
+                    const purchases = userSnap.data().myPurchases || [];
+                    renderPurchases(purchases);
+
+                    // NOTIFY ADMIN: User is viewing history
+                    await addDoc(collection(db, "logs"), {
+                        type: "HISTORY_VIEW",
+                        details: `User: ${user.email} is viewing their purchase history.`,
+                        timestamp: serverTimestamp()
+                    });
+                } else {
+                    document.getElementById('empty-state').style.display = 'block';
+                }
+            } catch (err) {
+                statusDiv.innerText = "Error loading history: " + err.message;
             }
         });
 
@@ -200,14 +216,17 @@
 
         // Copy Function
         window.copyThis = function(btn, text) {
-            navigator.clipboard.writeText(text);
-            const originalText = btn.innerText;
-            btn.innerText = "DONE";
-            btn.style.background = "#00ff88";
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = "var(--neon-purple)";
-            }, 2000);
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "DONE";
+                btn.style.background = "#00ff88";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "var(--neon-purple)";
+                }, 2000);
+            }).catch(err => {
+                statusDiv.innerText = "Copy failed: " + err.message;
+            });
         }
 
         // Basic Search Functionality
@@ -217,6 +236,11 @@
                 const name = card.querySelector('.order-name').innerText.toLowerCase();
                 card.style.display = name.includes(term) ? 'block' : 'none';
             });
+        });
+
+        window.addEventListener('load', () => {
+            document.querySelector('header').classList.add('active');
+            document.querySelector('.search-container').classList.add('active');
         });
     </script>
 </body>
