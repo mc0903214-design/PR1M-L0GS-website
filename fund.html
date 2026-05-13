@@ -136,7 +136,6 @@
             cursor: pointer;
         }
 
-        /* --- TRANSACTION LIST --- */
         .history-section {
             margin-top: 40px;
         }
@@ -185,7 +184,6 @@
         <h2 id="page-title">Fund Wallet</h2>
     </div>
 
-    <!-- 1. Selection Screen -->
     <div id="selectionScreen">
         <div class="option-card" onclick="showAmountStep()">
             <div class="option-icon">🏦</div>
@@ -204,7 +202,6 @@
         </div>
     </div>
 
-    <!-- 2. Step 1: Enter Amount -->
     <div id="amountStep" class="hidden">
         <div class="step-container">
             <label>How much do you want to deposit? (₦)</label>
@@ -214,7 +211,6 @@
         </div>
     </div>
 
-    <!-- 3. Step 2: Bank Details & Upload -->
     <div id="bankFlow" class="hidden">
         <div class="step-container">
             <span class="pay-exactly">PAY EXACTLY: ₦<span id="displayAmount">0</span></span>
@@ -233,7 +229,6 @@
         </div>
     </div>
 
-    <!-- 4. Crypto Flow -->
     <div id="cryptoFlow" class="hidden">
         <div style="text-align:center; padding: 40px 0;">
             <h3>Redirecting to Secure Gateway...</h3>
@@ -241,11 +236,9 @@
         </div>
     </div>
 
-    <!-- 5. Transaction History -->
     <div class="history-section">
         <div class="history-title">Recent Transactions</div>
         <div id="transactionList">
-            <!-- Loaded via JS -->
             <p style="color:#444; font-size:0.8rem; text-align:center;">Loading history...</p>
         </div>
     </div>
@@ -254,6 +247,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -267,6 +261,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         let userUID = null;
 
@@ -311,28 +306,38 @@
             btn.innerText = "Sending...";
 
             try {
-                // Submit main deposit request
+                // 1. Upload the image to Storage
+                const fileName = `proofs/${userUID}_${Date.now()}`;
+                const storageRef = ref(storage, fileName);
+                const snapshot = await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+
+                // 2. Submit deposit request linked to image
                 await addDoc(collection(db, "deposits"), {
                     uid: userUID,
                     email: auth.currentUser.email,
                     amount: parseFloat(amt),
                     status: "pending",
                     type: "Bank Transfer",
+                    imageUrl: downloadURL,
+                    imagePath: fileName,
                     timestamp: serverTimestamp()
                 });
 
-                // ALERT ADMIN BOT via logs collection
+                // 3. Alert Admin Dashboard via logs
                 await addDoc(collection(db, "logs"), {
                     type: "DEPOSIT_REQUEST",
-                    details: `New Bank Deposit request from ${auth.currentUser.email} for ₦${amt}`,
+                    details: `New Bank Deposit from ${auth.currentUser.email} for ₦${amt}`,
                     timestamp: serverTimestamp()
                 });
 
                 alert("Submitted! Please wait for Admin approval.");
                 location.reload();
             } catch (e) {
-                alert("Submission failed.");
+                console.error(e);
+                alert("Submission failed. Check connection.");
                 btn.disabled = false;
+                btn.innerText = "Submit for Approval";
             }
         }
 
