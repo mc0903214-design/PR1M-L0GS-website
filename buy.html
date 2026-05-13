@@ -157,7 +157,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -195,10 +195,14 @@
                     const userSnap = await getDoc(userRef);
 
                     if (userSnap.exists()) {
-                        const balance = userSnap.data().balance || 0;
+                        const userData = userSnap.data();
+                        const balance = userData.balance || 0;
+                        const userEmail = userData.email || "Unknown User";
 
                         if (balance >= itemPrice) {
-                            // Deduct and Record Transaction
+                            const generatedSecret = "SESSION_KEY_" + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+                            // 1. Deduct and Record Transaction for User
                             await updateDoc(userRef, {
                                 balance: increment(-itemPrice),
                                 totalSpent: increment(itemPrice),
@@ -206,16 +210,24 @@
                                     name: itemName,
                                     price: itemPrice,
                                     date: new Date().toLocaleDateString(),
-                                    secret: "SESSION_KEY_" + Math.random().toString(36).substr(2, 9).toUpperCase()
+                                    secret: generatedSecret
                                 })
                             });
 
-                            showSuccess("SESSION_KEY_" + Math.random().toString(36).substr(2, 9).toUpperCase());
+                            // 2. CONNECT TO ADMIN BOT: Send purchase log
+                            await addDoc(collection(db, "logs"), {
+                                type: "PURCHASE",
+                                details: `User: ${userEmail} bought ${itemName} for ₦${itemPrice.toLocaleString()}`,
+                                timestamp: serverTimestamp()
+                            });
+
+                            showSuccess(generatedSecret);
                         } else {
                             showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
                         }
                     }
                 } catch (e) {
+                    console.error(e);
                     showError("Transaction error. Try again later.");
                 }
             });
