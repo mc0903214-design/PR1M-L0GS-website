@@ -69,7 +69,7 @@
             margin-right: 15px;
         }
 
-        .option-info h4 {
+        .option-icon-info h4 {
             color: var(--neon-cyan);
             margin-bottom: 4px;
         }
@@ -312,19 +312,19 @@
                 const snapshot = await uploadBytes(storageRef, file);
                 const downloadURL = await getDownloadURL(snapshot.ref);
 
-                // 2. Submit deposit request linked to image
+                // 2. Submit deposit request (Updated fields to match Telegram Bot logic)
                 await addDoc(collection(db, "deposits"), {
                     uid: userUID,
                     email: auth.currentUser.email,
                     amount: parseFloat(amt),
                     status: "pending",
-                    type: "Bank Transfer",
-                    imageUrl: downloadURL,
+                    method: "Bank Transfer", // Field used by Bot
+                    proofUrl: downloadURL,    // Field used by Bot for 'View Proof' button
                     imagePath: fileName,
                     timestamp: serverTimestamp()
                 });
 
-                // 3. Alert Admin Dashboard via logs
+                // 3. Optional: Alert logs (Internal reference)
                 await addDoc(collection(db, "logs"), {
                     type: "DEPOSIT_REQUEST",
                     details: `New Bank Deposit from ${auth.currentUser.email} for ₦${amt}`,
@@ -357,7 +357,7 @@
                         <div class="transaction-item">
                             <div class="tx-info">
                                 <h5>₦${data.amount.toLocaleString()}</h5>
-                                <p>${data.type} • ${date}</p>
+                                <p>${data.method || 'Deposit'} • ${date}</p>
                             </div>
                             <span class="status-badge ${data.status}">${data.status}</span>
                         </div>
