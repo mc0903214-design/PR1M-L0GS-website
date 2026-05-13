@@ -4,7 +4,6 @@ const cron = require('node-cron');
 require('dotenv').config();
 
 // --- FIREBASE CONFIGURATION ---
-// This handles the newline formatting for the private key automatically
 const privateKey = process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined;
 
 admin.initializeApp({
@@ -13,7 +12,8 @@ admin.initializeApp({
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: privateKey
     }),
-    storageBucket: `${process.env.FIREBASE_PROJECT_ID}.firebasestorage.app`
+    // Fallback to project ID if the specific bucket variable is missing
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${process.env.FIREBASE_PROJECT_ID}.firebasestorage.app`
 });
 
 const db = admin.firestore();
@@ -200,4 +200,4 @@ cron.schedule('0 0 * * *', async () => {
     bot.telegram.sendMessage(OWNER_ID, `📊 𝗗𝗔𝗜𝗟𝗬 𝗥𝗘𝗣𝗢𝗥𝗧\n👥 Users: ${users.size}\n💰 Pending Deps: ${deps.size}`);
 });
 
-bot.launch();
+bot.launch().then(() => console.log('Bot is running...'));
