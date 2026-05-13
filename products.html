@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Marketplace</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+            --error-red: #ff4d4d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        /* --- SLOW REVEAL --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        header { 
+            padding: 10px 5px 25px 5px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+
+        .back-link { color: var(--neon-cyan); text-decoration: none; font-size: 1.5rem; }
+        .cat-title { font-size: 1.4rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- PRODUCT CARD --- */
+        .product-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 180px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .preview-img img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .stock-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stock-low { color: var(--error-red); border-color: var(--error-red); }
+        .stock-ok { color: #00ff88; }
+
+        .product-body { padding: 20px; }
+        .prod-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--neon-cyan); }
+        .prod-desc { font-size: 0.85rem; color: #aaa; line-height: 1.5; margin-bottom: 20px; }
+
+        .purchase-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .price { font-size: 1.3rem; font-weight: 800; color: white; }
+        .price span { font-size: 0.8rem; color: #888; font-weight: normal; margin-right: 2px; }
+
+        .buy-btn {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .buy-btn:active { transform: scale(0.95); opacity: 0.8; }
+        #loading-msg { text-align: center; color: var(--neon-cyan); margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <header class="reveal">
+        <a href="shop.html" class="back-link">←</a>
+        <h1 class="cat-title" id="cat-display">Marketplace</h1>
+    </header>
+
+    <div id="loading-msg">Fetching Digital Assets...</div>
+    <div id="product-list">
+        <!-- Products will be injected here from Firebase -->
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Update Title from URL
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('cat') || "General";
+        document.getElementById('cat-display').innerText = category;
+
+        async function loadProducts() {
+            const list = document.getElementById('product-list');
+            const loader = document.getElementById('loading-msg');
+            
+            try {
+                const q = query(collection(db, "products"), where("category", "==", category));
+                const querySnapshot = await getDocs(q);
+                
+                loader.style.display = 'none';
+                
+                if (querySnapshot.empty) {
+                    list.innerHTML = `<p style="text-align:center; color:#555;">No products found in this category.</p>`;
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const stockClass = data.stock < 7 ? 'stock-low' : 'stock-ok';
+                    const stockText = data.stock < 7 ? `Only ${data.stock} Left` : 'Available';
+
+                    const card = document.createElement('div');
+                    card.className = 'product-card reveal';
+                    card.innerHTML = `
+                        <div class="preview-img">
+                            <img src="${data.image || 'https://via.placeholder.com/400x180/1a1a2e/00f3ff?text=PR1MΞ'}" alt="Preview">
+                            <div class="stock-badge ${stockClass}">${stockText}</div>
+                        </div>
+                        <div class="product-body">
+                            <div class="prod-name">${data.name}</div>
+                            <p class="prod-desc">${data.description}</p>
+                            <div class="purchase-row">
+                                <div class="price"><span>₦</span>${data.price.toLocaleString()}</div>
+                                <a href="buy.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" class="buy-btn">Buy Now</a>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                    
+                    // Trigger animation
+                    setTimeout(() => card.classList.add('active'), 100);
+                });
+            } catch (error) {
+                console.error("Error loading products:", error);
+                loader.innerText = "Error loading marketplace.";
+            }
+        }
+
+        loadProducts();
+
+        // Reveal Logic for static elements
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.05 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
