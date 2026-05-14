@@ -212,28 +212,31 @@
         if (!user) return window.location.href = "index.html";
         currentUser = user;
 
-        // Fetch user balance
         onSnapshot(doc(db, "users", user.uid), (snap) => {
             if (snap.exists()) userBalance = snap.data().balance || 0;
         });
 
-        // Fetch Admin API & Rates
         const settings = await getDoc(doc(db, "settings", "sms_config"));
         if (settings.exists()) {
             const data = settings.data();
             apiKey = data.apiKey;
             adminRate = data.rate || 1500;
             adminMargin = data.margin || 500;
+            
+            // Only init market AFTER apiKey is set
+            if(apiKey) {
+                initMarket();
+            } else {
+                document.getElementById('country-select').innerHTML = '<option>API Key Missing in Admin</option>';
+            }
         }
-
-        initMarket();
         loadHistory();
     });
 
     async function initMarket() {
         try {
-            const res = await fetch(`${proxy}https://5sim.net/v1/guest/products/countries`, {
-                headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
+            const res = await fetch(`${proxy}${encodeURIComponent('https://5sim.net/v1/guest/products/countries')}`, {
+                headers: { 'Accept': 'application/json' }
             });
             const countries = await res.json();
             const select = document.getElementById('country-select');
@@ -241,7 +244,10 @@
             Object.keys(countries).sort().forEach(c => {
                 select.innerHTML += `<option value="${c}">${c.toUpperCase()}</option>`;
             });
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('country-select').innerHTML = '<option>Error loading countries</option>';
+        }
     }
 
     document.getElementById('country-select').onchange = async (e) => {
@@ -251,8 +257,8 @@
         serviceSelect.innerHTML = '<option>Loading services...</option>';
 
         try {
-            const res = await fetch(`${proxy}https://5sim.net/v1/guest/products/${country}/any`, {
-                headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
+            const res = await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/guest/products/${country}/any`)}`, {
+                headers: { 'Accept': 'application/json' }
             });
             const products = await res.json();
             serviceSelect.innerHTML = '<option value="">Select Service</option>';
@@ -281,10 +287,9 @@
         document.getElementById('purchase-btn').innerText = "Processing...";
 
         try {
-            // Deduct balance
             await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(-price) });
 
-            const res = await fetch(`${proxy}https://5sim.net/v1/user/buy/activation/${country}/any/${service}`, {
+            const res = await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/user/buy/activation/${country}/any/${service}`)}`, {
                 headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
             });
             const order = await res.json();
@@ -292,7 +297,7 @@
             if (order.id) {
                 startOrderUI(order, price);
             } else {
-                throw new Error("Number currently unavailable");
+                throw new Error(order.category || "Number currently unavailable");
             }
         } catch (e) {
             alert(e.message);
@@ -322,7 +327,7 @@
 
     async function checkSMS() {
         try {
-            const res = await fetch(`${proxy}https://5sim.net/v1/user/check/${activeOrderId}`, {
+            const res = await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/user/check/${activeOrderId}`)}`, {
                 headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
             });
             const data = await res.json();
@@ -332,7 +337,6 @@
                 clearInterval(pollInterval);
                 clearInterval(countdownInterval);
                 
-                // Log to history
                 await setDoc(doc(db, "sms_history", activeOrderId.toString()), {
                     uid: currentUser.uid,
                     phone: data.phone,
@@ -351,7 +355,7 @@
         clearInterval(countdownInterval);
 
         try {
-            await fetch(`${proxy}https://5sim.net/v1/user/cancel/${activeOrderId}`, {
+            await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/user/cancel/${activeOrderId}`)}`, {
                 headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
             });
             const price = parseFloat(document.getElementById('final-price').innerText);
@@ -387,6 +391,5 @@
         alert("Copied!");
     };
 </script>
-
 </body>
 </html>
