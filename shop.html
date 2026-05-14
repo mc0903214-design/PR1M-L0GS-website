@@ -255,6 +255,7 @@
             text-align: center;
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
+            position: relative;
         }
 
         .category-card:active {
@@ -278,9 +279,29 @@
 
         .sms-card {
             grid-column: span 2;
-            border: 1px solid var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.05);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .sms-card:active {
+            transform: none;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--neon-cyan);
+            color: black;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px var(--neon-cyan);
         }
 
         .bot-card {
@@ -333,7 +354,8 @@
     <div class="section-title reveal">Marketplace</div>
 
     <div class="category-grid">
-        <div class="category-card sms-card reveal" onclick="location.href='sms.html'">
+        <div class="category-card sms-card reveal">
+            <span class="coming-soon-badge">Coming Soon</span>
             <span class="category-icon">💬</span><div class="category-name">SMS OTP Verification</div>
         </div>
 
