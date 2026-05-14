@@ -198,6 +198,15 @@
             <select id="view-filter" style="width: 200px;" onchange="loadInventory()">
                 <option value="ALL">All Assets</option>
                 <option value="LOW">⚠️ Low Stock (<3)</option>
+                <hr>
+                <option value="Logs">🚀 Logs</option>
+                <option value="Working Pics">📂 Working Pics</option>
+                <option value="VPNs and TV">🔐 VPNs & TV</option>
+                <option value="iCloud"> iCloud</option>
+                <option value="FMT and Updates">📝 FMT & Updates</option>
+                <option value="CL Numbers">📱 CL Numbers</option>
+                <option value="Bots">🤖 Bots</option>
+                <option value="Freebies">🎁 FREE ZONE</option>
             </select>
         </div>
         <table class="grid-table">
@@ -422,7 +431,10 @@
 
                 snap.forEach(pDoc => {
                     const p = pDoc.data();
+                    
+                    // Filter Logic
                     if(filter === 'LOW' && p.stockCount >= 3) return;
+                    if(filter !== 'ALL' && filter !== 'LOW' && p.category !== filter) return;
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -431,12 +443,26 @@
                         <td class="${p.stockCount < 3 ? 'low-stock' : ''}">${p.stockCount}</td>
                         <td>
                             <button class="btn btn-approve btn-sm" onclick="addStock('${pDoc.id}')">+ Stock</button>
+                            <button class="btn btn-primary btn-sm" onclick="copyDirectLink('${pDoc.id}')">🔗 Link</button>
                             <button class="btn btn-primary btn-sm" onclick="editPrice('${pDoc.id}', ${p.price})">Price</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteAsset('${pDoc.id}')">Del</button>
                         </td>
                     `;
                     tbody.appendChild(row);
                 });
+            });
+        }
+
+        window.copyDirectLink = function(id) {
+            // This gets the base URL (e.g., https://site.com/) and adds the buy path
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'buy.html');
+            const fullLink = `${baseUrl}?id=${id}`;
+            
+            navigator.clipboard.writeText(fullLink).then(() => {
+                alert("Direct product link copied to clipboard!");
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                alert("Link: " + fullLink); // Fallback for some browsers
             });
         }
 
