@@ -318,20 +318,14 @@
                     timestamp: serverTimestamp()
                 });
 
-                // Redirect to chosen platform
+                // Redirect to chosen platform instantly
                 if(platform === 'WA') {
-                    // WhatsApp Link
-                    window.open(`https://wa.me/14385495393?text=${encodeURIComponent(message)}`, '_blank');
+                    window.location.href = `https://wa.me/14385495393?text=${encodeURIComponent(message)}`;
                 } else if(platform === 'TG') {
-                    // Telegram Link
-                    window.open(`https://t.me/prime1inesupport?text=${encodeURIComponent(message)}`, '_blank');
+                    window.location.href = `https://t.me/prime1inesupport?text=${encodeURIComponent(message)}`;
                 } else if(platform === 'SG') {
-                    // Signal Link (Signal doesn't support pre-filled text in URLs, so we open the profile)
-                    window.open(`https://signal.me/#eu/jvpno9mwa4WwLQV4AaOco-Ox0aXEV2j6ZHdxVIizNV2KI43zyY5Li7d-Al94s5SB`, '_blank');
+                    window.location.href = `https://signal.me/#eu/jvpno9mwa4WwLQV4AaOco-Ox0aXEV2j6ZHdxVIizNV2KI43zyY5Li7d-Al94s5SB`;
                 }
-
-                alert("Opening app... Send the receipt photo in the chat!");
-                location.reload();
             } catch (e) {
                 alert("Error: " + e.message);
             }
