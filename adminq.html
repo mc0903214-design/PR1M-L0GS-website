@@ -107,8 +107,12 @@
     <div id="add-prod" class="panel active">
         <h2>Deploy New Asset</h2>
         <div class="form-group">
-            <label>Product Name</label>
+            <label>Product Name (Shows on Marketplace)</label>
             <input type="text" id="p-name" placeholder="e.g., Facebook Aged Logs">
+        </div>
+        <div class="form-group">
+            <label>Detailed Description (Shows on View Page)</label>
+            <textarea id="p-desc" rows="3" placeholder="Explain what the user is buying..."></textarea>
         </div>
         <div class="form-group">
             <label>Category</label>
@@ -297,6 +301,7 @@
         window.uploadProduct = async () => {
             const btn = document.getElementById('uploadBtn');
             const name = document.getElementById('p-name').value;
+            const desc = document.getElementById('p-desc').value;
             const cat = document.getElementById('p-cat').value;
             const isFree = document.getElementById('p-is-free').checked;
             const price = isFree ? 0 : document.getElementById('p-price').value;
@@ -304,7 +309,7 @@
             const mode = document.getElementById('p-mode').value;
             const rawStock = document.getElementById('p-stock').value;
 
-            if(!name || (!isFree && !price) || !rawStock) return alert("Required fields missing");
+            if(!name || !desc || (!isFree && !price) || !rawStock) return alert("Required fields (Name, Description, Price, Stock) are missing");
 
             btn.disabled = true;
             btn.innerText = "Deploying...";
@@ -313,7 +318,8 @@
 
             try {
                 await addDoc(collection(db, "products"), {
-                    name, 
+                    name,
+                    description: desc,
                     category: cat, 
                     price: parseFloat(price), 
                     image: img || 'https://via.placeholder.com/150',
