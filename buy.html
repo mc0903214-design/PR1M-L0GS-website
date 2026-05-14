@@ -46,6 +46,7 @@
             border-radius: 15px;
             margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.1);
+            display: block;
         }
 
         .desc-box {
@@ -135,7 +136,8 @@
     <div class="checkout-card" id="checkout-ui">
         
         <div id="step-preview">
-            <img id="view-img" src="" alt="Product" class="prod-full-img">
+            <div id="media-container"></div>
+            
             <h2 id="view-name">Loading...</h2>
             <div class="desc-box" id="view-desc">
                 Fetching asset details...
@@ -217,7 +219,17 @@
                 const data = prodSnap.data();
                 document.getElementById('view-name').innerText = data.name;
                 document.getElementById('view-desc').innerText = data.description || "No description provided.";
-                document.getElementById('view-img').src = data.image || "https://via.placeholder.com/400x200";
+                
+                // Logic to handle Media (Video vs Image)
+                const mediaUrl = data.image || "https://via.placeholder.com/400x200";
+                const isVideo = /\.(mp4|webm|mov|ogg)$/i.test(mediaUrl);
+                const container = document.getElementById('media-container');
+
+                if (isVideo) {
+                    container.innerHTML = `<video src="${mediaUrl}" class="prod-full-img" autoplay loop muted playsinline></video>`;
+                } else {
+                    container.innerHTML = `<img src="${mediaUrl}" alt="Product" class="prod-full-img">`;
+                }
                 
                 // Set these for the confirmation step
                 document.getElementById('prod-name').innerText = data.name;
