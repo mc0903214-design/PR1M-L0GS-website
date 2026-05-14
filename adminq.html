@@ -65,6 +65,10 @@
         }
         input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.1); }
 
+        .price-container { display: flex; align-items: center; gap: 15px; }
+        .check-group { display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 120px; }
+        .check-group input { width: 18px; height: 18px; cursor: pointer; }
+
         .btn {
             padding: 14px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem;
         }
@@ -116,11 +120,18 @@
                 <option value="FMT and Updates">📝 FMT & Updates</option>
                 <option value="CL Numbers">📱 CL Numbers</option>
                 <option value="Bots">🤖 Bots</option>
+                <option value="Freebies">🎁 FREE ZONE</option>
             </select>
         </div>
         <div class="form-group">
-            <label>Price (₦)</label>
-            <input type="number" id="p-price">
+            <label>Pricing Configuration</label>
+            <div class="price-container">
+                <input type="number" id="p-price" placeholder="Amount in ₦">
+                <label class="check-group">
+                    <input type="checkbox" id="p-is-free" onchange="toggleFreePrice()"> 
+                    <span style="font-size: 0.7rem; color: #00ff88;">FREE ASSET</span>
+                </label>
+            </div>
         </div>
         <div class="form-group">
             <label>Icon/Image URL</label>
@@ -238,6 +249,20 @@
             event.target.classList.add('active');
         };
 
+        // --- UI TOGGLES ---
+        window.toggleFreePrice = () => {
+            const isFree = document.getElementById('p-is-free').checked;
+            const priceInput = document.getElementById('p-price');
+            if(isFree) {
+                priceInput.value = 0;
+                priceInput.disabled = true;
+                priceInput.style.opacity = "0.5";
+            } else {
+                priceInput.disabled = false;
+                priceInput.style.opacity = "1";
+            }
+        };
+
         // --- SMS SETTINGS ---
         window.loadSMSSettings = async () => {
             const sDoc = await getDoc(doc(db, "settings", "sms_config"));
@@ -273,12 +298,13 @@
             const btn = document.getElementById('uploadBtn');
             const name = document.getElementById('p-name').value;
             const cat = document.getElementById('p-cat').value;
-            const price = document.getElementById('p-price').value;
+            const isFree = document.getElementById('p-is-free').checked;
+            const price = isFree ? 0 : document.getElementById('p-price').value;
             const img = document.getElementById('p-img').value;
             const mode = document.getElementById('p-mode').value;
             const rawStock = document.getElementById('p-stock').value;
 
-            if(!name || !price || !rawStock) return alert("All text fields are required");
+            if(!name || (!isFree && !price) || !rawStock) return alert("Required fields missing");
 
             btn.disabled = true;
             btn.innerText = "Deploying...";
@@ -369,9 +395,9 @@
 
             try {
                 if(status === 'approved' && userUid) {
-                    await updateDoc(doc(db, "users", userUid), { 
+                    await setDoc(doc(db, "users", userUid), { 
                         balance: increment(amount) 
-                    });
+                    }, { merge: true });
                 }
                 await updateDoc(doc(db, "deposits", docId), { status: status });
                 alert(`Transaction ${status}.`);
