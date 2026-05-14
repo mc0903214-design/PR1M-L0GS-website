@@ -116,7 +116,6 @@
 
         .product-body { padding: 20px; }
         .prod-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--neon-cyan); }
-        .prod-desc { font-size: 0.85rem; color: #aaa; line-height: 1.5; margin-bottom: 20px; }
 
         .purchase-row {
             display: flex;
@@ -128,6 +127,7 @@
 
         .price { font-size: 1.3rem; font-weight: 800; color: white; }
         .price span { font-size: 0.8rem; color: #888; font-weight: normal; margin-right: 2px; }
+        .free-price { color: #00ff88; letter-spacing: 1px; }
 
         .buy-btn {
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
@@ -161,14 +161,6 @@
     <div id="status-msg"></div>
 
     <div id="product-list">
-        <div class="skeleton">
-            <div class="sk-img"></div>
-            <div class="sk-body">
-                <div class="sk-line"></div>
-                <div class="sk-line short"></div>
-                <div class="sk-line btn"></div>
-            </div>
-        </div>
         <div class="skeleton">
             <div class="sk-img"></div>
             <div class="sk-body">
@@ -230,6 +222,12 @@
                     let stockText = 'AVAILABLE';
                     let btnDisabled = "";
 
+                    // Determine Pricing HTML
+                    let priceDisplay = `<div class="price"><span>₦</span>${data.price.toLocaleString()}</div>`;
+                    if (data.price <= 0) {
+                        priceDisplay = `<div class="price free-price">FREE</div>`;
+                    }
+
                     if (data.mode === "SINGLE") {
                         stockClass = 'stock-single';
                         stockText = 'READY';
@@ -256,12 +254,11 @@
                         </div>
                         <div class="product-body">
                             <div class="prod-name">${data.name}</div>
-                            <p class="prod-desc">${data.category} Digital Delivery Asset</p>
                             <div class="purchase-row">
-                                <div class="price"><span>₦</span>${data.price.toLocaleString()}</div>
+                                ${priceDisplay}
                                 <a href="buy.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" 
                                    class="buy-btn ${btnDisabled}">
-                                   ${btnDisabled ? 'Sold Out' : 'Buy Now'}
+                                   ${btnDisabled ? 'Sold Out' : 'VIEW'}
                                 </a>
                             </div>
                         </div>
