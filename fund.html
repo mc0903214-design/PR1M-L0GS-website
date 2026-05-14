@@ -214,7 +214,7 @@
                 </div>
             </div>
 
-            <div class="option-card" onclick="showCryptoFlow()">
+            <div class="option-card" onclick="showCryptoInput()">
                 <div class="option-icon">₿</div>
                 <div class="option-info">
                     <h4>Crypto Payment</h4>
@@ -227,7 +227,8 @@
             <div class="step-container">
                 <label>How much do you want to deposit? (₦)</label>
                 <input type="number" id="depositAmount" placeholder="Min: ₦100" min="100">
-                <button class="submit-btn" onclick="showBankDetails()">Continue to Details</button>
+                <button class="submit-btn" id="bankContBtn" onclick="showBankDetails()">Continue to Details</button>
+                <button class="submit-btn hidden" id="cryptoContBtn" onclick="initiateCryptoPayment()">Generate Payment Link</button>
                 <p onclick="location.reload()" style="text-align:center; margin-top:15px; font-size:0.9rem; color:var(--neon-cyan); cursor:pointer;">← Go Back</p>
             </div>
         </div>
@@ -265,10 +266,11 @@
         </div>
 
         <div id="cryptoFlow" class="hidden">
-            <div style="text-align:center; padding: 60px 0;">
-                <h3>Secure Gateway</h3>
-                <p style="color:#666; margin-top:15px;">Crypto payments currently in maintenance.</p>
-                <button class="submit-btn" style="margin-top:30px; width: auto; padding: 15px 40px;" onclick="location.reload()">Back</button>
+            <div class="step-container">
+                <div id="cryptoLoading">
+                    <h3 style="color:var(--neon-cyan)">Connecting to NOWPayments...</h3>
+                    <p style="margin-top:10px; color:#888;">Please wait while we secure your gateway.</p>
+                </div>
             </div>
         </div>
 
@@ -283,7 +285,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp, updateDoc, doc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -300,6 +302,9 @@
         let userUID = null;
         let userEmail = "";
 
+        const NOW_API_KEY = "AYNE6ZE-TAF4X88-NWKBX8N-G2QJBP6";
+        const RATE = 1550;
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 userUID = user.uid;
@@ -313,6 +318,15 @@
         window.showAmountStep = function() {
             document.getElementById('selectionScreen').classList.add('hidden');
             document.getElementById('amountStep').classList.remove('hidden');
+            document.getElementById('bankContBtn').classList.remove('hidden');
+            document.getElementById('cryptoContBtn').classList.add('hidden');
+        }
+
+        window.showCryptoInput = function() {
+            document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById('amountStep').classList.remove('hidden');
+            document.getElementById('bankContBtn').classList.add('hidden');
+            document.getElementById('cryptoContBtn').classList.remove('hidden');
         }
 
         window.showBankDetails = function() {
@@ -325,16 +339,89 @@
             document.getElementById('page-title').innerText = "Bank Transfer";
         }
 
+        window.initiateCryptoPayment = async function() {
+            const amtNaira = document.getElementById('depositAmount').value;
+            if (!amtNaira || amtNaira < 1000) return alert("Minimum Crypto deposit is ₦1,000");
+
+            const btn = document.getElementById('cryptoContBtn');
+            btn.innerText = "Generating...";
+            btn.disabled = true;
+
+            const usdAmount = (amtNaira / RATE).toFixed(2);
+
+            try {
+                const response = await fetch('https://api.nowpayments.io/v1/invoice', {
+                    method: 'POST',
+                    headers: {
+                        'x-api-key': NOW_API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        price_amount: usdAmount,
+                        price_currency: 'usd',
+                        order_id: `${userUID}_${Date.now()}`,
+                        order_description: `PR1MΞ Deposit: ${userEmail}`,
+                        success_url: window.location.href
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.invoice_url) {
+                    // Log pending crypto transaction
+                    await addDoc(collection(db, "deposits"), {
+                        uid: userUID,
+                        email: userEmail,
+                        amount: parseFloat(amtNaira),
+                        status: "pending",
+                        method: "Crypto (Auto-Check)",
+                        payment_id: data.id,
+                        timestamp: serverTimestamp()
+                    });
+
+                    window.location.href = data.invoice_url;
+                } else {
+                    throw new Error("Failed to create invoice");
+                }
+            } catch (e) {
+                alert("Gateway Error: " + e.message);
+                btn.innerText = "Generate Payment Link";
+                btn.disabled = false;
+            }
+        }
+
+        window.checkPaymentStatus = async function(docId, paymentId, amount) {
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "Checking...";
+            
+            try {
+                const response = await fetch(`https://api.nowpayments.io/v1/payment/${paymentId}`, {
+                    headers: { 'x-api-key': NOW_API_KEY }
+                });
+                const data = await response.json();
+
+                if (data.payment_status === 'finished' || data.payment_status === 'confirmed') {
+                    // Automate the funding
+                    const userRef = doc(db, "users", userUID);
+                    await updateDoc(userRef, { balance: increment(amount) });
+                    await updateDoc(doc(db, "deposits", docId), { status: "approved" });
+                    alert("Success! Your wallet has been automatically funded.");
+                } else {
+                    alert(`Status: ${data.payment_status.toUpperCase()}. Please wait for blockchain confirmation.`);
+                }
+            } catch (e) {
+                alert("Verification error. Try again later.");
+            } finally {
+                btn.innerText = originalText;
+            }
+        }
+
         window.showChatLinks = function() {
             document.getElementById('bankFlow').classList.add('hidden');
             document.getElementById('chatFlow').classList.remove('hidden');
             document.getElementById('historyWrapper').classList.add('hidden');
             document.getElementById('page-title').innerText = "Verify Payment";
-        }
-
-        window.showCryptoFlow = function() {
-            document.getElementById('selectionScreen').classList.add('hidden');
-            document.getElementById('cryptoFlow').classList.remove('hidden');
         }
 
         window.sendProof = async function(platform) {
@@ -372,14 +459,18 @@
                     return;
                 }
                 list.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const data = doc.data();
+                snapshot.forEach(dDoc => {
+                    const data = dDoc.data();
                     const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Just now';
+                    const isCrypto = data.method && data.method.includes("Crypto");
+                    
                     list.innerHTML += `
                         <div class="transaction-item">
                             <div class="tx-info">
                                 <h5>₦${data.amount.toLocaleString()}</h5>
                                 <p>${data.method || 'Deposit'} • ${date}</p>
+                                ${isCrypto && data.status === 'pending' ? 
+                                    `<button onclick="checkPaymentStatus('${dDoc.id}', '${data.payment_id}', ${data.amount})" style="background:none; border:none; color:var(--neon-cyan); font-size:0.7rem; cursor:pointer; text-decoration:underline; padding:0;">Check Payment</button>` : ''}
                             </div>
                             <span class="status-badge ${data.status}">${data.status}</span>
                         </div>
