@@ -27,10 +27,16 @@
             padding: 20px;
         }
 
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
         .header {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            padding-top: 10px;
         }
 
         .back-btn {
@@ -50,9 +56,9 @@
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 20px;
             cursor: pointer;
             transition: 0.3s;
             display: flex;
@@ -65,76 +71,83 @@
         }
 
         .option-icon {
-            font-size: 1.8rem;
-            margin-right: 15px;
+            font-size: 2rem;
+            margin-right: 20px;
         }
 
         .option-info h4 {
             color: var(--neon-cyan);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
         }
 
         .option-info p {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #888;
         }
 
         .step-container {
             background: var(--glass-bg);
-            padding: 20px;
-            border-radius: 20px;
+            padding: 35px 25px;
+            border-radius: 25px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
             color: #ccc;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
+            padding: 15px;
+            margin-bottom: 25px;
             background: #000;
             border: 1px solid #333;
             color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             outline: none;
+            font-size: 1.2rem;
+            text-align: center;
         }
 
         .bank-details-box {
-            background: rgba(0, 243, 255, 0.05);
+            background: rgba(0, 243, 255, 0.03);
             border: 1px dashed var(--neon-cyan);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
             font-family: monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.8;
+            text-align: left;
         }
 
         .pay-exactly {
             color: #ffcc00;
             font-weight: bold;
             display: block;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
         }
 
         .submit-btn {
             width: 100%;
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
             border: none;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: 12px;
             color: white;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
 
         .btn-wa { background: #25D366; color: white; }
@@ -142,35 +155,37 @@
         .btn-sg { background: #3a76f0; color: white; }
 
         .history-section {
-            margin-top: 40px;
+            margin-top: 50px;
         }
 
         .history-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #555;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
         }
 
         .transaction-item {
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 15px;
+            padding: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .tx-info h5 { font-size: 0.9rem; color: #eee; }
-        .tx-info p { font-size: 0.7rem; color: #666; }
+        .tx-info h5 { font-size: 1rem; color: #eee; }
+        .tx-info p { font-size: 0.75rem; color: #666; margin-top: 4px; }
         
         .status-badge {
-            font-size: 0.65rem;
-            padding: 4px 8px;
-            border-radius: 5px;
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 6px;
             text-transform: uppercase;
             font-weight: bold;
         }
@@ -184,72 +199,84 @@
 </head>
 <body>
 
-    <div class="header">
-        <a href="shop.html" class="back-btn">←</a>
-        <h2 id="page-title">Fund Wallet</h2>
-    </div>
+    <div class="container">
+        <div class="header">
+            <a href="shop.html" class="back-btn">←</a>
+            <h2 id="page-title">Fund Wallet</h2>
+        </div>
 
-    <div id="selectionScreen">
-        <div class="option-card" onclick="showAmountStep()">
-            <div class="option-icon">🏦</div>
-            <div class="option-info">
-                <h4>Bank Transfer</h4>
-                <p>Manual approval via Chat</p>
+        <div id="selectionScreen">
+            <div class="option-card" onclick="showAmountStep()">
+                <div class="option-icon">🏦</div>
+                <div class="option-info">
+                    <h4>Bank Transfer</h4>
+                    <p>Manual approval via Chat</p>
+                </div>
+            </div>
+
+            <div class="option-card" onclick="showCryptoFlow()">
+                <div class="option-icon">₿</div>
+                <div class="option-info">
+                    <h4>Crypto Payment</h4>
+                    <p>Automated Gateway</p>
+                </div>
             </div>
         </div>
 
-        <div class="option-card" onclick="showCryptoFlow()">
-            <div class="option-icon">₿</div>
-            <div class="option-info">
-                <h4>Crypto Payment</h4>
-                <p>Automated Gateway</p>
+        <div id="amountStep" class="hidden">
+            <div class="step-container">
+                <label>How much do you want to deposit? (₦)</label>
+                <input type="number" id="depositAmount" placeholder="Min: ₦100" min="100">
+                <button class="submit-btn" onclick="showBankDetails()">Continue to Details</button>
+                <p onclick="location.reload()" style="text-align:center; margin-top:15px; font-size:0.9rem; color:var(--neon-cyan); cursor:pointer;">← Go Back</p>
             </div>
         </div>
-    </div>
 
-    <div id="amountStep" class="hidden">
-        <div class="step-container">
-            <label>How much do you want to deposit? (₦)</label>
-            <input type="number" id="depositAmount" placeholder="Min: ₦500" min="500">
-            <button class="submit-btn" onclick="showBankDetails()">Continue to Details</button>
-            <p onclick="location.reload()" style="text-align:center; margin-top:20px; font-size:0.8rem; color:var(--neon-cyan); cursor:pointer;">← Go Back</p>
-        </div>
-    </div>
+        <div id="bankFlow" class="hidden">
+            <div class="step-container">
+                <span class="pay-exactly">PAY EXACTLY: ₦<span id="displayAmount">0</span></span>
+                
+                <div class="bank-details-box">
+                    <strong>BANK:</strong> MONIEPOINT<br>
+                    <strong>ACC NO:</strong> 9032140540<br>
+                    <strong>NAME:</strong> CHRISTOPHER MICHAEL
+                </div>
 
-    <div id="bankFlow" class="hidden">
-        <div class="step-container">
-            <span class="pay-exactly">PAY EXACTLY: ₦<span id="displayAmount">0</span></span>
-            
-            <div class="bank-details-box">
-                <strong>BANK:</strong> MONIEPOINT<br>
-                <strong>ACC NO:</strong> 9032140540<br>
-                <strong>NAME:</strong> CHRISTOPHER MICHAEL
+                <p style="color: #888; font-size: 0.85rem; margin-bottom: 25px;">Ensure you make the transfer before proceeding to verification.</p>
+                
+                <button class="submit-btn" onclick="showChatLinks()">I have made payment</button>
+                <p onclick="location.reload()" style="text-align:center; margin-top:10px; font-size:0.9rem; color:var(--neon-cyan); cursor:pointer;">Cancel</p>
             </div>
-
-            <label style="text-align: center; margin-bottom: 15px;">Send receipt to Admin via:</label>
-            
-            <button class="submit-btn btn-wa" onclick="sendProof('WA')">WhatsApp</button>
-            <button class="submit-btn btn-tg" onclick="sendProof('TG')">Telegram</button>
-            <button class="submit-btn btn-sg" onclick="sendProof('SG')">Signal Messenger</button>
-            
-            <p style="font-size: 0.7rem; color: #666; text-align: center; margin-top: 10px;">
-                Your balance will be updated immediately after verification.
-            </p>
         </div>
-    </div>
 
-    <div id="cryptoFlow" class="hidden">
-        <div style="text-align:center; padding: 40px 0;">
-            <h3>Secure Gateway</h3>
-            <p style="color:#666; margin-top:10px;">Crypto payments currently in maintenance.</p>
-            <button class="submit-btn" style="margin-top:20px; width: auto;" onclick="location.reload()">Back</button>
+        <div id="chatFlow" class="hidden">
+            <div class="step-container">
+                <h3 style="margin-bottom: 15px; color: var(--neon-cyan);">Verification</h3>
+                <p style="margin-bottom: 25px; font-size: 0.9rem; color: #ccc;">Send your receipt to Admin via any channel below to activate your balance:</p>
+                
+                <button class="submit-btn btn-wa" onclick="sendProof('WA')">WhatsApp Verification</button>
+                <button class="submit-btn btn-tg" onclick="sendProof('TG')">Telegram Verification</button>
+                <button class="submit-btn btn-sg" onclick="sendProof('SG')">Signal Messenger</button>
+                
+                <p style="font-size: 0.75rem; color: #555; margin-top: 20px;">
+                    Verification usually takes 2-5 minutes.
+                </p>
+            </div>
         </div>
-    </div>
 
-    <div class="history-section">
-        <div class="history-title">Recent Transactions</div>
-        <div id="transactionList">
-            <p style="color:#444; font-size:0.8rem; text-align:center;">Loading history...</p>
+        <div id="cryptoFlow" class="hidden">
+            <div style="text-align:center; padding: 60px 0;">
+                <h3>Secure Gateway</h3>
+                <p style="color:#666; margin-top:15px;">Crypto payments currently in maintenance.</p>
+                <button class="submit-btn" style="margin-top:30px; width: auto; padding: 15px 40px;" onclick="location.reload()">Back</button>
+            </div>
+        </div>
+
+        <div class="history-section" id="historyWrapper">
+            <div class="history-title">Recent Transactions</div>
+            <div id="transactionList">
+                <p style="color:#444; font-size:0.8rem; text-align:center;">Loading history...</p>
+            </div>
         </div>
     </div>
 
@@ -290,12 +317,19 @@
 
         window.showBankDetails = function() {
             const amt = document.getElementById('depositAmount').value;
-            if (!amt || amt < 500) return alert("Minimum deposit is ₦500");
+            if (!amt || amt < 100) return alert("Minimum deposit is ₦100");
             
             document.getElementById('displayAmount').innerText = parseFloat(amt).toLocaleString();
             document.getElementById('amountStep').classList.add('hidden');
             document.getElementById('bankFlow').classList.remove('hidden');
-            document.getElementById('page-title').innerText = "Submit Proof";
+            document.getElementById('page-title').innerText = "Bank Transfer";
+        }
+
+        window.showChatLinks = function() {
+            document.getElementById('bankFlow').classList.add('hidden');
+            document.getElementById('chatFlow').classList.remove('hidden');
+            document.getElementById('historyWrapper').classList.add('hidden');
+            document.getElementById('page-title').innerText = "Verify Payment";
         }
 
         window.showCryptoFlow = function() {
@@ -308,7 +342,6 @@
             const message = `PR1MΞ DEPOSIT PROOF\n---\nUser: ${userEmail}\nAmount: ₦${amt}\n---\n(Attached screenshot below)`;
 
             try {
-                // Log the pending deposit in Firestore
                 await addDoc(collection(db, "deposits"), {
                     uid: userUID,
                     email: userEmail,
@@ -318,7 +351,6 @@
                     timestamp: serverTimestamp()
                 });
 
-                // Redirect to chosen platform instantly
                 if(platform === 'WA') {
                     window.location.href = `https://wa.me/14385495393?text=${encodeURIComponent(message)}`;
                 } else if(platform === 'TG') {
