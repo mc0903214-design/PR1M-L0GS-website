@@ -53,6 +53,7 @@
         .btn-primary { background: var(--neon-purple); color: white; }
         .btn-approve { background: #00ff88; color: black; }
         .btn-danger { background: #ff4d4d; color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 0.7rem; margin: 2px; }
 
         .deposit-card { background: #111; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--neon-cyan); }
         .proof-img { max-width: 200px; border-radius: 5px; margin-top: 10px; cursor: pointer; border: 1px solid #333; }
@@ -63,7 +64,6 @@
 </head>
 <body>
 
-    <!-- Access Gate -->
     <div id="auth-gate">
         <h2 style="color: var(--neon-cyan); letter-spacing: 5px;">PR1MΞ SYSTEM OVERRIDE</h2>
         <input type="password" id="sys-pass" placeholder="Enter Admin Code" style="width: 250px; text-align: center;">
@@ -77,7 +77,6 @@
         <button class="tab-btn" onclick="showTab('all-prods')">INVENTORY</button>
     </div>
 
-    <!-- 1. ADD PRODUCT PANEL -->
     <div id="add-prod" class="panel active">
         <h2>Deploy New Asset</h2>
         <div class="form-group">
@@ -118,7 +117,6 @@
         <button class="btn btn-primary" id="uploadBtn" onclick="uploadProduct()">UPLOAD TO STOREFRONT</button>
     </div>
 
-    <!-- 2. USERS PANEL -->
     <div id="users-list" class="panel">
         <h2>User Database</h2>
         <table class="grid-table">
@@ -134,17 +132,15 @@
         </table>
     </div>
 
-    <!-- 3. DEPOSITS PANEL -->
     <div id="deps-list" class="panel">
         <h2>Pending Proofs</h2>
         <div id="deposit-container"></div>
     </div>
 
-    <!-- 4. ALL PRODUCTS PANEL -->
     <div id="all-prods" class="panel">
         <div style="display:flex; justify-content: space-between; align-items: center;">
             <h2>Inventory Management</h2>
-            <select id="view-filter" style="width: 200px;">
+            <select id="view-filter" style="width: 200px;" onchange="loadInventory()">
                 <option value="ALL">All Categories</option>
                 <option value="LOW">⚠️ Low Stock (<3)</option>
             </select>
@@ -165,7 +161,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -177,7 +172,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         // --- ADMIN AUTH ---
         window.checkPass = () => {
@@ -237,7 +231,7 @@
                     createdAt: serverTimestamp()
                 });
 
-                alert("Product Deployed to Marketplace!");
+                alert("Product Deployed!");
                 location.reload();
             } catch (e) {
                 alert("Deployment failed: " + e.message);
@@ -253,17 +247,18 @@
                 tbody.innerHTML = "";
                 snap.forEach(uDoc => {
                     const u = uDoc.data();
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${u.email}</td>
-                            <td>₦${(u.balance || 0).toLocaleString()}</td>
-                            <td><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
-                            <td>
-                                <button class="btn btn-approve" onclick="editWallet('${uDoc.id}', '${u.email}')">Edit ₦</button>
-                                <button class="btn btn-danger" onclick="toggleBan('${uDoc.id}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
-                            </td>
-                        </tr>
+                    const userId = uDoc.id;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${u.email}</td>
+                        <td>₦${(u.balance || 0).toLocaleString()}</td>
+                        <td><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
+                        <td>
+                            <button class="btn btn-approve btn-sm" onclick="editWallet('${userId}', '${u.email}')">Edit ₦</button>
+                            <button class="btn btn-danger btn-sm" onclick="toggleBan('${userId}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
+                        </td>
                     `;
+                    tbody.appendChild(row);
                 });
             });
         }
@@ -287,21 +282,21 @@
                 container.innerHTML = snap.empty ? "<p style='color:#555'>No pending deposits.</p>" : "";
                 snap.forEach(dDoc => {
                     const d = dDoc.data();
-                    container.innerHTML += `
-                        <div class="deposit-card">
-                            <p><strong>User:</strong> ${d.email} <br> <strong>Amount:</strong> ₦${d.amount.toLocaleString()}</p>
-                            ${d.proofUrl ? `<img src="${d.proofUrl}" class="proof-img" onclick="window.open('${d.proofUrl}')">` : '<p><i>No receipt attached</i></p>'}
-                            <div style="margin-top:10px;">
-                                <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.uid}', ${d.amount}, 'approved', '${d.imagePath}')">APPROVE</button>
-                                <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'declined', '${d.imagePath}')">REJECT</button>
-                            </div>
+                    const card = document.createElement('div');
+                    card.className = 'deposit-card';
+                    card.innerHTML = `
+                        <p><strong>User:</strong> ${d.email} <br> <strong>Amount:</strong> ₦${d.amount.toLocaleString()}<br><strong>Method:</strong> ${d.method || 'Manual'}</p>
+                        <div style="margin-top:10px;">
+                            <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.uid}', ${d.amount}, 'approved')">APPROVE</button>
+                            <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'declined')">REJECT</button>
                         </div>
                     `;
+                    container.appendChild(card);
                 });
             });
         }
 
-        window.handleDeposit = async (docId, userUid, amount, status, imgPath) => {
+        window.handleDeposit = async (docId, userUid, amount, status) => {
             if(!confirm(`Are you sure you want to ${status} this deposit?`)) return;
 
             try {
@@ -310,27 +305,16 @@
                         balance: increment(amount) 
                     });
                 }
-                
-                // Update deposit status
                 await updateDoc(doc(db, "deposits", docId), { status: status });
-                
-                // Storage Cleanup
-                if(imgPath) {
-                    const storageRef = ref(storage, imgPath);
-                    await deleteObject(storageRef).catch(() => {});
-                }
-
                 alert(`Transaction ${status}.`);
             } catch (e) { 
-                console.error(e);
-                alert("Processing Error."); 
+                alert("Processing Error: " + e.message); 
             }
         };
 
         // --- INVENTORY MANAGEMENT ---
-        function loadInventory() {
+        window.loadInventory = function() {
             const filterEl = document.getElementById('view-filter');
-            
             onSnapshot(collection(db, "products"), (snap) => {
                 const tbody = document.getElementById('inventory-rows');
                 const filter = filterEl.value;
@@ -340,36 +324,42 @@
                     const p = pDoc.data();
                     if(filter === 'LOW' && p.stockCount >= 3) return;
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
-                            <td>₦${p.price.toLocaleString()}</td>
-                            <td class="${p.stockCount < 3 ? 'low-stock' : ''}">${p.stockCount}</td>
-                            <td>
-                                <button class="btn btn-approve" onclick="addStock('${pDoc.id}')">+ Stock</button>
-                                <button class="btn btn-danger" onclick="deleteAsset('${pDoc.id}')">Del</button>
-                            </td>
-                        </tr>
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
+                        <td>₦${p.price.toLocaleString()}</td>
+                        <td class="${p.stockCount < 3 ? 'low-stock' : ''}">${p.stockCount}</td>
+                        <td>
+                            <button class="btn btn-approve btn-sm" onclick="addStock('${pDoc.id}')">+ Stock</button>
+                            <button class="btn btn-primary btn-sm" onclick="editPrice('${pDoc.id}', ${p.price})">Price</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAsset('${pDoc.id}')">Del</button>
+                        </td>
                     `;
+                    tbody.appendChild(row);
                 });
             });
         }
 
         window.addStock = async (id) => {
-            const extra = prompt("Paste new items separated by commas (e.g. user:pass, user2:pass2):");
+            const extra = prompt("Paste new items (comma separated):");
             if(!extra) return;
-            
             const newItems = extra.split(',').map(s => s.trim()).filter(s => s !== "");
-            
             await updateDoc(doc(db, "products", id), {
                 stock: arrayUnion(...newItems),
                 stockCount: increment(newItems.length)
             });
-            alert("Stock Updated!");
+            alert("Stock Added!");
+        };
+
+        window.editPrice = async (id, currentPrice) => {
+            const newPrice = prompt("Enter new price:", currentPrice);
+            if(newPrice !== null && !isNaN(newPrice)) {
+                await updateDoc(doc(db, "products", id), { price: parseFloat(newPrice) });
+            }
         };
 
         window.deleteAsset = async (id) => {
-            if(confirm("Permanently delete this product from store?")) {
+            if(confirm("Delete this product permanently?")) {
                 await deleteDoc(doc(db, "products", id));
             }
         };
