@@ -10,6 +10,7 @@
             --neon-purple: #bc13fe;
             --glass-bg: rgba(255, 255, 255, 0.07);
             --dark-bg: #0a0a0c;
+            --dashboard-blue: #3a76f0;
         }
 
         * {
@@ -26,6 +27,75 @@
             min-height: 100vh;
             padding: 15px;
             overflow-x: hidden;
+        }
+
+        /* --- LOADING SPINNER --- */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- DASHBOARD CARD (REPLACED TICKER/OLD WALLET) --- */
+        .dashboard-card {
+            background: var(--dashboard-blue);
+            border-radius: 25px;
+            padding: 30px 22px;
+            margin: 10px 0 30px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(58, 118, 240, 0.3);
+        }
+
+        /* Decorative circles for the card */
+        .dashboard-card::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .balance-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .balance-amount {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            min-height: 45px;
+        }
+
+        .fund-btn-new {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
         }
 
         /* --- TELEGRAM POPUP --- */
@@ -48,54 +118,11 @@
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 0 40px rgba(188, 19, 254, 0.2);
         }
-
-        #tg-popup.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
+        #tg-popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
         .tg-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
         .tg-text { font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; color: #eee; }
 
-        /* --- SLOW SCROLL REVEAL ANIMATION --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                        transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            will-change: opacity, transform;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5px 20px 5px;
-        }
-
-        .logo {
-            font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .menu-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            z-index: 1001;
-            padding: 5px;
-        }
-
+        /* --- SIDE NAV --- */
         .side-nav {
             position: fixed;
             top: 0;
@@ -112,43 +139,8 @@
             flex-direction: column;
             gap: 15px;
         }
-
-        .side-nav.active {
-            right: 0;
-        }
-
-        .nav-item {
-            color: white;
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 15px;
-            background: var(--glass-bg);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
-
-        .nav-item:active {
-            border-color: var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.1);
-        }
-
-        .nav-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            z-index: 999;
-        }
-
-        .nav-overlay.active { display: block; }
+        .side-nav.active { right: 0; }
+        .nav-item { color: white; text-decoration: none; font-size: 1rem; font-weight: 600; padding: 15px; background: var(--glass-bg); border-radius: 12px; display: flex; align-items: center; gap: 15px; }
 
         /* --- SUPPORT MODAL --- */
         .modal {
@@ -167,177 +159,29 @@
             pointer-events: none;
             transition: 0.3s;
         }
+        .modal.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        .modal textarea { width: 100%; height: 120px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; color: white; resize: none; margin-bottom: 15px; outline: none; }
 
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-        }
+        .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 999; }
+        .nav-overlay.active { display: block; }
 
-        .modal h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--neon-cyan); }
-        .modal textarea {
-            width: 100%;
-            height: 120px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 10px;
-            color: white;
-            resize: none;
-            margin-bottom: 15px;
-            outline: none;
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px 15px 5px; }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: 3px; text-shadow: 0 0 10px var(--neon-cyan); }
+        .menu-btn { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; padding: 5px; }
 
-        /* --- LIVE TICKER --- */
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 0;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+        .section-title { font-size: 0.9rem; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; padding-left: 5px; }
+        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .category-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px 15px; border-radius: 18px; text-align: center; transition: 0.3s; cursor: pointer; position: relative; }
+        .category-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
+        .category-name { font-weight: 600; font-size: 0.85rem; color: #eee; }
 
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 25s linear infinite;
-            font-size: 0.75rem;
-            color: #888;
-        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        .ticker span { margin-right: 50px; }
-        .ticker b { color: var(--neon-cyan); }
-
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* --- WALLET SECTION --- */
-        .wallet-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px 20px;
-            margin-bottom: 25px;
-            text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-            position: relative;
-        }
-
-        .balance-label {
-            font-size: 0.8rem;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .balance-amount {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin: 5px 0 15px 0;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-        }
-
-        .fund-btn {
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
-            border: none;
-            padding: 14px 40px;
-            border-radius: 12px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            display: inline-block;
-            text-decoration: none;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 0.9rem;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            padding-left: 5px;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .category-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 15px;
-            border-radius: 18px;
-            text-align: center;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .category-card:active {
-            border-color: var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.05);
-            transform: scale(0.95);
-        }
-
-        .category-icon {
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .category-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            color: #eee;
-        }
-
-        .sms-card {
-            grid-column: span 2;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-
-        .sms-card:active {
-            transform: none;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .coming-soon-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--neon-cyan);
-            color: black;
-            font-size: 0.6rem;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .free-card {
-            border: 1px solid #00ff88;
-            background: rgba(0, 255, 136, 0.05);
-        }
+        .hidden { display: none; }
+        .sms-card { grid-column: span 2; opacity: 0.8; cursor: not-allowed; }
+        .coming-soon-badge { position: absolute; top: 10px; right: 10px; background: var(--neon-cyan); color: black; font-size: 0.6rem; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; }
+        .free-card { border: 1px solid #00ff88; background: rgba(0, 255, 136, 0.05); }
 
     </style>
 </head>
@@ -348,8 +192,8 @@
     <div id="tg-popup">
         <span class="tg-icon">📢</span>
         <p class="tg-text">Join our update channel on telegram for giveaways and updates</p>
-        <a href="https://t.me/pr1meupd8s" class="fund-btn" style="width: 100%; margin-bottom: 15px;" target="_blank">Join Channel</a>
-        <button class="cancel-btn" style="background:none; border:none; color:#555; cursor:pointer; text-transform:uppercase; font-size:0.7rem; letter-spacing:1px;" onclick="closeTgPopup()">Dismiss</button>
+        <a href="https://t.me/pr1meupd8s" class="fund-btn-new" style="background:var(--neon-purple); width:100%; justify-content:center; margin-bottom:15px;" target="_blank">Join Channel</a>
+        <button style="background:none; border:none; color:#555; cursor:pointer; text-transform:uppercase; font-size:0.7rem;" onclick="closeTgPopup()">Dismiss</button>
     </div>
 
     <nav class="side-nav" id="sideNav">
@@ -363,7 +207,7 @@
     <div class="modal" id="supportModal">
         <h2>🆘 Open Ticket</h2>
         <textarea id="ticketMsg" placeholder="Describe your issue or request..."></textarea>
-        <button class="fund-btn" style="width: 100%;" id="sendTicket">Send to Admins</button>
+        <button class="fund-btn-new" style="width: 100%; justify-content:center; background:linear-gradient(45deg, var(--neon-purple), var(--neon-cyan))" id="sendTicket">Send to Admins</button>
         <button class="menu-btn" style="width: 100%; font-size: 0.8rem; margin-top: 10px;" onclick="closeSupport()">Cancel</button>
     </div>
 
@@ -372,19 +216,17 @@
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </header>
 
-    <div class="ticker-wrap reveal">
-        <div class="ticker">
-            <span>🚀 New <b>Logs</b> uploaded to market</span>
-            <span>📱 <b>SMS Numbers</b> stock updated</span>
-            <span>🤖 <b>Bots</b> status: Operational</span>
-            <span>🇺🇸 <b>USA Accounts</b> limited stock remaining</span>
+    <div class="dashboard-card reveal">
+        <div class="balance-label">
+            <span>💳 Wallet Balance</span>
         </div>
-    </div>
-
-    <div class="wallet-container reveal">
-        <div class="balance-label">Available Funds</div>
-        <div class="balance-amount">₦<span id="balance">0.00</span></div>
-        <a href="fund.html" class="fund-btn">Fund Wallet</a>
+        <div class="balance-amount">
+            <div id="balance-loader" class="spinner"></div>
+            <span id="balance-text" class="hidden">₦<span id="balance">0.00</span></span>
+        </div>
+        <a href="fund.html" class="fund-btn-new">
+            <span style="font-size:1.2rem">+</span> Fund Wallet
+        </a>
     </div>
 
     <div class="section-title reveal">Marketplace</div>
@@ -394,7 +236,6 @@
             <span class="coming-soon-badge">Coming Soon</span>
             <span class="category-icon">💬</span><div class="category-name">SMS OTP Verification</div>
         </div>
-
         <div class="category-card reveal" onclick="location.href='products.html?cat=Logs'">
             <span class="category-icon">🚀</span><div class="category-name">Logs</div>
         </div>
@@ -413,7 +254,6 @@
         <div class="category-card reveal" onclick="location.href='products.html?cat=CL Numbers'">
             <span class="category-icon">📱</span><div class="category-name">CL Numbers</div>
         </div>
-        
         <div class="category-card reveal" onclick="location.href='products.html?cat=Bots'">
             <span class="category-icon">🤖</span><div class="category-name">Bots</div>
         </div>
@@ -442,7 +282,6 @@
 
         let currentUser = null;
 
-        // Global functions for HTML access
         window.toggleMenu = function() {
             document.getElementById('sideNav').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -471,7 +310,6 @@
             if (user) {
                 currentUser = user;
 
-                // Show Telegram Popup if not shown in this session
                 if (!sessionStorage.getItem('tg_popup_shown')) {
                     setTimeout(() => {
                         document.getElementById('tg-popup').classList.add('active');
@@ -479,20 +317,20 @@
                     }, 1500);
                 }
                 
-                // Track user entrance
                 try {
                     await addDoc(collection(db, "logs"), {
                         type: "MARKET_ACCESS",
-                        details: `User: ${user.email} entered the shop.`,
+                        details: `User: ${user.email} entered shop.`,
                         timestamp: serverTimestamp()
                     });
-                } catch (e) { console.warn("Log skip"); }
+                } catch (e) {}
 
-                // Live balance tracking
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const bal = data.balance || 0;
+                        const bal = docSnap.data().balance || 0;
+                        // LOGIC: Hide loader and show balance once data arrives
+                        document.getElementById('balance-loader').classList.add('hidden');
+                        document.getElementById('balance-text').classList.remove('hidden');
                         document.getElementById('balance').innerText = bal.toLocaleString(undefined, {minimumFractionDigits: 2});
                     }
                 });
@@ -504,7 +342,6 @@
         document.getElementById('sendTicket').addEventListener('click', async () => {
             const msg = document.getElementById('ticketMsg').value.trim();
             if(!msg) return alert('Enter your message first.');
-
             try {
                 await addDoc(collection(db, "support"), {
                     uid: currentUser.uid,
@@ -513,13 +350,10 @@
                     status: "open",
                     timestamp: serverTimestamp()
                 });
-
-                alert('Ticket sent! We will get back to you.');
+                alert('Ticket sent!');
                 document.getElementById('ticketMsg').value = '';
                 closeSupport();
-            } catch (e) {
-                alert('Connection error.');
-            }
+            } catch (e) { alert('Error sending ticket.'); }
         });
 
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
@@ -530,13 +364,11 @@
             });
         });
 
-        // Intersection Observer for Reveal effect
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
             });
         }, { threshold: 0.1 });
-
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
