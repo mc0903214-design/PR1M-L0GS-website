@@ -161,7 +161,6 @@
     <div id="status-msg"></div>
 
     <div id="product-list">
-        <!-- Skeletal Loading State -->
         <div class="skeleton">
             <div class="sk-img"></div>
             <div class="sk-body">
@@ -200,7 +199,6 @@
 
         const statusDiv = document.getElementById('status-msg');
         const params = new URLSearchParams(window.location.search);
-        // Extracts the category (cat) from URL: e.g., products.html?cat=Logs
         const category = params.get('cat') || "Logs"; 
         document.getElementById('cat-display').innerText = category;
 
@@ -208,7 +206,6 @@
             const list = document.getElementById('product-list');
             
             try {
-                // Queries for products specifically in the selected category
                 const q = query(collection(db, "products"), where("category", "==", category));
                 const querySnapshot = await getDocs(q);
                 
@@ -219,7 +216,6 @@
                     return;
                 }
 
-                // Log user market activity
                 if(user) {
                     addDoc(collection(db, "logs"), {
                         type: "CATEGORY_BROWSE",
@@ -234,13 +230,10 @@
                     let stockText = 'AVAILABLE';
                     let btnDisabled = "";
 
-                    // Calculate Stock UI based on Product Mode
                     if (data.mode === "SINGLE") {
-                        // Single secret item (Unlimited or always visible until manually removed)
                         stockClass = 'stock-single';
                         stockText = 'READY';
                     } else {
-                        // Multi-item stock (Managed by count)
                         const count = data.stockCount || 0;
                         if (count <= 0) {
                             stockClass = 'stock-out';
@@ -266,16 +259,15 @@
                             <p class="prod-desc">${data.category} Digital Delivery Asset</p>
                             <div class="purchase-row">
                                 <div class="price"><span>₦</span>${data.price.toLocaleString()}</div>
-                                <a href="checkout.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" 
+                                <a href="buy.html?id=${doc.id}&name=${encodeURIComponent(data.name)}&price=${data.price}" 
                                    class="buy-btn ${btnDisabled}">
-                                   ${btnDisabled ? 'Sold Out' : 'Get Access'}
+                                   ${btnDisabled ? 'Sold Out' : 'Buy Now'}
                                 </a>
                             </div>
                         </div>
                     `;
                     list.appendChild(card);
                     
-                    // Trigger the reveal animation
                     setTimeout(() => card.classList.add('active'), 100);
                 });
             } catch (error) {
@@ -288,7 +280,6 @@
             loadProducts(user);
         });
 
-        // Intersection Observer for the glassmorphism scroll effect
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
