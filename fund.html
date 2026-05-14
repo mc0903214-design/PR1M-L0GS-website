@@ -69,7 +69,7 @@
             margin-right: 15px;
         }
 
-        .option-icon-info h4 {
+        .option-info h4 {
             color: var(--neon-cyan);
             margin-bottom: 4px;
         }
@@ -93,7 +93,7 @@
             color: #ccc;
         }
 
-        input[type="number"], input[type="file"] {
+        input[type="number"] {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
@@ -134,12 +134,11 @@
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
+            margin-bottom: 10px;
         }
 
-        .submit-btn:disabled {
-            background: #444;
-            cursor: not-allowed;
-        }
+        .btn-wa { background: #25D366; color: white; }
+        .btn-tg { background: #0088cc; color: white; }
 
         .history-section {
             margin-top: 40px;
@@ -194,7 +193,7 @@
             <div class="option-icon">🏦</div>
             <div class="option-info">
                 <h4>Bank Transfer</h4>
-                <p>Manual approval by Admin</p>
+                <p>Manual approval via Chat</p>
             </div>
         </div>
 
@@ -202,7 +201,7 @@
             <div class="option-icon">₿</div>
             <div class="option-info">
                 <h4>Crypto Payment</h4>
-                <p>Automated via NOWPayments</p>
+                <p>Automated Gateway</p>
             </div>
         </div>
     </div>
@@ -220,24 +219,28 @@
         <div class="step-container">
             <span class="pay-exactly">PAY EXACTLY: ₦<span id="displayAmount">0</span></span>
             
-            <label>Transfer to the following account:</label>
             <div class="bank-details-box">
                 <strong>BANK:</strong> MONIEPOINT<br>
                 <strong>ACC NO:</strong> 9032140540<br>
                 <strong>NAME:</strong> CHRISTOPHER MICHAEL
             </div>
 
-            <label>Upload Payment Receipt (Screenshot)</label>
-            <input type="file" id="receipt" accept="image/*">
-
-            <button class="submit-btn" id="submitBtn" onclick="submitToAdmin()">Submit for Approval</button>
+            <label style="text-align: center; margin-bottom: 15px;">Send receipt to Admin via:</label>
+            
+            <button class="submit-btn btn-wa" onclick="sendProof('WA')">Send via WhatsApp</button>
+            <button class="submit-btn btn-tg" onclick="sendProof('TG')">Send via Telegram</button>
+            
+            <p style="font-size: 0.7rem; color: #666; text-align: center; margin-top: 10px;">
+                Your balance will be updated immediately after verification.
+            </p>
         </div>
     </div>
 
     <div id="cryptoFlow" class="hidden">
         <div style="text-align:center; padding: 40px 0;">
-            <h3>Redirecting to Secure Gateway...</h3>
-            <p style="color:#666; margin-top:10px;">NOWPayments initialization.</p>
+            <h3>Secure Gateway</h3>
+            <p style="color:#666; margin-top:10px;">Crypto payments currently in maintenance.</p>
+            <button class="submit-btn" style="margin-top:20px; width: auto;" onclick="location.reload()">Back</button>
         </div>
     </div>
 
@@ -252,34 +255,32 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
             authDomain: "primelogs-web.firebaseapp.com",
             projectId: "primelogs-web",
             storageBucket: "primelogs-web.firebasestorage.app",
-            messagingSenderId: "732956069251",
             appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         let userUID = null;
+        let userEmail = "";
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 userUID = user.uid;
+                userEmail = user.email;
                 loadTransactions(user.uid);
             } else {
                 window.location.href = 'index.html';
             }
         });
 
-        // Attach functions to window so the HTML buttons can find them
         window.showAmountStep = function() {
             document.getElementById('selectionScreen').classList.add('hidden');
             document.getElementById('amountStep').classList.remove('hidden');
@@ -292,62 +293,42 @@
             document.getElementById('displayAmount').innerText = parseFloat(amt).toLocaleString();
             document.getElementById('amountStep').classList.add('hidden');
             document.getElementById('bankFlow').classList.remove('hidden');
-            document.getElementById('page-title').innerText = "Submit Receipt";
+            document.getElementById('page-title').innerText = "Submit Proof";
         }
 
         window.showCryptoFlow = function() {
             document.getElementById('selectionScreen').classList.add('hidden');
             document.getElementById('cryptoFlow').classList.remove('hidden');
-            setTimeout(() => { alert("Crypto payments integrated in next update."); location.reload(); }, 2000);
         }
 
-        window.submitToAdmin = async function() {
+        window.sendProof = async function(platform) {
             const amt = document.getElementById('depositAmount').value;
-            const fileInput = document.getElementById('receipt');
-            const file = fileInput.files[0];
-            const btn = document.getElementById('submitBtn');
+            const message = `PR1MΞ DEPOSIT PROOF\n---\nUser: ${userEmail}\nAmount: ₦${amt}\n---\n(Attached screenshot below)`;
 
-            if(!amt || amt < 500) return alert("Invalid amount");
-            if(!file) return alert("Please upload a receipt screenshot");
-            if(!userUID) return alert("User not authenticated. Please refresh.");
-
-            btn.disabled = true;
-            btn.innerText = "Sending...";
-
+            // 1. Log the pending deposit in Firestore so it shows in Admin Panel
             try {
-                // 1. Upload the image to Storage
-                const fileName = `proofs/${userUID}_${Date.now()}_${file.name}`;
-                const storageRef = ref(storage, fileName);
-                
-                const snapshot = await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(snapshot.ref);
-
-                // 2. Submit deposit request
                 await addDoc(collection(db, "deposits"), {
                     uid: userUID,
-                    email: auth.currentUser.email,
+                    email: userEmail,
                     amount: parseFloat(amt),
                     status: "pending",
-                    method: "Bank Transfer",
-                    proofUrl: downloadURL,
-                    imagePath: fileName,
+                    method: "Manual Transfer",
                     timestamp: serverTimestamp()
                 });
 
-                // 3. Log the activity
-                await addDoc(collection(db, "logs"), {
-                    type: "DEPOSIT_REQUEST",
-                    details: `New Bank Deposit from ${auth.currentUser.email} for ₦${amt}`,
-                    timestamp: serverTimestamp()
-                });
+                // 2. Redirect to chosen platform
+                if(platform === 'WA') {
+                    // Replace with your actual WhatsApp number
+                    window.open(`https://wa.me/2349032140540?text=${encodeURIComponent(message)}`, '_blank');
+                } else {
+                    // Replace with your actual Telegram username
+                    window.open(`https://t.me/PR1ME_SUPPORT_BOT?text=${encodeURIComponent(message)}`, '_blank');
+                }
 
-                alert("Submitted! Please wait for Admin approval.");
+                alert("Opening app... Send the receipt photo in the chat!");
                 location.reload();
             } catch (e) {
-                console.error("Firebase Error:", e);
-                alert("Submission failed: " + e.message);
-                btn.disabled = false;
-                btn.innerText = "Submit for Approval";
+                alert("Error: " + e.message);
             }
         }
 
@@ -373,8 +354,6 @@
                         </div>
                     `;
                 });
-            }, (error) => {
-                console.error("Load History Error:", error);
             });
         }
     </script>
