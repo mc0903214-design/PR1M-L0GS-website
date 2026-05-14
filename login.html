@@ -28,7 +28,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* --- FAKE LOADING OVERLAY --- */
         #loading-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -63,7 +62,6 @@
         }
         input:focus { border-color: var(--neon-cyan); }
         
-        /* --- STATUS MESSAGE AREA --- */
         #status-msg {
             font-size: 0.85rem;
             margin-bottom: 10px;
@@ -93,7 +91,7 @@
         <div id="loading-overlay"><div class="loader-bar"></div></div>
         
         <h2 id="auth-title">LOGIN</h2>
-        <div id="status-msg"></div> <!-- On-page notification area -->
+        <div id="status-msg"></div>
         
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
@@ -104,7 +102,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, collection, addDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -127,6 +125,7 @@
             statusDiv.className = isError ? "error" : "info";
         }
 
+        // Fix: Attach to window so HTML onclick finds it
         window.toggleAuth = function() {
             const overlay = document.getElementById('loading-overlay');
             const title = document.getElementById('auth-title');
@@ -148,7 +147,7 @@
         }
 
         document.getElementById('auth-submit').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const isLogin = document.getElementById('auth-title').innerText === 'LOGIN';
             const overlay = document.getElementById('loading-overlay');
@@ -162,10 +161,12 @@
             statusDiv.innerText = "";
 
             try {
+                // Ensure user stays logged in even after closing browser
+                await setPersistence(auth, browserLocalPersistence);
+
                 if (isLogin) {
                     const res = await signInWithEmailAndPassword(auth, email, password);
                     
-                    // Security Check: Is user banned?
                     const userSnap = await getDoc(doc(db, "users", res.user.uid));
                     if (userSnap.exists() && userSnap.data().status === 'banned') {
                         await auth.signOut();
@@ -177,20 +178,19 @@
                 } else {
                     const res = await createUserWithEmailAndPassword(auth, email, password);
                     
-                    // Initialize user profile for adminq management
+                    // Create the user profile with ₦0 balance by default
                     await setDoc(doc(db, "users", res.user.uid), {
+                        uid: res.user.uid,
                         email: email,
                         balance: 0,
                         totalSpent: 0,
                         status: 'active',
-                        myPurchases: [],
                         joinedAt: serverTimestamp()
                     });
 
-                    // Log for admin dashboard
                     await addDoc(collection(db, "logs"), {
                         type: "NEW_USER",
-                        details: `${email} has entered the network.`,
+                        details: `${email} joined PR1MΞ.`,
                         timestamp: serverTimestamp()
                     });
 
@@ -198,8 +198,12 @@
                 }
             } catch (err) {
                 overlay.style.display = 'none';
-                const cleanError = err.message.replace("Firebase: ", "");
-                setStatus(cleanError);
+                console.error(err);
+                // Handle common Firebase errors gracefully
+                if(err.code === 'auth/email-already-in-use') setStatus("Email already exists.");
+                else if(err.code === 'auth/weak-password') setStatus("Password is too weak.");
+                else if(err.code === 'auth/invalid-credential') setStatus("Invalid email or password.");
+                else setStatus("System Error. Try again.");
             }
         });
     </script>
