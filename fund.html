@@ -136,6 +136,11 @@
             cursor: pointer;
         }
 
+        .submit-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+
         .history-section {
             margin-top: 40px;
         }
@@ -274,6 +279,7 @@
             }
         });
 
+        // Attach functions to window so the HTML buttons can find them
         window.showAmountStep = function() {
             document.getElementById('selectionScreen').classList.add('hidden');
             document.getElementById('amountStep').classList.remove('hidden');
@@ -297,34 +303,38 @@
 
         window.submitToAdmin = async function() {
             const amt = document.getElementById('depositAmount').value;
-            const file = document.getElementById('receipt').files[0];
+            const fileInput = document.getElementById('receipt');
+            const file = fileInput.files[0];
             const btn = document.getElementById('submitBtn');
 
+            if(!amt || amt < 500) return alert("Invalid amount");
             if(!file) return alert("Please upload a receipt screenshot");
+            if(!userUID) return alert("User not authenticated. Please refresh.");
 
             btn.disabled = true;
             btn.innerText = "Sending...";
 
             try {
                 // 1. Upload the image to Storage
-                const fileName = `proofs/${userUID}_${Date.now()}`;
+                const fileName = `proofs/${userUID}_${Date.now()}_${file.name}`;
                 const storageRef = ref(storage, fileName);
+                
                 const snapshot = await uploadBytes(storageRef, file);
                 const downloadURL = await getDownloadURL(snapshot.ref);
 
-                // 2. Submit deposit request (Updated fields to match Telegram Bot logic)
+                // 2. Submit deposit request
                 await addDoc(collection(db, "deposits"), {
                     uid: userUID,
                     email: auth.currentUser.email,
                     amount: parseFloat(amt),
                     status: "pending",
-                    method: "Bank Transfer", // Field used by Bot
-                    proofUrl: downloadURL,    // Field used by Bot for 'View Proof' button
+                    method: "Bank Transfer",
+                    proofUrl: downloadURL,
                     imagePath: fileName,
                     timestamp: serverTimestamp()
                 });
 
-                // 3. Optional: Alert logs (Internal reference)
+                // 3. Log the activity
                 await addDoc(collection(db, "logs"), {
                     type: "DEPOSIT_REQUEST",
                     details: `New Bank Deposit from ${auth.currentUser.email} for ₦${amt}`,
@@ -334,8 +344,8 @@
                 alert("Submitted! Please wait for Admin approval.");
                 location.reload();
             } catch (e) {
-                console.error(e);
-                alert("Submission failed. Check connection.");
+                console.error("Firebase Error:", e);
+                alert("Submission failed: " + e.message);
                 btn.disabled = false;
                 btn.innerText = "Submit for Approval";
             }
@@ -363,6 +373,8 @@
                         </div>
                     `;
                 });
+            }, (error) => {
+                console.error("Load History Error:", error);
             });
         }
     </script>
