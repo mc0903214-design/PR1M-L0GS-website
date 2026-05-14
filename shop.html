@@ -276,6 +276,13 @@
             color: #eee;
         }
 
+        .sms-card {
+            grid-column: span 2;
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
         .bot-card {
             grid-column: span 2;
             background: linear-gradient(145deg, rgba(255,255,255,0.07), rgba(188, 19, 254, 0.05));
@@ -296,7 +303,6 @@
         <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; opacity: 0.5;">🚪 Logout</a>
     </nav>
 
-    <!-- Support Modal -->
     <div class="modal" id="supportModal">
         <h2>🆘 Open Ticket</h2>
         <textarea id="ticketMsg" placeholder="Describe your issue or request..."></textarea>
@@ -312,13 +318,12 @@
     <div class="ticker-wrap reveal">
         <div class="ticker">
             <span>🚀 New <b>Logs</b> uploaded to market</span>
-            <span>📱 <b>CL Numbers</b> stock updated</span>
+            <span>📱 <b>SMS Numbers</b> stock updated</span>
             <span>🤖 <b>Bots</b> status: Operational</span>
             <span>🇺🇸 <b>USA Accounts</b> limited stock remaining</span>
         </div>
     </div>
 
-    <!-- Wallet Section -->
     <div class="wallet-container reveal">
         <div class="balance-label">Available Funds</div>
         <div class="balance-amount">₦<span id="balance">0.00</span></div>
@@ -328,6 +333,10 @@
     <div class="section-title reveal">Marketplace</div>
 
     <div class="category-grid">
+        <div class="category-card sms-card reveal" onclick="location.href='sms.html'">
+            <span class="category-icon">💬</span><div class="category-name">SMS OTP Verification</div>
+        </div>
+
         <div class="category-card reveal" onclick="location.href='products.html?cat=Logs'">
             <span class="category-icon">🚀</span><div class="category-name">Logs</div>
         </div>
