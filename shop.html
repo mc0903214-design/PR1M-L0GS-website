@@ -28,6 +28,36 @@
             overflow-x: hidden;
         }
 
+        /* --- TELEGRAM POPUP --- */
+        #tg-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 85%;
+            max-width: 350px;
+            background: rgba(18, 18, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--neon-purple);
+            border-radius: 25px;
+            padding: 30px 20px;
+            z-index: 3000;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 40px rgba(188, 19, 254, 0.2);
+        }
+
+        #tg-popup.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .tg-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        .tg-text { font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; color: #eee; }
+
         /* --- SLOW SCROLL REVEAL ANIMATION --- */
         .reveal {
             opacity: 0;
@@ -315,6 +345,13 @@
 
     <div class="nav-overlay" id="overlay" onclick="toggleMenu()"></div>
 
+    <div id="tg-popup">
+        <span class="tg-icon">📢</span>
+        <p class="tg-text">Join our update channel on telegram for giveaways and updates</p>
+        <a href="https://t.me/pr1meupd8s" class="fund-btn" style="width: 100%; margin-bottom: 15px;" target="_blank">Join Channel</a>
+        <button class="cancel-btn" style="background:none; border:none; color:#555; cursor:pointer; text-transform:uppercase; font-size:0.7rem; letter-spacing:1px;" onclick="closeTgPopup()">Dismiss</button>
+    </div>
+
     <nav class="side-nav" id="sideNav">
         <a href="prof.html" class="nav-item">👤 Profile</a>
         <a href="mine.html" class="nav-item">🛍️ My Purchases</a>
@@ -419,12 +456,28 @@
 
         window.closeSupport = function() {
             document.getElementById('supportModal').classList.remove('active');
+            if(!document.getElementById('tg-popup').classList.contains('active')) {
+                document.getElementById('overlay').classList.remove('active');
+            }
+        };
+
+        window.closeTgPopup = function() {
+            document.getElementById('tg-popup').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
+            sessionStorage.setItem('tg_popup_shown', 'true');
         };
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
+
+                // Show Telegram Popup if not shown in this session
+                if (!sessionStorage.getItem('tg_popup_shown')) {
+                    setTimeout(() => {
+                        document.getElementById('tg-popup').classList.add('active');
+                        document.getElementById('overlay').classList.add('active');
+                    }, 1500);
+                }
                 
                 // Track user entrance
                 try {
@@ -472,6 +525,7 @@
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
             signOut(auth).then(() => {
+                sessionStorage.removeItem('tg_popup_shown');
                 window.location.href = 'index.html';
             });
         });
