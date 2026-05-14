@@ -30,16 +30,39 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 25px;
-            padding: 40px 30px;
+            padding: 30px;
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             text-align: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.7);
         }
 
-        .status-icon { font-size: 3.5rem; margin-bottom: 20px; display: block; }
-        h2 { font-size: 1.8rem; margin-bottom: 15px; letter-spacing: 1px; }
-        p { color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
+        /* Preview styles */
+        .prod-full-img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .desc-box {
+            color: #ccc;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            white-space: pre-wrap; /* Maintains line breaks from admin */
+        }
+
+        .status-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+        h2 { font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 1px; }
+        p { color: #888; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5; }
 
         .confirm-btn {
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
@@ -54,29 +77,24 @@
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
             margin-bottom: 10px;
-            transition: 0.3s;
         }
-
-        .confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(188, 19, 254, 0.6); }
 
         .cancel-btn {
             background: transparent;
-            color: #666;
+            color: #555;
             border: none;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
         }
 
         .secret-container {
             background: rgba(0, 0, 0, 0.4);
             border: 1px dashed var(--neon-cyan);
             border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 15px;
+            margin-top: 20px;
         }
 
         .secret-text {
@@ -85,15 +103,14 @@
             color: var(--neon-cyan);
             word-break: break-all;
             margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1.1rem;
         }
 
         .copy-btn {
             background: var(--neon-cyan);
             color: #000;
             border: none;
-            padding: 10px 25px;
+            padding: 8px 20px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
@@ -101,22 +118,8 @@
             text-transform: uppercase;
         }
 
-        .purchase-notice {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 15px;
-            padding: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .purchase-link {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
         .loader {
-            width: 50px; height: 50px;
+            width: 40px; height: 40px;
             border: 3px solid rgba(255,255,255,0.1);
             border-radius: 50%;
             border-top-color: var(--neon-purple);
@@ -131,44 +134,49 @@
 
     <div class="checkout-card" id="checkout-ui">
         
-        <div id="step-confirm">
+        <div id="step-preview">
+            <img id="view-img" src="" alt="Product" class="prod-full-img">
+            <h2 id="view-name">Loading...</h2>
+            <div class="desc-box" id="view-desc">
+                Fetching asset details...
+            </div>
+            <button class="confirm-btn" onclick="goToConfirm()">Continue to Checkout</button>
+            <br>
+            <a href="shop.html" class="cancel-btn">Back to Store</a>
+        </div>
+
+        <div id="step-confirm" style="display: none;">
             <span class="status-icon">🛒</span>
             <h2>Confirm Purchase</h2>
-            <p id="confirm-msg">You are about to purchase <strong id="prod-name" style="color:var(--neon-cyan)">Digital Asset</strong> for <strong style="color:white">₦<span id="prod-price">0</span></strong>.</p>
-            <button class="confirm-btn" onclick="startProcessing()">Authorize Payment</button>
+            <p id="confirm-msg">Buy <strong id="prod-name" style="color:var(--neon-cyan)">Digital Asset</strong> for <strong style="color:white">₦<span id="prod-price">0</span></strong>?</p>
+            <button class="confirm-btn" onclick="startProcessing()">Confirm & Pay</button>
             <br>
-            <a href="shop.html" class="cancel-btn">Return to Shop</a>
+            <button class="cancel-btn" onclick="location.reload()">Go Back</button>
         </div>
 
         <div id="step-processing" style="display: none;">
             <div class="loader"></div>
             <h2>Processing</h2>
-            <p>Verifying transaction and securing your assets...</p>
+            <p>Securing your asset from the network...</p>
         </div>
 
         <div id="step-success" style="display: none;">
             <span class="status-icon">✅</span>
-            <h2>Purchase Complete</h2>
-            <p>Transaction successful. Your asset has been delivered below:</p>
-            
+            <h2>Success</h2>
+            <p>Funds deducted. Here is your secret:</p>
             <div class="secret-container">
                 <span class="secret-text" id="raw-secret">WAITING...</span>
-                <button class="copy-btn" onclick="copySecret()">Copy to Clipboard</button>
+                <button class="copy-btn" onclick="copySecret()">Copy</button>
             </div>
-
-            <div class="purchase-notice">
-                You can always access your items in the <a href="profile.html" class="purchase-link">MY PURCHASES</a> section.
-            </div>
-
             <br>
-            <a href="shop.html" class="confirm-btn" style="text-decoration: none; display: block; margin-top: 10px;">Return to Market</a>
+            <a href="shop.html" class="cancel-btn" style="display:block; margin-top:20px;">Back to Market</a>
         </div>
 
         <div id="step-error" style="display: none;">
             <span class="status-icon">❌</span>
-            <h2>Transaction Failed</h2>
+            <h2>Failed</h2>
             <p id="error-desc">Insufficient balance or item out of stock.</p>
-            <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Add Funds</a>
+            <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Fund Wallet</a>
             <br>
             <a href="shop.html" class="cancel-btn">Back to Shop</a>
         </div>
@@ -194,22 +202,47 @@
         const db = getFirestore(app);
 
         const params = new URLSearchParams(window.location.search);
-        const itemName = params.get('name') || "Digital Asset";
-        const itemPrice = parseFloat(params.get('price')) || 0;
         const itemId = params.get('id');
 
-        document.getElementById('prod-name').innerText = itemName;
-        document.getElementById('prod-price').innerText = itemPrice.toLocaleString();
+        // Fetch product data on load to show preview
+        async function loadProductPreview() {
+            if (!itemId) return showError("Invalid Product Link.");
+            
+            try {
+                const prodRef = doc(db, "products", itemId);
+                const prodSnap = await getDoc(prodRef);
+                
+                if (!prodSnap.exists()) return showError("Asset not found.");
+                
+                const data = prodSnap.data();
+                document.getElementById('view-name').innerText = data.name;
+                document.getElementById('view-desc').innerText = data.description || "No description provided.";
+                document.getElementById('view-img').src = data.image || "https://via.placeholder.com/400x200";
+                
+                // Set these for the confirmation step
+                document.getElementById('prod-name').innerText = data.name;
+                document.getElementById('prod-price').innerText = data.price.toLocaleString();
+                window.finalPrice = data.price;
+                window.finalName = data.name;
+            } catch (e) {
+                showError("Network error fetching data.");
+            }
+        }
+
+        loadProductPreview();
+
+        window.goToConfirm = function() {
+            document.getElementById('step-preview').style.display = 'none';
+            document.getElementById('step-confirm').style.display = 'block';
+        };
 
         window.startProcessing = async function() {
-            if (!itemId) return showError("Invalid product ID.");
-
             document.getElementById('step-confirm').style.display = 'none';
             document.getElementById('step-processing').style.display = 'block';
 
             onAuthStateChanged(auth, async (user) => {
                 if (!user) {
-                    showError("Authentication required.", "login.html", "Login");
+                    showError("Please login to continue", "login.html", "Login");
                     return;
                 }
 
@@ -220,17 +253,11 @@
                         getDoc(doc(db, "users", user.uid))
                     ]);
 
-                    if (!prodSnap.exists()) return showError("Asset no longer exists.");
                     const pData = prodSnap.data();
-
-                    if (pData.stockCount < 1 || !pData.stock || pData.stock.length === 0) {
-                        return showError("This item is currently out of stock.");
-                    }
-
-                    if (!userSnap.exists()) return showError("User profile not found.");
                     const userData = userSnap.data();
 
-                    if (userData.balance < itemPrice) {
+                    if (pData.stockCount < 1) return showError("This item is now out of stock.");
+                    if (userData.balance < window.finalPrice) {
                         return showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
                     }
 
@@ -244,11 +271,11 @@
                     }
 
                     await updateDoc(doc(db, "users", user.uid), {
-                        balance: increment(-itemPrice),
-                        totalSpent: increment(itemPrice),
+                        balance: increment(-window.finalPrice),
+                        totalSpent: increment(window.finalPrice),
                         myPurchases: arrayUnion({
-                            name: itemName,
-                            price: itemPrice,
+                            name: window.finalName,
+                            price: window.finalPrice,
                             date: new Date().toLocaleDateString(),
                             secret: secretToGive
                         })
@@ -261,14 +288,13 @@
 
                     await addDoc(collection(db, "logs"), {
                         type: "PURCHASE",
-                        details: `${userData.email} purchased ${itemName} for ₦${itemPrice.toLocaleString()}`,
+                        details: `${userData.email} purchased ${window.finalName}`,
                         timestamp: serverTimestamp()
                     });
 
                     showSuccess(secretToGive);
 
                 } catch (e) {
-                    console.error(e);
                     showError("Transaction error. Connection lost.");
                 }
             });
@@ -281,6 +307,7 @@
         }
 
         function showError(msg, link = "shop.html", btnText = "Back to Shop") {
+            document.getElementById('step-preview').style.display = 'none';
             document.getElementById('step-processing').style.display = 'none';
             document.getElementById('step-error').style.display = 'block';
             document.getElementById('error-desc').innerText = msg;
