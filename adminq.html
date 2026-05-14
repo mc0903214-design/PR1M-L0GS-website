@@ -13,61 +13,83 @@
         }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--dark); color: white; margin: 0; padding: 20px; }
+        body { 
+            background: var(--dark); 
+            color: white; 
+            margin: 0; 
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+        }
 
-        /* Auth Gate */
+        /* Auth Gate Restyled */
         #auth-gate {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--dark); z-index: 1000; display: flex;
             flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .auth-box {
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--neon-cyan);
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
         }
 
         /* Navigation */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn {
-            background: var(--glass); border: 1px solid #333; color: #888;
-            padding: 10px 20px; cursor: pointer; border-radius: 5px;
-            transition: 0.3s;
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.1); color: #888;
+            padding: 12px 20px; cursor: pointer; border-radius: 12px;
+            transition: 0.3s; font-weight: 600; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        .tab-btn.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 243, 255, 0.1); }
+        .tab-btn.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 243, 255, 0.1); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
 
         /* Layouts */
-        .panel { display: none; background: var(--glass); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .panel { display: none; background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
         .panel.active { display: block; }
         
         .grid-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .grid-table th, .grid-table td { padding: 12px; text-align: left; border-bottom: 1px solid #222; }
+        .grid-table th { color: var(--neon-cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 15px; border-bottom: 1px solid #333; }
+        .grid-table td { padding: 15px; text-align: left; border-bottom: 1px solid #222; font-size: 0.9rem; }
 
         /* Forms */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.8rem; color: #aaa; margin-bottom: 5px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
         input, select, textarea {
-            width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px; outline: none;
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid #333; color: white; border-radius: 10px; outline: none; transition: 0.3s;
         }
-        input:focus { border-color: var(--neon-cyan); }
+        input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.1); }
 
         .btn {
-            padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+            padding: 14px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem;
         }
         .btn:active { transform: scale(0.95); }
-        .btn-primary { background: var(--neon-purple); color: white; }
+        .btn-primary { background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan)); color: white; }
         .btn-approve { background: #00ff88; color: black; }
         .btn-danger { background: #ff4d4d; color: white; }
-        .btn-sm { padding: 5px 10px; font-size: 0.7rem; margin: 2px; }
+        .btn-sm { padding: 8px 12px; font-size: 0.7rem; margin: 2px; }
 
-        .deposit-card { background: #111; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--neon-cyan); }
-        .proof-img { max-width: 200px; border-radius: 5px; margin-top: 10px; cursor: pointer; border: 1px solid #333; }
+        .deposit-card { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-left: 4px solid var(--neon-cyan); display: flex; justify-content: space-between; align-items: center; }
         
         .low-stock { color: #ffcc00; font-weight: bold; animation: blink 1.5s infinite; }
         @keyframes blink { 50% { opacity: 0.5; } }
+
+        h2 { margin-bottom: 20px; font-weight: 800; letter-spacing: 2px; color: #eee; }
     </style>
 </head>
 <body>
 
     <div id="auth-gate">
-        <h2 style="color: var(--neon-cyan); letter-spacing: 5px;">PR1MΞ SYSTEM OVERRIDE</h2>
-        <input type="password" id="sys-pass" placeholder="Enter Admin Code" style="width: 250px; text-align: center;">
-        <button class="btn btn-primary" style="margin-top: 15px;" onclick="checkPass()">ACCESS SYSTEM</button>
+        <div class="auth-box">
+            <h2 style="color: var(--neon-cyan); letter-spacing: 5px; margin-bottom: 25px;">SYSTEM OVERRIDE</h2>
+            <input type="password" id="sys-pass" placeholder="ACCESS CODE" style="width: 250px; text-align: center; margin-bottom: 20px;">
+            <button class="btn btn-primary" style="width: 100%;" onclick="checkPass()">ENTER COMMAND CENTER</button>
+        </div>
     </div>
 
     <div class="tabs">
@@ -75,6 +97,7 @@
         <button class="tab-btn" onclick="showTab('users-list')">USERS</button>
         <button class="tab-btn" onclick="showTab('deps-list')">DEPOSITS</button>
         <button class="tab-btn" onclick="showTab('all-prods')">INVENTORY</button>
+        <button class="tab-btn" onclick="showTab('sms-config')" style="border-color: var(--neon-purple);">SMS CONFIG</button>
     </div>
 
     <div id="add-prod" class="panel active">
@@ -117,6 +140,23 @@
         <button class="btn btn-primary" id="uploadBtn" onclick="uploadProduct()">UPLOAD TO STOREFRONT</button>
     </div>
 
+    <div id="sms-config" class="panel">
+        <h2>SMS Gateway API Rates</h2>
+        <div class="form-group">
+            <label>Exchange Rate (1 USD to Naira)</label>
+            <input type="number" id="sms-rate" placeholder="e.g. 1550">
+        </div>
+        <div class="form-group">
+            <label>Profit Margin (Flat Naira added to each number)</label>
+            <input type="number" id="sms-margin" placeholder="e.g. 500">
+        </div>
+        <div class="form-group">
+            <label>5Sim API Key (Keep Private)</label>
+            <input type="password" id="sms-key" placeholder="Enter API Key">
+        </div>
+        <button class="btn btn-primary" onclick="saveSMSSettings()">Update SMS Pricing</button>
+    </div>
+
     <div id="users-list" class="panel">
         <h2>User Database</h2>
         <table class="grid-table">
@@ -139,9 +179,9 @@
 
     <div id="all-prods" class="panel">
         <div style="display:flex; justify-content: space-between; align-items: center;">
-            <h2>Inventory Management</h2>
+            <h2>Inventory</h2>
             <select id="view-filter" style="width: 200px;" onchange="loadInventory()">
-                <option value="ALL">All Categories</option>
+                <option value="ALL">All Assets</option>
                 <option value="LOW">⚠️ Low Stock (<3)</option>
             </select>
         </div>
@@ -160,7 +200,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDoc, setDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -187,6 +227,7 @@
             loadUsers();
             loadDeposits();
             loadInventory();
+            loadSMSSettings();
         }
 
         // --- NAVIGATION ---
@@ -195,6 +236,31 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             event.target.classList.add('active');
+        };
+
+        // --- SMS SETTINGS ---
+        window.loadSMSSettings = async () => {
+            const sDoc = await getDoc(doc(db, "settings", "sms_config"));
+            if(sDoc.exists()){
+                const data = sDoc.data();
+                document.getElementById('sms-rate').value = data.rate || "";
+                document.getElementById('sms-margin').value = data.margin || "";
+                document.getElementById('sms-key').value = data.apiKey || "";
+            }
+        };
+
+        window.saveSMSSettings = async () => {
+            const rate = document.getElementById('sms-rate').value;
+            const margin = document.getElementById('sms-margin').value;
+            const apiKey = document.getElementById('sms-key').value;
+            
+            await setDoc(doc(db, "settings", "sms_config"), {
+                rate: parseFloat(rate),
+                margin: parseFloat(margin),
+                apiKey: apiKey,
+                updatedAt: serverTimestamp()
+            });
+            alert("SMS Config Saved!");
         };
 
         window.toggleStockLabel = () => {
@@ -285,10 +351,12 @@
                     const card = document.createElement('div');
                     card.className = 'deposit-card';
                     card.innerHTML = `
-                        <p><strong>User:</strong> ${d.email} <br> <strong>Amount:</strong> ₦${d.amount.toLocaleString()}<br><strong>Method:</strong> ${d.method || 'Manual'}</p>
-                        <div style="margin-top:10px;">
-                            <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.uid}', ${d.amount}, 'approved')">APPROVE</button>
-                            <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'declined')">REJECT</button>
+                        <div>
+                            <p><strong>User:</strong> ${d.email} <br> <strong>Amount:</strong> ₦${d.amount.toLocaleString()}<br><strong>Method:</strong> ${d.method || 'Manual'}</p>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-approve btn-sm" onclick="handleDeposit('${dDoc.id}', '${d.uid}', ${d.amount}, 'approved')">APPROVE</button>
+                            <button class="btn btn-danger btn-sm" onclick="handleDeposit('${dDoc.id}', null, null, 'declined')">REJECT</button>
                         </div>
                     `;
                     container.appendChild(card);
