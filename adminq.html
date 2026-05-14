@@ -27,6 +27,7 @@
         .tab-btn {
             background: var(--glass); border: 1px solid #333; color: #888;
             padding: 10px 20px; cursor: pointer; border-radius: 5px;
+            transition: 0.3s;
         }
         .tab-btn.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 243, 255, 0.1); }
 
@@ -41,26 +42,30 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.8rem; color: #aaa; margin-bottom: 5px; }
         input, select, textarea {
-            width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px;
+            width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px; outline: none;
         }
+        input:focus { border-color: var(--neon-cyan); }
+
         .btn {
-            padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
+            padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
+        .btn:active { transform: scale(0.95); }
         .btn-primary { background: var(--neon-purple); color: white; }
         .btn-approve { background: #00ff88; color: black; }
         .btn-danger { background: #ff4d4d; color: white; }
 
         .deposit-card { background: #111; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--neon-cyan); }
-        .proof-img { max-width: 200px; border-radius: 5px; margin-top: 10px; cursor: pointer; }
+        .proof-img { max-width: 200px; border-radius: 5px; margin-top: 10px; cursor: pointer; border: 1px solid #333; }
         
-        .low-stock { color: #ffcc00; font-weight: bold; }
+        .low-stock { color: #ffcc00; font-weight: bold; animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
     <!-- Access Gate -->
     <div id="auth-gate">
-        <h2 style="color: var(--neon-cyan)">PR1MΞ SYSTEM OVERRIDE</h2>
+        <h2 style="color: var(--neon-cyan); letter-spacing: 5px;">PR1MΞ SYSTEM OVERRIDE</h2>
         <input type="password" id="sys-pass" placeholder="Enter Admin Code" style="width: 250px; text-align: center;">
         <button class="btn btn-primary" style="margin-top: 15px;" onclick="checkPass()">ACCESS SYSTEM</button>
     </div>
@@ -69,7 +74,7 @@
         <button class="tab-btn active" onclick="showTab('add-prod')">ADD PRODUCT</button>
         <button class="tab-btn" onclick="showTab('users-list')">USERS</button>
         <button class="tab-btn" onclick="showTab('deps-list')">DEPOSITS</button>
-        <button class="tab-btn" onclick="showTab('all-prods')">ALL PRODUCTS</button>
+        <button class="tab-btn" onclick="showTab('all-prods')">INVENTORY</button>
     </div>
 
     <!-- 1. ADD PRODUCT PANEL -->
@@ -77,15 +82,18 @@
         <h2>Deploy New Asset</h2>
         <div class="form-group">
             <label>Product Name</label>
-            <input type="text" id="p-name">
+            <input type="text" id="p-name" placeholder="e.g., Facebook Aged Logs">
         </div>
         <div class="form-group">
             <label>Category</label>
             <select id="p-cat">
-                <option value="Logs">🚀 Social Logs</option>
-                <option value="VPNs">🔐 VPNs</option>
-                <option value="Numbers">📱 SMS Numbers</option>
-                <option value="Bots">🤖 Utility Bots</option>
+                <option value="Logs">🚀 Logs</option>
+                <option value="Working Pics">📂 Working Pics</option>
+                <option value="VPNs and TV">🔐 VPNs & TV</option>
+                <option value="iCloud"> iCloud</option>
+                <option value="FMT and Updates">📝 FMT & Updates</option>
+                <option value="CL Numbers">📱 CL Numbers</option>
+                <option value="Bots">🤖 Bots</option>
             </select>
         </div>
         <div class="form-group">
@@ -93,8 +101,8 @@
             <input type="number" id="p-price">
         </div>
         <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="p-img">
+            <label>Icon/Image URL</label>
+            <input type="text" id="p-img" placeholder="https://...">
         </div>
         <div class="form-group">
             <label>Stock Mode</label>
@@ -105,9 +113,9 @@
         </div>
         <div class="form-group">
             <label id="stock-label">Paste Stock Data</label>
-            <textarea id="p-stock" rows="5"></textarea>
+            <textarea id="p-stock" rows="5" placeholder="user:pass, user2:pass2..."></textarea>
         </div>
-        <button class="btn btn-primary" onclick="uploadProduct()">UPLOAD TO STOREFRONT</button>
+        <button class="btn btn-primary" id="uploadBtn" onclick="uploadProduct()">UPLOAD TO STOREFRONT</button>
     </div>
 
     <!-- 2. USERS PANEL -->
@@ -136,11 +144,9 @@
     <div id="all-prods" class="panel">
         <div style="display:flex; justify-content: space-between; align-items: center;">
             <h2>Inventory Management</h2>
-            <select id="view-filter" onchange="loadInventory()" style="width: 200px;">
+            <select id="view-filter" style="width: 200px;">
                 <option value="ALL">All Categories</option>
                 <option value="LOW">⚠️ Low Stock (<3)</option>
-                <option value="Logs">Logs Only</option>
-                <option value="VPNs">VPNs Only</option>
             </select>
         </div>
         <table class="grid-table">
@@ -158,7 +164,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
@@ -173,17 +179,21 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // --- AUTH ---
+        // --- ADMIN AUTH ---
         window.checkPass = () => {
             if(document.getElementById('sys-pass').value === '1100') {
                 document.getElementById('auth-gate').style.display = 'none';
-                loadUsers();
-                loadDeposits();
-                loadInventory();
+                initDashboard();
             } else {
-                alert("INVALID CODE");
+                alert("INVALID ACCESS CODE");
             }
         };
+
+        function initDashboard() {
+            loadUsers();
+            loadDeposits();
+            loadInventory();
+        }
 
         // --- NAVIGATION ---
         window.showTab = (id) => {
@@ -195,11 +205,12 @@
 
         window.toggleStockLabel = () => {
             const mode = document.getElementById('p-mode').value;
-            document.getElementById('stock-label').innerText = mode === 'SINGLE' ? "Paste Secret Item (No commas needed)" : "Paste Multiple Items (Comma separated)";
+            document.getElementById('stock-label').innerText = mode === 'SINGLE' ? "Paste Secret Item (Full text is one purchase)" : "Paste Multiple Items (Comma separated)";
         };
 
         // --- ADD PRODUCT ---
         window.uploadProduct = async () => {
+            const btn = document.getElementById('uploadBtn');
             const name = document.getElementById('p-name').value;
             const cat = document.getElementById('p-cat').value;
             const price = document.getElementById('p-price').value;
@@ -207,18 +218,32 @@
             const mode = document.getElementById('p-mode').value;
             const rawStock = document.getElementById('p-stock').value;
 
-            if(!name || !price || !rawStock) return alert("Missing fields");
+            if(!name || !price || !rawStock) return alert("All text fields are required");
 
-            const stockArray = mode === 'MULTIPLE' ? rawStock.split(',').map(s => s.trim()) : [rawStock];
+            btn.disabled = true;
+            btn.innerText = "Deploying...";
 
-            await addDoc(collection(db, "products"), {
-                name, category: cat, price: parseFloat(price), image: img,
-                mode, stock: stockArray, stockCount: stockArray.length,
-                createdAt: serverTimestamp()
-            });
+            const stockArray = mode === 'MULTIPLE' ? rawStock.split(',').map(s => s.trim()).filter(s => s !== "") : [rawStock];
 
-            alert("Asset Deployed!");
-            location.reload();
+            try {
+                await addDoc(collection(db, "products"), {
+                    name, 
+                    category: cat, 
+                    price: parseFloat(price), 
+                    image: img || 'https://via.placeholder.com/150',
+                    mode, 
+                    stock: stockArray, 
+                    stockCount: stockArray.length,
+                    createdAt: serverTimestamp()
+                });
+
+                alert("Product Deployed to Marketplace!");
+                location.reload();
+            } catch (e) {
+                alert("Deployment failed: " + e.message);
+                btn.disabled = false;
+                btn.innerText = "UPLOAD TO STOREFRONT";
+            }
         };
 
         // --- USERS MANAGEMENT ---
@@ -231,8 +256,8 @@
                     tbody.innerHTML += `
                         <tr>
                             <td>${u.email}</td>
-                            <td>₦${u.balance?.toLocaleString() || 0}</td>
-                            <td><span style="color:${u.status === 'banned' ? 'red' : '#00ff88'}">${u.status || 'active'}</span></td>
+                            <td>₦${(u.balance || 0).toLocaleString()}</td>
+                            <td><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
                             <td>
                                 <button class="btn btn-approve" onclick="editWallet('${uDoc.id}', '${u.email}')">Edit ₦</button>
                                 <button class="btn btn-danger" onclick="toggleBan('${uDoc.id}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
@@ -244,8 +269,10 @@
         }
 
         window.editWallet = async (id, email) => {
-            const amt = prompt(`Set new balance for ${email}:`);
-            if(amt !== null) await updateDoc(doc(db, "users", id), { balance: parseFloat(amt) });
+            const amt = prompt(`Enter NEW TOTAL balance for ${email}:`);
+            if(amt !== null && !isNaN(amt)) {
+                await updateDoc(doc(db, "users", id), { balance: parseFloat(amt) });
+            }
         };
 
         window.toggleBan = async (id, currentStatus) => {
@@ -253,20 +280,20 @@
             await updateDoc(doc(db, "users", id), { status: newStatus });
         };
 
-        // --- DEPOSITS MANAGEMENT (Updated for Telegram Bot Sync) ---
+        // --- DEPOSITS MANAGEMENT ---
         function loadDeposits() {
             onSnapshot(query(collection(db, "deposits"), where("status", "==", "pending")), (snap) => {
                 const container = document.getElementById('deposit-container');
-                container.innerHTML = snap.empty ? "Clean - No pending proofs." : "";
+                container.innerHTML = snap.empty ? "<p style='color:#555'>No pending deposits.</p>" : "";
                 snap.forEach(dDoc => {
                     const d = dDoc.data();
                     container.innerHTML += `
                         <div class="deposit-card">
-                            <p><strong>User:</strong> ${d.email} | <strong>Amount:</strong> ₦${d.amount}</p>
-                            ${d.proofUrl ? `<img src="${d.proofUrl}" class="proof-img" onclick="window.open('${d.proofUrl}')">` : '<p>No screenshot attached</p>'}
+                            <p><strong>User:</strong> ${d.email} <br> <strong>Amount:</strong> ₦${d.amount.toLocaleString()}</p>
+                            ${d.proofUrl ? `<img src="${d.proofUrl}" class="proof-img" onclick="window.open('${d.proofUrl}')">` : '<p><i>No receipt attached</i></p>'}
                             <div style="margin-top:10px;">
-                                <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.email}', ${d.amount}, 'completed', '${d.imagePath}')">APPROVE</button>
-                                <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'rejected', '${d.imagePath}')">REJECT</button>
+                                <button class="btn btn-approve" onclick="handleDeposit('${dDoc.id}', '${d.uid}', ${d.amount}, 'approved', '${d.imagePath}')">APPROVE</button>
+                                <button class="btn btn-danger" onclick="handleDeposit('${dDoc.id}', null, null, 'declined', '${d.imagePath}')">REJECT</button>
                             </div>
                         </div>
                     `;
@@ -274,77 +301,77 @@
             });
         }
 
-        window.handleDeposit = async (id, email, amount, status, imgPath) => {
+        window.handleDeposit = async (docId, userUid, amount, status, imgPath) => {
+            if(!confirm(`Are you sure you want to ${status} this deposit?`)) return;
+
             try {
-                if(status === 'completed') {
-                    const uSnap = await getDocs(query(collection(db, "users"), where("email", "==", email)));
-                    if(!uSnap.empty) await updateDoc(doc(db, "users", uSnap.docs[0].id), { balance: increment(amount) });
+                if(status === 'approved' && userUid) {
+                    await updateDoc(doc(db, "users", userUid), { 
+                        balance: increment(amount) 
+                    });
                 }
                 
-                // Update status instead of deleting to trigger Telegram Bot "Modified" listener
-                await updateDoc(doc(db, "deposits", id), { status: status });
+                // Update deposit status
+                await updateDoc(doc(db, "deposits", docId), { status: status });
                 
-                // Cleanup: Delete proof image from storage after processing
+                // Storage Cleanup
                 if(imgPath) {
                     const storageRef = ref(storage, imgPath);
-                    await deleteObject(storageRef).catch(e => console.log("Storage cleanup error or file missing"));
+                    await deleteObject(storageRef).catch(() => {});
                 }
 
-                alert(`Deposit ${status === 'completed' ? 'Approved' : 'Rejected'}. Syncing with Bot...`);
-            } catch (e) { alert("Error processing deposit"); }
-        };
-
-        // --- INVENTORY MANAGEMENT ---
-        window.loadInventory = async () => {
-            const filter = document.getElementById('view-filter').value;
-            let q = collection(db, "products");
-            
-            const snap = await getDocs(q);
-            const tbody = document.getElementById('inventory-rows');
-            tbody.innerHTML = "";
-
-            snap.forEach(pDoc => {
-                const p = pDoc.data();
-                
-                // Filtering Logic
-                if(filter === 'LOW' && p.stockCount >= 3) return;
-                if(filter !== 'ALL' && filter !== 'LOW' && p.category !== filter) return;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${p.name} <br><small>${p.category}</small></td>
-                        <td>₦${p.price}</td>
-                        <td class="${p.stockCount < 3 ? 'low-stock' : ''}">${p.stockCount}</td>
-                        <td>
-                            <button class="btn btn-approve" onclick="addStock('${pDoc.id}')">+ Stock</button>
-                            <button class="btn btn-primary" onclick="editSecrets('${pDoc.id}')">Edit Secrets</button>
-                            <button class="btn btn-danger" onclick="deleteAsset('${pDoc.id}')">Del</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        };
-
-        window.addStock = async (id) => {
-            const extra = prompt("Enter new items separated by commas:");
-            if(!extra) return;
-            const newItems = extra.split(',').map(s => s.trim());
-            await updateDoc(doc(db, "products", id), {
-                stock: increment(newItems), // Note: Need arrayUnion in production
-                stockCount: increment(newItems.length)
-            });
-            loadInventory();
-        };
-
-        window.deleteAsset = async (id) => {
-            if(confirm("Delete this product permanently?")) {
-                await deleteDoc(doc(db, "products", id));
-                loadInventory();
+                alert(`Transaction ${status}.`);
+            } catch (e) { 
+                console.error(e);
+                alert("Processing Error."); 
             }
         };
 
-        window.editSecrets = async (id) => {
-             alert("Full Stock Editing interface requires a separate Modal. For now, use '+ Stock' or delete and re-add.");
+        // --- INVENTORY MANAGEMENT ---
+        function loadInventory() {
+            const filterEl = document.getElementById('view-filter');
+            
+            onSnapshot(collection(db, "products"), (snap) => {
+                const tbody = document.getElementById('inventory-rows');
+                const filter = filterEl.value;
+                tbody.innerHTML = "";
+
+                snap.forEach(pDoc => {
+                    const p = pDoc.data();
+                    if(filter === 'LOW' && p.stockCount >= 3) return;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
+                            <td>₦${p.price.toLocaleString()}</td>
+                            <td class="${p.stockCount < 3 ? 'low-stock' : ''}">${p.stockCount}</td>
+                            <td>
+                                <button class="btn btn-approve" onclick="addStock('${pDoc.id}')">+ Stock</button>
+                                <button class="btn btn-danger" onclick="deleteAsset('${pDoc.id}')">Del</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        window.addStock = async (id) => {
+            const extra = prompt("Paste new items separated by commas (e.g. user:pass, user2:pass2):");
+            if(!extra) return;
+            
+            const newItems = extra.split(',').map(s => s.trim()).filter(s => s !== "");
+            
+            await updateDoc(doc(db, "products", id), {
+                stock: arrayUnion(...newItems),
+                stockCount: increment(newItems.length)
+            });
+            alert("Stock Updated!");
+        };
+
+        window.deleteAsset = async (id) => {
+            if(confirm("Permanently delete this product from store?")) {
+                await deleteDoc(doc(db, "products", id));
+            }
         };
 
     </script>
