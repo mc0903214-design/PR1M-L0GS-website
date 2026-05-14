@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | SMS Verification</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #0a0a0c;
+            --skeletal: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; }
+
+        header { display: flex; align-items: center; margin-bottom: 30px; gap: 15px; }
+        .back-link { color: var(--neon-cyan); text-decoration: none; font-size: 1.5rem; }
+        
+        .intro-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .intro-card h1 { font-size: 1.4rem; color: var(--neon-cyan); margin-bottom: 10px; }
+        .intro-card p { font-size: 0.9rem; color: #888; line-height: 1.6; }
+
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
+        select, .search-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .price-display {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px dashed var(--neon-cyan);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .price-display span { font-size: 1.8rem; font-weight: 800; color: white; }
+
+        .action-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+            font-size: 1rem;
+        }
+
+        /* ACTIVE ORDER SECTION */
+        #active-order {
+            background: var(--glass-bg);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .number-display { font-size: 2rem; letter-spacing: 3px; color: var(--neon-cyan); margin: 15px 0; font-weight: bold; }
+        .timer { font-size: 0.9rem; color: #ff4d4d; margin-bottom: 20px; }
+        
+        .code-box {
+            background: #000;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 1.5rem;
+            color: #00ff88;
+            font-family: monospace;
+            border: 1px solid #333;
+        }
+
+        .cancel-btn { background: transparent; color: #666; border: none; cursor: pointer; margin-top: 15px; text-decoration: underline; }
+
+        /* SKELETON */
+        .skeleton { height: 50px; background: var(--skeletal); border-radius: 12px; position: relative; overflow: hidden; }
+        .skeleton::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="shop.html" class="back-link">←</a>
+        <h2>SMS Gateway</h2>
+    </header>
+
+    <div class="intro-card">
+        <h1>Global SMS Verifications</h1>
+        <p>Get instant OTP numbers for WhatsApp, Telegram, Google, and more. Numbers are held for 15 minutes. No code, no charge.</p>
+    </div>
+
+    <div id="order-form">
+        <div class="form-group">
+            <label>Select Country</label>
+            <select id="country-select">
+                <option value="">Loading countries...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Select Service</label>
+            <select id="service-select">
+                <option value="">Select country first...</option>
+            </select>
+        </div>
+
+        <div class="price-display">
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">ESTIMATED PRICE</p>
+            <span>₦<span id="final-price">0</span></span>
+        </div>
+
+        <button class="action-btn" id="purchase-btn" onclick="requestNumber()">Purchase Number</button>
+    </div>
+
+    <div id="active-order" class="hidden">
+        <h3>Your Dedicated Number</h3>
+        <div class="number-display" id="disp-number">+1 234 567 890</div>
+        <div class="timer">Expires in: <span id="time-left">15:00</span></div>
+        
+        <label>Verification Code:</label>
+        <div class="code-box" id="disp-code">WAITING FOR SMS...</div>
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="action-btn" style="flex: 2;" onclick="manualCheck()">Check Code Manually</button>
+            <button class="action-btn" style="flex: 1; background: #333;" onclick="copyCode()">Copy</button>
+        </div>
+        
+        <button class="cancel-btn" onclick="cancelOrder()">Cancel & Refund</button>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <h4 style="color: #444; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 15px;">Recent SMS History</h4>
+        <div id="sms-history">
+            </div>
+    </div>
+</div>
+
+<script type="module">
+    // Logic for 5sim API Integration + Firestore Balance Check
+    // 1. Fetch Admin Rates from Firestore
+    // 2. Fetch Countries/Services from 5sim
+    // 3. Handle Polling (every 5s)
+    // 4. Handle 15min Timer and Automatic Cancel
+</script>
+
+</body>
+</html>
