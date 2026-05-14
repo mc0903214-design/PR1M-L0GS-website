@@ -30,16 +30,16 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 25px;
-            padding: 30px;
+            padding: 40px 30px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.7);
         }
 
-        .status-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
-        h2 { font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 1px; }
-        p { color: #888; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5; }
+        .status-icon { font-size: 3.5rem; margin-bottom: 20px; display: block; }
+        h2 { font-size: 1.8rem; margin-bottom: 15px; letter-spacing: 1px; }
+        p { color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
 
         .confirm-btn {
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
@@ -54,24 +54,29 @@
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
             margin-bottom: 10px;
+            transition: 0.3s;
         }
+
+        .confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(188, 19, 254, 0.6); }
 
         .cancel-btn {
             background: transparent;
-            color: #555;
+            color: #666;
             border: none;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
         }
 
         .secret-container {
             background: rgba(0, 0, 0, 0.4);
             border: 1px dashed var(--neon-cyan);
             border-radius: 12px;
-            padding: 15px;
-            margin-top: 20px;
+            padding: 20px;
+            margin: 20px 0;
         }
 
         .secret-text {
@@ -80,14 +85,15 @@
             color: var(--neon-cyan);
             word-break: break-all;
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
         .copy-btn {
             background: var(--neon-cyan);
             color: #000;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
@@ -95,8 +101,22 @@
             text-transform: uppercase;
         }
 
+        .purchase-notice {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .purchase-link {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         .loader {
-            width: 40px; height: 40px;
+            width: 50px; height: 50px;
             border: 3px solid rgba(255,255,255,0.1);
             border-radius: 50%;
             border-top-color: var(--neon-purple);
@@ -111,49 +131,50 @@
 
     <div class="checkout-card" id="checkout-ui">
         
-        <!-- STEP 1: CONFIRMATION -->
         <div id="step-confirm">
             <span class="status-icon">🛒</span>
             <h2>Confirm Purchase</h2>
-            <p id="confirm-msg">Buy <strong id="prod-name" style="color:var(--neon-cyan)">Digital Asset</strong> for <strong style="color:white">₦<span id="prod-price">0</span></strong>?</p>
-            <button class="confirm-btn" onclick="startProcessing()">Confirm & Pay</button>
+            <p id="confirm-msg">You are about to purchase <strong id="prod-name" style="color:var(--neon-cyan)">Digital Asset</strong> for <strong style="color:white">₦<span id="prod-price">0</span></strong>.</p>
+            <button class="confirm-btn" onclick="startProcessing()">Authorize Payment</button>
             <br>
-            <a href="shop.html" class="cancel-btn">Cancel</a>
+            <a href="shop.html" class="cancel-btn">Return to Shop</a>
         </div>
 
-        <!-- STEP 2: PROCESSING -->
         <div id="step-processing" style="display: none;">
             <div class="loader"></div>
             <h2>Processing</h2>
-            <p>Securing your asset from the network...</p>
+            <p>Verifying transaction and securing your assets...</p>
         </div>
 
-        <!-- STEP 3: SUCCESS -->
         <div id="step-success" style="display: none;">
             <span class="status-icon">✅</span>
-            <h2>Success</h2>
-            <p>Funds deducted. Here is your secret:</p>
+            <h2>Purchase Complete</h2>
+            <p>Transaction successful. Your asset has been delivered below:</p>
+            
             <div class="secret-container">
                 <span class="secret-text" id="raw-secret">WAITING...</span>
-                <button class="copy-btn" onclick="copySecret()">Copy</button>
+                <button class="copy-btn" onclick="copySecret()">Copy to Clipboard</button>
             </div>
+
+            <div class="purchase-notice">
+                You can always access your items in the <a href="profile.html" class="purchase-link">MY PURCHASES</a> section.
+            </div>
+
             <br>
-            <a href="shop.html" class="cancel-btn" style="display:block; margin-top:20px;">Back to Market</a>
+            <a href="shop.html" class="confirm-btn" style="text-decoration: none; display: block; margin-top: 10px;">Return to Market</a>
         </div>
 
-        <!-- STEP 4: ERROR -->
         <div id="step-error" style="display: none;">
             <span class="status-icon">❌</span>
-            <h2>Failed</h2>
+            <h2>Transaction Failed</h2>
             <p id="error-desc">Insufficient balance or item out of stock.</p>
-            <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Fund Wallet</a>
+            <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Add Funds</a>
             <br>
             <a href="shop.html" class="cancel-btn">Back to Shop</a>
         </div>
 
     </div>
 
-    <!-- Firebase Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -175,7 +196,7 @@
         const params = new URLSearchParams(window.location.search);
         const itemName = params.get('name') || "Digital Asset";
         const itemPrice = parseFloat(params.get('price')) || 0;
-        const itemId = params.get('id'); // This must be the Firestore Document ID
+        const itemId = params.get('id');
 
         document.getElementById('prod-name').innerText = itemName;
         document.getElementById('prod-price').innerText = itemPrice.toLocaleString();
@@ -188,12 +209,11 @@
 
             onAuthStateChanged(auth, async (user) => {
                 if (!user) {
-                    showError("Please login to continue", "login.html", "Login");
+                    showError("Authentication required.", "login.html", "Login");
                     return;
                 }
 
                 try {
-                    // 1. Fetch Product and User Data simultaneously
                     const prodRef = doc(db, "products", itemId);
                     const [prodSnap, userSnap] = await Promise.all([
                         getDoc(prodRef),
@@ -214,20 +234,15 @@
                         return showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
                     }
 
-                    // 2. DISPENSE LOGIC (Handle SINGLE vs MULTIPLE)
                     let secretToGive;
                     let newStockList = [...pData.stock];
 
                     if (pData.mode === "SINGLE") {
-                        // In single mode, the whole stock is one secret, but it doesn't run out until stockCount is 0
                         secretToGive = pData.stock[0];
                     } else {
-                        // In multiple mode, we pop one item out of the array
                         secretToGive = newStockList.shift();
                     }
 
-                    // 3. EXECUTE TRANSACTION
-                    // A. Update User
                     await updateDoc(doc(db, "users", user.uid), {
                         balance: increment(-itemPrice),
                         totalSpent: increment(itemPrice),
@@ -239,13 +254,11 @@
                         })
                     });
 
-                    // B. Update Product Stock
                     await updateDoc(prodRef, {
                         stock: newStockList,
                         stockCount: increment(-1)
                     });
 
-                    // C. Log for adminq dashboard
                     await addDoc(collection(db, "logs"), {
                         type: "PURCHASE",
                         details: `${userData.email} purchased ${itemName} for ₦${itemPrice.toLocaleString()}`,
