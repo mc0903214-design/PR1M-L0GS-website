@@ -139,6 +139,7 @@
 
         .btn-wa { background: #25D366; color: white; }
         .btn-tg { background: #0088cc; color: white; }
+        .btn-sg { background: #3a76f0; color: white; }
 
         .history-section {
             margin-top: 40px;
@@ -227,8 +228,9 @@
 
             <label style="text-align: center; margin-bottom: 15px;">Send receipt to Admin via:</label>
             
-            <button class="submit-btn btn-wa" onclick="sendProof('WA')">Send via WhatsApp</button>
-            <button class="submit-btn btn-tg" onclick="sendProof('TG')">Send via Telegram</button>
+            <button class="submit-btn btn-wa" onclick="sendProof('WA')">WhatsApp</button>
+            <button class="submit-btn btn-tg" onclick="sendProof('TG')">Telegram</button>
+            <button class="submit-btn btn-sg" onclick="sendProof('SG')">Signal Messenger</button>
             
             <p style="font-size: 0.7rem; color: #666; text-align: center; margin-top: 10px;">
                 Your balance will be updated immediately after verification.
@@ -305,24 +307,27 @@
             const amt = document.getElementById('depositAmount').value;
             const message = `PR1MΞ DEPOSIT PROOF\n---\nUser: ${userEmail}\nAmount: ₦${amt}\n---\n(Attached screenshot below)`;
 
-            // 1. Log the pending deposit in Firestore so it shows in Admin Panel
             try {
+                // Log the pending deposit in Firestore
                 await addDoc(collection(db, "deposits"), {
                     uid: userUID,
                     email: userEmail,
                     amount: parseFloat(amt),
                     status: "pending",
-                    method: "Manual Transfer",
+                    method: "Manual (" + platform + ")",
                     timestamp: serverTimestamp()
                 });
 
-                // 2. Redirect to chosen platform
+                // Redirect to chosen platform
                 if(platform === 'WA') {
-                    // Replace with your actual WhatsApp number
-                    window.open(`https://wa.me/2349032140540?text=${encodeURIComponent(message)}`, '_blank');
-                } else {
-                    // Replace with your actual Telegram username
-                    window.open(`https://t.me/PR1ME_SUPPORT_BOT?text=${encodeURIComponent(message)}`, '_blank');
+                    // WhatsApp Link
+                    window.open(`https://wa.me/14385495393?text=${encodeURIComponent(message)}`, '_blank');
+                } else if(platform === 'TG') {
+                    // Telegram Link
+                    window.open(`https://t.me/prime1inesupport?text=${encodeURIComponent(message)}`, '_blank');
+                } else if(platform === 'SG') {
+                    // Signal Link (Signal doesn't support pre-filled text in URLs, so we open the profile)
+                    window.open(`https://signal.me/#eu/jvpno9mwa4WwLQV4AaOco-Ox0aXEV2j6ZHdxVIizNV2KI43zyY5Li7d-Al94s5SB`, '_blank');
                 }
 
                 alert("Opening app... Send the receipt photo in the chat!");
