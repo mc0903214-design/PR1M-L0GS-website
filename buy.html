@@ -188,14 +188,14 @@
 
         <div id="step-success" style="display: none;">
             <span class="status-icon">✅</span>
-            <h2>Success</h2>
-            <p>Funds deducted. Here is your secret:</p>
+            <h2>Order Complete</h2>
+            <p>Your purchase was successful. This item has been added to your <a href="mine.html" style="color: var(--neon-cyan); text-decoration: none; font-weight: bold;">MY PURCHASE</a> page.</p>
             <div class="secret-container">
                 <span class="secret-text" id="raw-secret">WAITING...</span>
-                <button class="copy-btn" onclick="copySecret()">Copy</button>
+                <button class="copy-btn" onclick="copySecret()">Copy Data</button>
             </div>
             <br>
-            <a href="shop.html" class="cancel-btn" style="display:block; margin-top:20px;">Back to Market</a>
+            <a href="shop.html" class="confirm-btn" style="text-decoration: none; display: block; margin-top:20px;">Return to Market</a>
         </div>
 
         <div id="step-error" style="display: none;">
@@ -212,7 +212,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; // Note: Re-importing from auth instead of firestore in your original script snippet, but for firestore functions keep firestore.
+        import { getFirestore as getFs, doc as d, getDoc as gd, updateDoc as ud, arrayUnion as au, increment as inc, collection as coll, addDoc as ad, serverTimestamp as st } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -225,7 +226,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getFs(app);
 
         const params = new URLSearchParams(window.location.search);
         const itemId = params.get('id');
@@ -234,8 +235,8 @@
             if (!itemId) return showError("Invalid Product Link.");
             
             try {
-                const prodRef = doc(db, "products", itemId);
-                const prodSnap = await getDoc(prodRef);
+                const prodRef = d(db, "products", itemId);
+                const prodSnap = await gd(prodRef);
                 
                 if (!prodSnap.exists()) return showError("Asset not found.");
                 
@@ -280,10 +281,10 @@
                 }
 
                 try {
-                    const prodRef = doc(db, "products", itemId);
+                    const prodRef = d(db, "products", itemId);
                     const [prodSnap, userSnap] = await Promise.all([
-                        getDoc(prodRef),
-                        getDoc(doc(db, "users", user.uid))
+                        gd(prodRef),
+                        gd(d(db, "users", user.uid))
                     ]);
 
                     const pData = prodSnap.data();
@@ -303,10 +304,10 @@
                         secretToGive = newStockList.shift();
                     }
 
-                    await updateDoc(doc(db, "users", user.uid), {
-                        balance: increment(-window.finalPrice),
-                        totalSpent: increment(window.finalPrice),
-                        myPurchases: arrayUnion({
+                    await ud(d(db, "users", user.uid), {
+                        balance: inc(-window.finalPrice),
+                        totalSpent: inc(window.finalPrice),
+                        myPurchases: au({
                             name: window.finalName,
                             price: window.finalPrice,
                             date: new Date().toLocaleDateString(),
@@ -314,15 +315,15 @@
                         })
                     });
 
-                    await updateDoc(prodRef, {
+                    await ud(prodRef, {
                         stock: newStockList,
-                        stockCount: increment(-1)
+                        stockCount: inc(-1)
                     });
 
-                    await addDoc(collection(db, "logs"), {
+                    await ad(coll(db, "logs"), {
                         type: "PURCHASE",
                         details: `${userData.email} purchased ${window.finalName}`,
-                        timestamp: serverTimestamp()
+                        timestamp: st()
                     });
 
                     showSuccess(secretToGive);
@@ -354,7 +355,7 @@
             navigator.clipboard.writeText(text);
             const btn = document.querySelector('.copy-btn');
             btn.innerText = "COPIED";
-            setTimeout(() => btn.innerText = "COPY", 2000);
+            setTimeout(() => btn.innerText = "COPY DATA", 2000);
         }
     </script>
 </body>
