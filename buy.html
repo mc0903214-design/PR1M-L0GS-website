@@ -17,59 +17,74 @@
         body {
             background-color: var(--dark-bg);
             color: white;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            /* Changed to a dark solid-ish look to match mobile app UI */
+            background: #0d0d12;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            /* Removed flex centering to allow full-screen scroll */
+            display: block; 
         }
 
         .checkout-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            padding: 30px;
+            background: transparent; /* Removed glass box background */
+            backdrop-filter: none;
+            border: none;
+            padding: 0; /* Remove padding to let media touch edges */
             width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            max-width: 100%; /* Changed from 400px to 100% */
+            text-align: left; /* Changed from center to match mobile app style */
+            box-shadow: none;
         }
 
-        /* Preview styles */
+        /* Preview styles - Updated for Full Screen */
+        #media-container {
+            width: 100%;
+            background: #000;
+            margin-bottom: 20px;
+        }
+
         .prod-full-img {
             width: 100%;
             height: auto;
-            max-height: 200px;
+            max-height: 45vh; /* Larger view on screen */
             object-fit: cover;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
             display: block;
+            border-radius: 0; /* Square edges for full-screen look */
+            border: none;
+        }
+
+        /* Padding for text content only */
+        #step-preview, #step-confirm, #step-processing, #step-success, #step-error {
+            padding: 20px;
         }
 
         .desc-box {
             color: #ccc;
-            font-size: 0.95rem;
+            font-size: 1rem;
             line-height: 1.6;
             text-align: left;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            white-space: pre-wrap; /* Maintains line breaks from admin */
+            margin-bottom: 30px;
+            padding: 0; /* Removed box padding */
+            background: transparent; /* Removed box background */
+            white-space: pre-wrap;
         }
 
-        .status-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
-        h2 { font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 1px; }
-        p { color: #888; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5; }
+        .status-icon { font-size: 3rem; margin-bottom: 20px; display: block; text-align: center; }
+        
+        h2 { 
+            font-size: 1.8rem; 
+            margin-bottom: 10px; 
+            letter-spacing: 0.5px; 
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        p { color: #888; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
 
         .confirm-btn {
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 18px 30px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
@@ -77,17 +92,27 @@
             font-size: 1rem;
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .cancel-btn {
-            background: transparent;
-            color: #555;
-            border: none;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 0.8rem;
             text-transform: uppercase;
             text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        /* Success/Error Steps - keep centered */
+        #step-confirm, #step-processing, #step-success, #step-error {
+            text-align: center;
+            padding-top: 50px;
         }
 
         .secret-container {
@@ -142,8 +167,7 @@
             <div class="desc-box" id="view-desc">
                 Fetching asset details...
             </div>
-            <button class="confirm-btn" onclick="goToConfirm()">Continue to Checkout</button>
-            <br>
+            <button class="confirm-btn" onclick="goToConfirm()">Buy Now</button>
             <a href="shop.html" class="cancel-btn">Back to Store</a>
         </div>
 
@@ -206,7 +230,6 @@
         const params = new URLSearchParams(window.location.search);
         const itemId = params.get('id');
 
-        // Fetch product data on load to show preview
         async function loadProductPreview() {
             if (!itemId) return showError("Invalid Product Link.");
             
@@ -220,7 +243,6 @@
                 document.getElementById('view-name').innerText = data.name;
                 document.getElementById('view-desc').innerText = data.description || "No description provided.";
                 
-                // Logic to handle Media (Video vs Image)
                 const mediaUrl = data.image || "https://via.placeholder.com/400x200";
                 const isVideo = /\.(mp4|webm|mov|ogg)$/i.test(mediaUrl);
                 const container = document.getElementById('media-container');
@@ -231,7 +253,6 @@
                     container.innerHTML = `<img src="${mediaUrl}" alt="Product" class="prod-full-img">`;
                 }
                 
-                // Set these for the confirmation step
                 document.getElementById('prod-name').innerText = data.name;
                 document.getElementById('prod-price').innerText = data.price.toLocaleString();
                 window.finalPrice = data.price;
