@@ -431,25 +431,51 @@
             document.getElementById('cancelEditBtn').style.display = "none";
         };
 
-        // --- USERS MANAGEMENT ---
+        // --- USERS MANAGEMENT (OPTIMIZED FOR INSTANT LOADING) ---
         function loadUsers() {
+            const tbody = document.getElementById('user-rows');
+            
             onSnapshot(collection(db, "users"), (snap) => {
-                const tbody = document.getElementById('user-rows');
-                tbody.innerHTML = "";
-                snap.forEach(uDoc => {
-                    const u = uDoc.data();
-                    const userId = uDoc.id;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${u.email}</td>
-                        <td>₦${(u.balance || 0).toLocaleString()}</td>
-                        <td><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
-                        <td>
-                            <button class="btn btn-approve btn-sm" onclick="editWallet('${userId}', '${u.email}')">Edit ₦</button>
-                            <button class="btn btn-danger btn-sm" onclick="toggleBan('${userId}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
+                snap.docChanges().forEach(change => {
+                    const u = change.doc.data();
+                    const userId = change.doc.id;
+                    
+                    if (change.type === "added") {
+                        if (!document.getElementById(`user-row-${userId}`)) {
+                            const row = document.createElement('tr');
+                            row.id = `user-row-${userId}`;
+                            row.innerHTML = `
+                                <td class="user-email">${u.email}</td>
+                                <td class="user-balance">₦${(u.balance || 0).toLocaleString()}</td>
+                                <td class="user-status"><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
+                                <td>
+                                    <button class="btn btn-approve btn-sm" onclick="editWallet('${userId}', '${u.email}')">Edit ₦</button>
+                                    <button class="btn btn-danger btn-sm action-ban" onclick="toggleBan('${userId}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        }
+                    }
+                    
+                    if (change.type === "modified") {
+                        const existingRow = document.getElementById(`user-row-${userId}`);
+                        if (existingRow) {
+                            existingRow.querySelector('.user-balance').innerText = `₦${(u.balance || 0).toLocaleString()}`;
+                            
+                            const statusSpan = existingRow.querySelector('.user-status span');
+                            statusSpan.innerText = u.status || 'active';
+                            statusSpan.style.color = u.status === 'banned' ? '#ff4d4d' : '#00ff88';
+                            
+                            const banBtn = existingRow.querySelector('.action-ban');
+                            banBtn.innerText = u.status === 'banned' ? 'Unban' : 'Ban';
+                            banBtn.setAttribute('onclick', `toggleBan('${userId}', '${u.status}')`);
+                        }
+                    }
+                    
+                    if (change.type === "removed") {
+                        const existingRow = document.getElementById(`user-row-${userId}`);
+                        if (existingRow) existingRow.remove();
+                    }
                 });
             });
         }
