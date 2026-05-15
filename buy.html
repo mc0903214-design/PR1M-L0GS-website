@@ -17,25 +17,22 @@
         body {
             background-color: var(--dark-bg);
             color: white;
-            /* Changed to a dark solid-ish look to match mobile app UI */
             background: #0d0d12;
             min-height: 100vh;
-            /* Removed flex centering to allow full-screen scroll */
             display: block; 
         }
 
         .checkout-card {
-            background: transparent; /* Removed glass box background */
+            background: transparent;
             backdrop-filter: none;
             border: none;
-            padding: 0; /* Remove padding to let media touch edges */
+            padding: 0;
             width: 100%;
-            max-width: 100%; /* Changed from 400px to 100% */
-            text-align: left; /* Changed from center to match mobile app style */
+            max-width: 100%;
+            text-align: left;
             box-shadow: none;
         }
 
-        /* Preview styles - Updated for Full Screen */
         #media-container {
             width: 100%;
             background: #000;
@@ -45,15 +42,14 @@
         .prod-full-img {
             width: 100%;
             height: auto;
-            max-height: 45vh; /* Larger view on screen */
+            max-height: 45vh;
             object-fit: cover;
             display: block;
-            border-radius: 0; /* Square edges for full-screen look */
+            border-radius: 0;
             border: none;
         }
 
-        /* Padding for text content only */
-        #step-preview, #step-confirm, #step-processing, #step-success, #step-error {
+        #step-preview, #step-confirm, #step-processing, #step-success, #step-error, #step-referral {
             padding: 20px;
         }
 
@@ -63,8 +59,7 @@
             line-height: 1.6;
             text-align: left;
             margin-bottom: 30px;
-            padding: 0; /* Removed box padding */
-            background: transparent; /* Removed box background */
+            background: transparent;
             white-space: pre-wrap;
         }
 
@@ -109,8 +104,7 @@
             text-align: center;
         }
 
-        /* Success/Error Steps - keep centered */
-        #step-confirm, #step-processing, #step-success, #step-error {
+        #step-confirm, #step-processing, #step-success, #step-error, #step-referral {
             text-align: center;
             padding-top: 50px;
         }
@@ -154,6 +148,21 @@
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Referral Gate Styles */
+        .progress-container {
+            background: rgba(255,255,255,0.1);
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: var(--neon-cyan);
+            height: 100%;
+            width: 0%;
+            transition: 0.5s;
+        }
     </style>
 </head>
 <body>
@@ -162,13 +171,26 @@
         
         <div id="step-preview">
             <div id="media-container"></div>
-            
             <h2 id="view-name">Loading...</h2>
-            <div class="desc-box" id="view-desc">
-                Fetching asset details...
-            </div>
-            <button class="confirm-btn" onclick="goToConfirm()">Buy Now</button>
+            <div class="desc-box" id="view-desc">Fetching asset details...</div>
+            <button class="confirm-btn" onclick="goToConfirm()">Claim Now</button>
             <a href="shop.html" class="cancel-btn">Back to Store</a>
+        </div>
+
+        <div id="step-referral" style="display: none;">
+            <span class="status-icon">🎁</span>
+            <h2>Free Zone Locked</h2>
+            <p>Invite 4 people to claim free assets. <br>You have: <strong id="ref-stat" style="color:var(--neon-cyan)">0/4</strong></p>
+            <div class="progress-container">
+                <div id="ref-progress" class="progress-bar"></div>
+            </div>
+            <div class="secret-container">
+                <p style="margin-bottom:10px; color:#aaa;">Your Invite Link:</p>
+                <span class="secret-text" id="ref-link" style="font-size:0.9rem">generating...</span>
+                <button class="copy-btn" onclick="copyRef()">Copy Link</button>
+            </div>
+            <br>
+            <a href="shop.html" class="cancel-btn">Back to Shop</a>
         </div>
 
         <div id="step-confirm" style="display: none;">
@@ -189,7 +211,7 @@
         <div id="step-success" style="display: none;">
             <span class="status-icon">✅</span>
             <h2>Order Complete</h2>
-            <p>Your purchase was successful. This item has been added to your <a href="mine.html" style="color: var(--neon-cyan); text-decoration: none; font-weight: bold;">MY PURCHASE</a> page.</p>
+            <p>Your purchase was successful.</p>
             <div class="secret-container">
                 <span class="secret-text" id="raw-secret">WAITING...</span>
                 <button class="copy-btn" onclick="copySecret()">Copy Data</button>
@@ -212,8 +234,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; // Note: Re-importing from auth instead of firestore in your original script snippet, but for firestore functions keep firestore.
-        import { getFirestore as getFs, doc as d, getDoc as gd, updateDoc as ud, arrayUnion as au, increment as inc, collection as coll, addDoc as ad, serverTimestamp as st } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -226,18 +247,17 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFs(app);
+        const db = getFirestore(app);
 
         const params = new URLSearchParams(window.location.search);
         const itemId = params.get('id');
+        let currentRefLink = "";
 
         async function loadProductPreview() {
             if (!itemId) return showError("Invalid Product Link.");
-            
             try {
-                const prodRef = d(db, "products", itemId);
-                const prodSnap = await gd(prodRef);
-                
+                const prodRef = doc(db, "products", itemId);
+                const prodSnap = await getDoc(prodRef);
                 if (!prodSnap.exists()) return showError("Asset not found.");
                 
                 const data = prodSnap.data();
@@ -248,90 +268,84 @@
                 const isVideo = /\.(mp4|webm|mov|ogg)$/i.test(mediaUrl);
                 const container = document.getElementById('media-container');
 
-                if (isVideo) {
-                    container.innerHTML = `<video src="${mediaUrl}" class="prod-full-img" autoplay loop muted playsinline></video>`;
-                } else {
-                    container.innerHTML = `<img src="${mediaUrl}" alt="Product" class="prod-full-img">`;
-                }
+                container.innerHTML = isVideo 
+                    ? `<video src="${mediaUrl}" class="prod-full-img" autoplay loop muted playsinline></video>`
+                    : `<img src="${mediaUrl}" alt="Product" class="prod-full-img">`;
                 
                 document.getElementById('prod-name').innerText = data.name;
                 document.getElementById('prod-price').innerText = data.price.toLocaleString();
                 window.finalPrice = data.price;
                 window.finalName = data.name;
-            } catch (e) {
-                showError("Network error fetching data.");
-            }
+            } catch (e) { showError("Network error fetching data."); }
         }
 
         loadProductPreview();
 
         window.goToConfirm = function() {
-            document.getElementById('step-preview').style.display = 'none';
-            document.getElementById('step-confirm').style.display = 'block';
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) return (window.location.href = 'index.html');
+                
+                const userSnap = await getDoc(doc(db, "users", user.uid));
+                const userData = userSnap.data();
+                const refCount = userData.referralCount || 0;
+                
+                // Logic: Check Referral Count for FREE items
+                if (window.finalPrice <= 0 && refCount < 4) {
+                    document.getElementById('step-preview').style.display = 'none';
+                    document.getElementById('step-referral').style.display = 'block';
+                    document.getElementById('ref-stat').innerText = `${refCount}/4`;
+                    document.getElementById('ref-progress').style.width = `${(refCount/4)*100}%`;
+                    
+                    const origin = window.location.origin;
+                    currentRefLink = `${origin}/index.html?ref=${user.uid}`;
+                    document.getElementById('ref-link').innerText = currentRefLink;
+                } else {
+                    document.getElementById('step-preview').style.display = 'none';
+                    document.getElementById('step-confirm').style.display = 'block';
+                }
+            });
         };
 
         window.startProcessing = async function() {
             document.getElementById('step-confirm').style.display = 'none';
             document.getElementById('step-processing').style.display = 'block';
 
-            onAuthStateChanged(auth, async (user) => {
-                if (!user) {
-                    showError("Please login to continue", "login.html", "Login");
-                    return;
-                }
+            const user = auth.currentUser;
+            if (!user) return showError("Please login to continue");
 
-                try {
-                    const prodRef = d(db, "products", itemId);
-                    const [prodSnap, userSnap] = await Promise.all([
-                        gd(prodRef),
-                        gd(d(db, "users", user.uid))
-                    ]);
+            try {
+                const prodRef = doc(db, "products", itemId);
+                const [prodSnap, userSnap] = await Promise.all([
+                    getDoc(prodRef),
+                    getDoc(doc(db, "users", user.uid))
+                ]);
 
-                    const pData = prodSnap.data();
-                    const userData = userSnap.data();
+                const pData = prodSnap.data();
+                const userData = userSnap.data();
 
-                    if (pData.stockCount < 1) return showError("This item is now out of stock.");
-                    if (userData.balance < window.finalPrice) {
-                        return showError("Insufficient wallet balance.", "fund.html", "Fund Wallet");
-                    }
+                if (pData.stockCount < 1) return showError("Out of stock.");
+                if (userData.balance < window.finalPrice) return showError("Insufficient balance.", "fund.html", "Fund Wallet");
 
-                    let secretToGive;
-                    let newStockList = [...pData.stock];
+                let secretToGive = (pData.mode === "SINGLE") ? pData.stock[0] : [...pData.stock].shift();
+                let newStockList = (pData.mode === "SINGLE") ? pData.stock : pData.stock.slice(1);
 
-                    if (pData.mode === "SINGLE") {
-                        secretToGive = pData.stock[0];
-                    } else {
-                        secretToGive = newStockList.shift();
-                    }
+                await updateDoc(doc(db, "users", user.uid), {
+                    balance: increment(-window.finalPrice),
+                    myPurchases: arrayUnion({
+                        name: window.finalName,
+                        price: window.finalPrice,
+                        date: new Date().toLocaleDateString(),
+                        secret: secretToGive
+                    })
+                });
 
-                    await ud(d(db, "users", user.uid), {
-                        balance: inc(-window.finalPrice),
-                        totalSpent: inc(window.finalPrice),
-                        myPurchases: au({
-                            name: window.finalName,
-                            price: window.finalPrice,
-                            date: new Date().toLocaleDateString(),
-                            secret: secretToGive
-                        })
-                    });
+                await updateDoc(prodRef, {
+                    stock: newStockList,
+                    stockCount: increment(-1)
+                });
 
-                    await ud(prodRef, {
-                        stock: newStockList,
-                        stockCount: inc(-1)
-                    });
-
-                    await ad(coll(db, "logs"), {
-                        type: "PURCHASE",
-                        details: `${userData.email} purchased ${window.finalName}`,
-                        timestamp: st()
-                    });
-
-                    showSuccess(secretToGive);
-
-                } catch (e) {
-                    showError("Transaction error. Connection lost.");
-                }
-            });
+                showSuccess(secretToGive);
+            } catch (e) { showError("Transaction failed."); }
         }
 
         function showSuccess(secret) {
@@ -341,8 +355,7 @@
         }
 
         function showError(msg, link = "shop.html", btnText = "Back to Shop") {
-            document.getElementById('step-preview').style.display = 'none';
-            document.getElementById('step-processing').style.display = 'none';
+            document.querySelectorAll('[id^="step-"]').forEach(s => s.style.display = 'none');
             document.getElementById('step-error').style.display = 'block';
             document.getElementById('error-desc').innerText = msg;
             const actionBtn = document.getElementById('error-action');
@@ -350,13 +363,15 @@
             actionBtn.innerText = btnText;
         }
 
-        window.copySecret = function() {
-            const text = document.getElementById('raw-secret').innerText;
-            navigator.clipboard.writeText(text);
-            const btn = document.querySelector('.copy-btn');
-            btn.innerText = "COPIED";
-            setTimeout(() => btn.innerText = "COPY DATA", 2000);
-        }
+        window.copySecret = () => {
+            navigator.clipboard.writeText(document.getElementById('raw-secret').innerText);
+            alert("Copied to clipboard!");
+        };
+
+        window.copyRef = () => {
+            navigator.clipboard.writeText(currentRefLink);
+            alert("Invite link copied!");
+        };
     </script>
 </body>
 </html>
