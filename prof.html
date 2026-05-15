@@ -90,16 +90,42 @@
         .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--neon-cyan); }
         .stat-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
 
+        /* --- REFERRAL SECTION --- */
+        .referral-card {
+            background: rgba(188, 19, 254, 0.05);
+            border: 1px solid rgba(188, 19, 254, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .ref-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .ref-title { font-size: 0.85rem; font-weight: bold; color: var(--neon-purple); text-transform: uppercase; }
+        .ref-count { font-size: 0.9rem; color: white; }
+        
+        .progress-bg { background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin: 10px 0; overflow: hidden; }
+        .progress-fill { background: var(--neon-purple); height: 100%; width: 0%; transition: 1s ease; }
+        
+        .ref-link-box {
+            display: flex;
+            background: rgba(0,0,0,0.4);
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .ref-url { font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
+        .copy-small { background: var(--neon-cyan); color: #000; border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+
         /* --- STATUS MESSAGE --- */
         #status-msg { text-align: center; font-size: 0.8rem; margin-bottom: 10px; min-height: 1.2rem; }
         .error { color: #ff4d4d; }
         .info { color: var(--neon-cyan); }
 
         /* --- SETTINGS LIST --- */
-        .settings-group {
-            margin-top: 30px;
-        }
-
+        .settings-group { margin-top: 30px; }
         .settings-item {
             display: flex;
             justify-content: space-between;
@@ -113,12 +139,7 @@
             border: 1px solid rgba(255,255,255,0.1);
             transition: 0.3s;
         }
-
-        .settings-item:active {
-            border-color: var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.05);
-        }
-
+        .settings-item:active { border-color: var(--neon-cyan); background: rgba(0, 243, 255, 0.05); }
         .item-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
         .item-info p { font-size: 0.75rem; color: #aaa; }
         .action-text { font-size: 0.75rem; font-weight: bold; color: var(--neon-cyan); text-transform: uppercase; }
@@ -135,10 +156,7 @@
             cursor: pointer;
             text-transform: uppercase;
             font-size: 0.8rem;
-            transition: 0.3s;
         }
-
-        .logout-btn:active { background: rgba(255, 77, 77, 0.3); }
 
     </style>
 </head>
@@ -167,6 +185,18 @@
                 <span class="stat-label">Spent</span>
             </div>
         </div>
+
+        <div class="referral-card">
+            <div class="ref-header">
+                <span class="ref-title">Free Zone Goal</span>
+                <span class="ref-count" id="ref-count-display">0/4 Invites</span>
+            </div>
+            <div class="progress-bg"><div class="progress-fill" id="ref-progress-bar"></div></div>
+            <div class="ref-link-box">
+                <span class="ref-url" id="ref-link-text">Generating link...</span>
+                <button class="copy-small" onclick="copyRefLink()">COPY</button>
+            </div>
+        </div>
     </div>
 
     <div class="settings-group">
@@ -183,8 +213,8 @@
         <div class="reveal">
             <a href="mine.html" class="settings-item">
                 <div class="item-info">
-                    <h4>My Vault</h4>
-                    <p>Digital logs & access codes</p>
+                    <h4>Purchase History</h4>
+                    <p>Access your digital assets & logs</p>
                 </div>
                 <span class="action-text">View All ›</span>
             </a>
@@ -196,7 +226,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, addDoc, collection, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -220,71 +250,61 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Set visual user details from Auth provider
-                const nameBase = user.email.split('@')[0].toUpperCase();
-                document.getElementById('display-name').innerText = nameBase;
+                document.getElementById('display-name').innerText = user.email.split('@')[0].toUpperCase();
                 document.getElementById('user-email-header').innerText = user.email;
                 document.getElementById('uid-display').innerText = user.uid.substring(0, 8).toUpperCase();
                 document.getElementById('avatar-initial').innerText = user.email.charAt(0).toUpperCase();
+                
+                const refLink = `${window.location.origin}/index.html?ref=${user.uid}`;
+                document.getElementById('ref-link-text').innerText = refLink;
+                window.currentUserRefLink = refLink;
 
-                // Start Live Sync from Firestore "users" collection
                 const userRef = doc(db, "users", user.uid);
                 onSnapshot(userRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
 
-                        // Immediate Logout if Account Restricted
                         if (data.status === 'banned') {
-                            signOut(auth).then(() => window.location.href = 'index.html');
+                            signOut(auth).then(() => window.location.href = 'login.html');
                             return;
                         }
 
-                        // UI Update for Balance and Spent
-                        const spent = data.totalSpent || 0;
-                        const balance = data.balance || 0;
-                        const orders = data.myPurchases ? data.myPurchases.length : 0;
-
-                        document.getElementById('total-spent').innerText = `₦${spent.toLocaleString()}`;
-                        document.getElementById('current-balance').innerText = `₦${balance.toLocaleString()}`;
-                        document.getElementById('total-purchases').innerText = orders;
+                        document.getElementById('total-spent').innerText = `₦${(data.totalSpent || 0).toLocaleString()}`;
+                        document.getElementById('current-balance').innerText = `₦${(data.balance || 0).toLocaleString()}`;
+                        document.getElementById('total-purchases').innerText = (data.myPurchases || []).length;
+                        
+                        // Update Referral Progress
+                        const rCount = data.referralCount || 0;
+                        document.getElementById('ref-count-display').innerText = `${rCount}/4 Invites`;
+                        const progressPercent = Math.min((rCount / 4) * 100, 100);
+                        document.getElementById('ref-progress-bar').style.width = progressPercent + "%";
                     }
                 });
 
-                // Record Profile Access Log
                 addDoc(collection(db, "logs"), {
-                    type: "PROFILE_ACCESS",
-                    details: `${user.email} viewed account dashboard.`,
+                    type: "PROFILE_VIEW",
+                    details: `${user.email} checking profile stats.`,
                     timestamp: serverTimestamp()
                 });
 
             } else {
-                // No user session found
                 window.location.href = 'login.html';
             }
         });
 
-        // Logout Handler
-        document.getElementById('logout-trigger').addEventListener('click', async () => {
-            const user = auth.currentUser;
-            
-            if (user) {
-                try {
-                    await addDoc(collection(db, "logs"), {
-                        type: "SESSION_END",
-                        details: `${user.email} signed out.`,
-                        timestamp: serverTimestamp()
-                    });
-                } catch (e) { console.warn("Log failure:", e); }
+        window.copyRefLink = () => {
+            if(window.currentUserRefLink) {
+                navigator.clipboard.writeText(window.currentUserRefLink);
+                alert("Invite link copied to clipboard!");
             }
-            
+        }
+
+        document.getElementById('logout-trigger').addEventListener('click', async () => {
             signOut(auth).then(() => {
                 window.location.href = 'index.html';
-            }).catch(err => {
-                setStatus("Encryption error on logout. Refreshing...");
             });
         });
 
-        // Reveal effect for smooth loading
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
