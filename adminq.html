@@ -113,7 +113,7 @@
         <button class="tab-btn active" id="tab-add" onclick="showTab('add-prod')">ADD PRODUCT</button>
         <button class="tab-btn" onclick="showTab('users-list')">USERS</button>
         <button class="tab-btn" id="tab-deps" onclick="showTab('deps-list')">DEPOSITS</button>
-        <button class="tab-btn" onclick="showTab('all-prods')">INVENTORY</button>
+        <button class="tab-btn" id="tab-inventory" onclick="showTab('all-prods')">INVENTORY</button>
         <button class="tab-btn" onclick="showTab('sms-config')" style="border-color: var(--neon-purple);">SMS CONFIG</button>
     </div>
 
@@ -221,6 +221,7 @@
             const pass = document.getElementById("sys-pass").value;
             if (pass === "1100") { 
                 document.getElementById("auth-gate").style.display = "none";
+                loadProducts(); 
                 loadDepositsHistory();
             } else {
                 alert("ACCESS DENIED");
@@ -235,6 +236,8 @@
 
             if(tabId === 'deps-list') {
                 loadDepositsHistory();
+            } else if(tabId === 'all-prods') {
+                loadProducts();
             }
         }
 
@@ -259,21 +262,71 @@
             }
         }
 
+        function loadProducts() {
+            const tableBody = document.getElementById("products-table-body");
+            tableBody.innerHTML = "";
+
+            if (window.db || (window.firebase && firebase.database) || (window.firebase && firebase.firestore)) {
+                if (firebase.database) {
+                    firebase.database().ref('products').once('value', (snapshot) => {
+                        snapshot.forEach((childSnapshot) => {
+                            renderProductRow(tableBody, childSnapshot.key, childSnapshot.val());
+                        });
+                    });
+                } else if (firebase.firestore) {
+                    firebase.firestore().collection("products").get().then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            renderProductRow(tableBody, doc.id, doc.data());
+                        });
+                    });
+                }
+            } else {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td>Facebook Aged Logs</td>
+                        <td>Logs</td>
+                        <td>₦2,500</td>
+                        <td><span class="low-stock">12 left</span></td>
+                        <td><button class="btn btn-sm btn-primary">Edit</button></td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderProductRow(table, id, data) {
+            const row = document.createElement("tr");
+            let stockCount = 0;
+            
+            if(data.mode === "MULTIPLE" && data.stock) {
+                stockCount = data.stock.split(",").length;
+            } else if(data.stock) {
+                stockCount = 1;
+            }
+
+            row.innerHTML = `
+                <td>${data.name || 'Unnamed Asset'}</td>
+                <td>${data.category || 'General'}</td>
+                <td>₦${data.price || 0}</td>
+                <td><span class="${stockCount < 5 ? 'low-stock' : ''}">${stockCount} items</span></td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="editProduct('${id}')">Edit</button>
+                </td>
+            `;
+            table.appendChild(row);
+        }
+
         function loadDepositsHistory() {
             const container = document.getElementById("deposits-container");
             container.innerHTML = ""; 
 
             if (window.db || (window.firebase && firebase.database) || (window.firebase && firebase.firestore)) {
-                
                 if(firebase.database) {
                     firebase.database().ref('deposits').orderByChild('timestamp').once('value', (snapshot) => {
                         snapshot.forEach((childSnapshot) => {
-                            const data = childSnapshot.val();
-                            renderDepositCard(container, data);
+                            renderDepositCard(container, childSnapshot.val());
                         });
                     });
-                }
-                else if(firebase.firestore) {
+                } else if(firebase.firestore) {
                     firebase.firestore().collection("deposits").orderBy("timestamp", "desc").get().then((querySnapshot) => {
                         querySnapshot.forEach((doc) => {
                             renderDepositCard(container, doc.data());
