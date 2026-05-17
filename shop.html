@@ -313,6 +313,14 @@
             if (user) {
                 currentUser = user;
 
+                // 1. Instant Balance Load from Cache
+                const cachedBal = sessionStorage.getItem('cached_balance');
+                if(cachedBal) {
+                    document.getElementById('balance-loader').classList.add('hidden');
+                    document.getElementById('balance-text').classList.remove('hidden');
+                    document.getElementById('balance').innerText = parseFloat(cachedBal).toLocaleString(undefined, {minimumFractionDigits: 2});
+                }
+
                 if (!sessionStorage.getItem('tg_popup_shown')) {
                     setTimeout(() => {
                         document.getElementById('tg-popup').classList.add('active');
@@ -328,13 +336,16 @@
                     });
                 } catch (e) {}
 
+                // 2. Background Sync with Firestore
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         const bal = docSnap.data().balance || 0;
-                        // LOGIC: Hide loader and show balance once data arrives
                         document.getElementById('balance-loader').classList.add('hidden');
                         document.getElementById('balance-text').classList.remove('hidden');
                         document.getElementById('balance').innerText = bal.toLocaleString(undefined, {minimumFractionDigits: 2});
+                        
+                        // Update cache for next time
+                        sessionStorage.setItem('cached_balance', bal);
                     }
                 });
             } else {
@@ -363,6 +374,7 @@
             e.preventDefault();
             signOut(auth).then(() => {
                 sessionStorage.removeItem('tg_popup_shown');
+                sessionStorage.removeItem('cached_balance');
                 window.location.href = 'index.html';
             });
         });
