@@ -24,6 +24,26 @@
             padding: 15px;
         }
 
+        /* --- STICKY BACK ARROW --- */
+        .back-link { 
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--neon-cyan); 
+            text-decoration: none; 
+            font-size: 1.5rem; 
+        }
+
         /* --- SLOW REVEAL --- */
         .reveal {
             opacity: 0;
@@ -34,13 +54,12 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         header { 
-            padding: 10px 5px 25px 5px; 
+            padding: 10px 5px 25px 60px; /* Left padding added to clear the sticky arrow */
             display: flex; 
             align-items: center; 
             gap: 15px; 
         }
 
-        .back-link { color: var(--neon-cyan); text-decoration: none; font-size: 1.5rem; }
         .cat-title { font-size: 1.4rem; letter-spacing: 2px; text-transform: uppercase; }
 
         /* --- SKELETAL LOADING --- */
@@ -158,8 +177,9 @@
 </head>
 <body>
 
+    <a href="shop.html" class="back-link">←</a>
+
     <header class="reveal active">
-        <a href="shop.html" class="back-link">←</a>
         <h1 class="cat-title" id="cat-display">Marketplace</h1>
     </header>
 
