@@ -219,7 +219,7 @@
     <script>
         function checkPass() {
             const pass = document.getElementById("sys-pass").value;
-            if (pass === "ADMIN123") { // Replace with your standard system password
+            if (pass === "1100") { 
                 document.getElementById("auth-gate").style.display = "none";
                 loadDepositsHistory();
             } else {
@@ -259,14 +259,12 @@
             }
         }
 
-        // Automatic engine to loop items from your Firebase connection reference
         function loadDepositsHistory() {
             const container = document.getElementById("deposits-container");
             container.innerHTML = ""; 
 
             if (window.db || (window.firebase && firebase.database) || (window.firebase && firebase.firestore)) {
                 
-                // Realtime Database Engine Pull
                 if(firebase.database) {
                     firebase.database().ref('deposits').orderByChild('timestamp').once('value', (snapshot) => {
                         snapshot.forEach((childSnapshot) => {
@@ -275,7 +273,6 @@
                         });
                     });
                 }
-                // Firestore Engine Pull
                 else if(firebase.firestore) {
                     firebase.firestore().collection("deposits").orderBy("timestamp", "desc").get().then((querySnapshot) => {
                         querySnapshot.forEach((doc) => {
@@ -284,7 +281,6 @@
                     });
                 }
             } else {
-                // Mock layout placeholder showing how cards populate cleanly upon live runtime hook
                 container.innerHTML = `
                     <div class="deposit-card approved">
                         <div>
