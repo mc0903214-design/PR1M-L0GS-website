@@ -22,6 +22,27 @@
             display: block; 
         }
 
+        /* Sticky Back Arrow */
+        .sticky-back {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
         .checkout-card {
             background: transparent;
             backdrop-filter: none;
@@ -61,6 +82,14 @@
             margin-bottom: 30px;
             background: transparent;
             white-space: pre-wrap;
+        }
+
+        .price-display {
+            display: block;
+            margin-top: 15px;
+            font-weight: 800;
+            color: white;
+            font-size: 1.2rem;
         }
 
         .status-icon { font-size: 3rem; margin-bottom: 20px; display: block; text-align: center; }
@@ -167,6 +196,8 @@
 </head>
 <body>
 
+    <a href="javascript:history.back()" class="sticky-back">←</a>
+
     <div class="checkout-card" id="checkout-ui">
         
         <div id="step-preview">
@@ -174,7 +205,6 @@
             <h2 id="view-name">Loading...</h2>
             <div class="desc-box" id="view-desc">Fetching asset details...</div>
             <button class="confirm-btn" onclick="goToConfirm()">GET</button>
-            <a href="javascript:history.back()" class="cancel-btn">Back to Store</a>
         </div>
 
         <div id="step-referral" style="display: none;">
@@ -189,8 +219,6 @@
                 <span class="secret-text" id="ref-link" style="font-size:0.9rem">generating...</span>
                 <button class="copy-btn" onclick="copyRef()">Copy Link</button>
             </div>
-            <br>
-            <a href="javascript:history.back()" class="cancel-btn">Back to Shop</a>
         </div>
 
         <div id="step-confirm" style="display: none;">
@@ -225,8 +253,6 @@
             <h2>Failed</h2>
             <p id="error-desc">Insufficient balance or item out of stock.</p>
             <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Fund Wallet</a>
-            <br>
-            <a href="javascript:history.back()" class="cancel-btn">Back to Shop</a>
         </div>
 
     </div>
@@ -262,13 +288,15 @@
                 
                 const data = prodSnap.data();
                 document.getElementById('view-name').innerText = data.name;
-                document.getElementById('view-desc').innerText = data.description || "No description provided.";
+                
+                // Add price in bold at the end of description
+                const priceText = data.price > 0 ? `₦${data.price.toLocaleString()}` : "FREE";
+                document.getElementById('view-desc').innerHTML = `${data.description || "No description provided."}<br><span class="price-display">${priceText}</span>`;
                 
                 const mediaUrl = data.image || "https://via.placeholder.com/400x200";
                 const isVideo = /\.(mp4|webm|mov|ogg)$/i.test(mediaUrl);
                 const container = document.getElementById('media-container');
 
-                // Fixed Video Logic: controls added, autoplay/muted/loop removed
                 container.innerHTML = isVideo 
                     ? `<video src="${mediaUrl}" class="prod-full-img" controls playsinline></video>`
                     : `<img src="${mediaUrl}" alt="Product" class="prod-full-img">`;
