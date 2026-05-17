@@ -139,7 +139,6 @@
 
         .status-badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         .status-badge.success { background: rgba(0, 255, 136, 0.1); color: #00ff88; }
-        .status-badge.pending { background: rgba(255, 187, 0, 0.1); color: #ffbb00; }
     </style>
 </head>
 <body>
@@ -204,27 +203,33 @@
         });
 
         document.getElementById('payButton').addEventListener('click', () => {
-            const amount = parseFloat(document.getElementById('amount').value);
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value);
+
+            if (!currentUser) return alert("System still loading... please wait a second.");
             if (!amount || amount < 100) return alert("Minimum is ₦100");
 
-            const handler = PaystackPop.setup({
-                key: 'pk_live_c647352d8d23f8f73ade3d2b4b11c8f13eaa1f74',
-                email: currentUser.email,
-                amount: amount * 100, // Paystack works in Kobo
-                currency: "NGN",
-                callback: function(response) {
-                    handleSuccess(amount, response.reference);
-                },
-                onClose: function() {
-                    alert("Transaction closed.");
-                }
-            });
-            handler.openIframe();
+            try {
+                const handler = PaystackPop.setup({
+                    key: 'pk_live_c647352d8d23f8f73ade3d2b4b11c8f13eaa1f74',
+                    email: currentUser.email,
+                    amount: Math.round(amount * 100),
+                    currency: "NGN",
+                    callback: function(response) {
+                        handleSuccess(amount, response.reference);
+                    },
+                    onClose: function() {
+                        console.log("Window closed");
+                    }
+                });
+                handler.openIframe();
+            } catch (err) {
+                alert("Payment gateway error. Please refresh the page.");
+            }
         });
 
         async function handleSuccess(amount, ref) {
             try {
-                // 1. Record the deposit
                 await addDoc(collection(db, "deposits"), {
                     uid: currentUser.uid,
                     email: currentUser.email,
@@ -234,17 +239,14 @@
                     timestamp: serverTimestamp()
                 });
 
-                // 2. Update user balance
                 const userRef = doc(db, "users", currentUser.uid);
                 await updateDoc(userRef, { balance: increment(amount) });
 
-                // 3. Clear local balance cache so shop.html updates immediately
                 sessionStorage.removeItem('cached_balance');
-
-                alert("Wallet Funded!");
+                alert("Wallet Funded Successfully!");
                 window.location.href = "shop.html";
             } catch (e) {
-                alert("Error updating wallet. Keep your reference: " + ref);
+                alert("Database update failed. Save this reference: " + ref);
             }
         }
 
