@@ -36,7 +36,7 @@
         .header {
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding-top: 10px;
         }
 
@@ -45,6 +45,33 @@
             color: var(--neon-cyan);
             font-size: 1.2rem;
             margin-right: 15px;
+        }
+
+        /* Balance Card Styling */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(188, 19, 254, 0.1), rgba(0, 243, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .balance-info h3 { font-size: 0.8rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
+        .balance-amount { font-size: 1.8rem; font-weight: 800; margin-top: 5px; color: white; }
+        
+        .visibility-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--neon-cyan);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
         .fund-card {
@@ -108,7 +135,7 @@
             font-size: 0.85rem;
         }
 
-        .amount-btn:hover { background: var(--neon-cyan); color: #000; }
+        .amount-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
 
         .fund-btn {
             width: 100%;
@@ -123,6 +150,36 @@
             letter-spacing: 1px;
             box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
         }
+
+        /* Popup Styling */
+        #confirmModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #121218;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-content h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--neon-cyan); }
+        .modal-content p { color: #ccc; margin-bottom: 25px; line-height: 1.5; font-size: 0.95rem; }
+
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .modal-proceed { background: var(--neon-cyan); color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .modal-cancel { background: transparent; color: #ff4d4d; border: none; padding: 10px; cursor: pointer; font-size: 0.85rem; }
 
         .history-title { font-size: 1rem; margin-bottom: 15px; color: var(--neon-cyan); }
 
@@ -143,10 +200,29 @@
 </head>
 <body>
 
+    <div id="confirmModal">
+        <div class="modal-content">
+            <h2>Confirm Wallet Funding</h2>
+            <p id="confirmMsg">You are about to fund your wallet with ₦500 via Paystack. You will be redirected to complete payment.</p>
+            <div class="modal-btns">
+                <button class="modal-proceed" id="finalProceed">PROCEED TO PAYMENT</button>
+                <button class="modal-cancel" onclick="closeModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <a href="shop.html" class="back-btn">←</a>
             <h2>Add Funds</h2>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-info">
+                <h3>Your Balance</h3>
+                <div class="balance-amount" id="balanceDisplay">₦0.00</div>
+            </div>
+            <button class="visibility-toggle" onclick="toggleBalance()">HIDE</button>
         </div>
 
         <div class="fund-card">
@@ -159,7 +235,10 @@
             <div class="quick-amounts">
                 <button class="amount-btn" onclick="setAmount(500)">₦500</button>
                 <button class="amount-btn" onclick="setAmount(1000)">₦1,000</button>
+                <button class="amount-btn" onclick="setAmount(2000)">₦2,000</button>
                 <button class="amount-btn" onclick="setAmount(5000)">₦5,000</button>
+                <button class="amount-btn" onclick="setAmount(10000)">₦10,000</button>
+                <button class="amount-btn" onclick="setAmount(20000)">₦20,000</button>
             </div>
 
             <button class="fund-btn" id="payButton">PROCEED TO CHECKOUT</button>
@@ -170,13 +249,26 @@
     </div>
 
     <script>
+        let isHidden = false;
+        let realBalance = 0;
+
         function setAmount(val) { document.getElementById('amount').value = val; }
+        
+        function toggleBalance() {
+            const display = document.getElementById('balanceDisplay');
+            const btn = document.querySelector('.visibility-toggle');
+            isHidden = !isHidden;
+            display.innerText = isHidden ? "₦ ••••••" : `₦${realBalance.toLocaleString()}`;
+            btn.innerText = isHidden ? "SHOW" : "HIDE";
+        }
+
+        function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, updateDoc, increment, addDoc, collection, serverTimestamp, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment, addDoc, collection, serverTimestamp, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -193,9 +285,16 @@
 
         let currentUser = null;
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
+                // Live Balance Listener
+                onSnapshot(doc(db, "users", user.uid), (doc) => {
+                    if(doc.exists()) {
+                        realBalance = doc.data().balance || 0;
+                        if (!isHidden) document.getElementById('balanceDisplay').innerText = `₦${realBalance.toLocaleString()}`;
+                    }
+                });
                 loadTransactions(user.uid);
             } else {
                 window.location.href = 'index.html';
@@ -203,11 +302,16 @@
         });
 
         document.getElementById('payButton').addEventListener('click', () => {
-            const amountInput = document.getElementById('amount');
-            const amount = parseFloat(amountInput.value);
-
-            if (!currentUser) return alert("System still loading... please wait a second.");
+            const amount = parseFloat(document.getElementById('amount').value);
             if (!amount || amount < 100) return alert("Minimum is ₦100");
+            
+            document.getElementById('confirmMsg').innerText = `You are about to fund your wallet with ₦${amount.toLocaleString()} via Paystack. You will be redirected to complete payment.`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        });
+
+        document.getElementById('finalProceed').addEventListener('click', () => {
+            closeModal();
+            const amount = parseFloat(document.getElementById('amount').value);
 
             try {
                 const handler = PaystackPop.setup({
@@ -217,14 +321,11 @@
                     currency: "NGN",
                     callback: function(response) {
                         handleSuccess(amount, response.reference);
-                    },
-                    onClose: function() {
-                        console.log("Window closed");
                     }
                 });
                 handler.openIframe();
             } catch (err) {
-                alert("Payment gateway error. Please refresh the page.");
+                alert("Payment gateway error.");
             }
         });
 
@@ -239,14 +340,10 @@
                     timestamp: serverTimestamp()
                 });
 
-                const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, { balance: increment(amount) });
-
-                sessionStorage.removeItem('cached_balance');
+                await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(amount) });
                 alert("Wallet Funded Successfully!");
-                window.location.href = "shop.html";
             } catch (e) {
-                alert("Database update failed. Save this reference: " + ref);
+                alert("Payment successful but database update failed. Contact support with Ref: " + ref);
             }
         }
 
@@ -255,6 +352,7 @@
             onSnapshot(q, (snapshot) => {
                 const list = document.getElementById('transactionList');
                 list.innerHTML = "";
+                if(snapshot.empty) list.innerHTML = `<p style="text-align:center; color:#444; font-size:0.8rem">No previous deposits found.</p>`;
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     list.innerHTML += `
@@ -263,10 +361,12 @@
                                 <h5>₦${data.amount.toLocaleString()}</h5>
                                 <p style="font-size:0.7rem; color:#666">${data.reference}</p>
                             </div>
-                            <span class="status-badge success">Success</span>
+                            <span class="status-badge success">${data.status}</span>
                         </div>
                     `;
                 });
+            }, (error) => {
+                console.log("Error fetching deposits:", error);
             });
         }
     </script>
