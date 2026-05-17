@@ -41,7 +41,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- DASHBOARD CARD (REPLACED TICKER/OLD WALLET) --- */
+        /* --- DASHBOARD CARD --- */
         .dashboard-card {
             background: var(--dashboard-blue);
             border-radius: 25px;
@@ -52,7 +52,6 @@
             box-shadow: 0 10px 30px rgba(58, 118, 240, 0.3);
         }
 
-        /* Decorative circles for the card */
         .dashboard-card::after {
             content: '';
             position: absolute;
@@ -64,6 +63,13 @@
             border-radius: 50%;
         }
 
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
         .balance-label {
             font-size: 0.9rem;
             font-weight: 500;
@@ -71,8 +77,24 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 12px;
         }
+
+        /* Professional Visibility Toggle */
+        .visibility-toggle {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        .visibility-toggle:hover { background: rgba(0, 0, 0, 0.4); }
 
         .balance-amount {
             font-size: 2.4rem;
@@ -217,8 +239,11 @@
     </header>
 
     <div class="dashboard-card reveal">
-        <div class="balance-label">
-            <span>💳 Wallet Balance</span>
+        <div class="balance-header">
+            <div class="balance-label">
+                <span>💳 Wallet Balance</span>
+            </div>
+            <button class="visibility-toggle" id="bal-toggle" onclick="toggleShopBalance()">Hide</button>
         </div>
         <div class="balance-amount">
             <div id="balance-loader" class="spinner"></div>
@@ -284,10 +309,26 @@
         const db = getFirestore(app);
 
         let currentUser = null;
+        let shopBalance = 0;
+        let isShopBalHidden = false;
 
         window.toggleMenu = function() {
             document.getElementById('sideNav').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
+        };
+
+        window.toggleShopBalance = function() {
+            const display = document.getElementById('balance');
+            const btn = document.getElementById('bal-toggle');
+            isShopBalHidden = !isShopBalHidden;
+            
+            if (isShopBalHidden) {
+                display.innerText = "••••••";
+                btn.innerText = "Show";
+            } else {
+                display.innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+                btn.innerText = "Hide";
+            }
         };
 
         window.openSupport = function() {
@@ -313,12 +354,13 @@
             if (user) {
                 currentUser = user;
 
-                // 1. Instant Balance Load from Cache
+                // Instant Balance Load from Cache
                 const cachedBal = sessionStorage.getItem('cached_balance');
                 if(cachedBal) {
+                    shopBalance = parseFloat(cachedBal);
                     document.getElementById('balance-loader').classList.add('hidden');
                     document.getElementById('balance-text').classList.remove('hidden');
-                    document.getElementById('balance').innerText = parseFloat(cachedBal).toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('balance').innerText = isShopBalHidden ? "••••••" : shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
                 }
 
                 if (!sessionStorage.getItem('tg_popup_shown')) {
@@ -336,16 +378,18 @@
                     });
                 } catch (e) {}
 
-                // 2. Background Sync with Firestore
+                // Background Sync with Firestore
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
-                        const bal = docSnap.data().balance || 0;
+                        shopBalance = docSnap.data().balance || 0;
                         document.getElementById('balance-loader').classList.add('hidden');
                         document.getElementById('balance-text').classList.remove('hidden');
-                        document.getElementById('balance').innerText = bal.toLocaleString(undefined, {minimumFractionDigits: 2});
                         
-                        // Update cache for next time
-                        sessionStorage.setItem('cached_balance', bal);
+                        if (!isShopBalHidden) {
+                            document.getElementById('balance').innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+                        }
+                        
+                        sessionStorage.setItem('cached_balance', shopBalance);
                     }
                 });
             } else {
