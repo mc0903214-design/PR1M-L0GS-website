@@ -78,7 +78,7 @@
         .btn-danger { background: #ff4d4d; color: white; }
         .btn-sm { padding: 8px 12px; font-size: 0.7rem; margin: 2px; }
 
-        .deposit-card { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-left: 4px solid var(--neon-cyan); display: flex; justify-content: space-between; align-items: center; }
+        .deposit-card { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #00ff88; display: flex; justify-content: space-between; align-items: center; }
         
         .low-stock { color: #ffcc00; font-weight: bold; animation: blink 1.5s infinite; }
         @keyframes blink { 50% { opacity: 0.5; } }
@@ -204,7 +204,7 @@
     </div>
 
     <div id="deps-list" class="panel">
-        <h2>Pending Proofs</h2>
+        <h2>Successful Deposits</h2>
         <div id="deposit-container"></div>
     </div>
 
@@ -241,7 +241,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDoc, setDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDoc, setDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -254,10 +254,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // State tracker for Editing
         let currentEditId = null;
 
-        // --- ADMIN AUTH ---
         window.checkPass = () => {
             if(document.getElementById('sys-pass').value === '1100') {
                 document.getElementById('auth-gate').style.display = 'none';
@@ -274,21 +272,15 @@
             loadSMSSettings();
         }
 
-        // --- NAVIGATION ---
         window.showTab = (id) => {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // Handle active state for buttons
             if (event && event.target && event.target.classList) {
                 event.target.classList.add('active');
-            } else {
-                document.getElementById('tab-add').classList.add('active');
             }
         };
 
-        // --- UI TOGGLES ---
         window.toggleFreePrice = () => {
             const isFree = document.getElementById('p-is-free').checked;
             const priceInput = document.getElementById('p-price');
@@ -302,7 +294,6 @@
             }
         };
 
-        // --- SMS SETTINGS ---
         window.loadSMSSettings = async () => {
             const sDoc = await getDoc(doc(db, "settings", "sms_config"));
             if(sDoc.exists()){
@@ -317,7 +308,6 @@
             const rate = document.getElementById('sms-rate').value;
             const margin = document.getElementById('sms-margin').value;
             const apiKey = document.getElementById('sms-key').value;
-            
             await setDoc(doc(db, "settings", "sms_config"), {
                 rate: parseFloat(rate),
                 margin: parseFloat(margin),
@@ -332,7 +322,6 @@
             document.getElementById('stock-label').innerText = mode === 'SINGLE' ? "Paste Secret Item (Full text is one purchase)" : "Paste Multiple Items (Comma separated)";
         };
 
-        // --- ADD / UPDATE PRODUCT ---
         window.uploadProduct = async () => {
             const btn = document.getElementById('uploadBtn');
             const name = document.getElementById('p-name').value;
@@ -345,7 +334,6 @@
             const rawStock = document.getElementById('p-stock').value;
 
             if(!name || !desc || (!isFree && !price) || !rawStock) return alert("Required fields (Name, Description, Price, Stock) are missing");
-
             btn.disabled = true;
             btn.innerText = currentEditId ? "Saving Changes..." : "Deploying...";
 
@@ -374,23 +362,17 @@
                     alert("Product Deployed!");
                     location.reload();
                 }
-            } catch (e) {
-                alert("Operation failed: " + e.message);
-            } finally {
+            } catch (e) { alert("Operation failed: " + e.message); } finally {
                 btn.disabled = false;
                 btn.innerText = currentEditId ? "UPDATE ASSET" : "UPLOAD TO STOREFRONT";
             }
         };
 
-        // --- EDIT MODE FUNCTIONS ---
         window.editProduct = async (id) => {
             const prodSnap = await getDoc(doc(db, "products", id));
             if (!prodSnap.exists()) return alert("Asset not found");
-            
             const p = prodSnap.data();
             currentEditId = id;
-
-            // Fill Form
             document.getElementById('p-name').value = p.name;
             document.getElementById('p-desc').value = p.description;
             document.getElementById('p-cat').value = p.category;
@@ -399,17 +381,12 @@
             document.getElementById('p-img').value = p.image;
             document.getElementById('p-mode').value = p.mode;
             document.getElementById('p-stock').value = p.mode === 'MULTIPLE' ? p.stock.join(', ') : p.stock[0];
-            
-            toggleFreePrice();
-            toggleStockLabel();
-
-            // UI Changes
+            toggleFreePrice(); toggleStockLabel();
             document.getElementById('form-title').innerText = "Edit Asset";
             document.getElementById('editing-indicator').style.display = "block";
             document.getElementById('editing-name').innerText = p.name;
             document.getElementById('uploadBtn').innerText = "UPDATE ASSET";
             document.getElementById('cancelEditBtn').style.display = "block";
-
             showTab('add-prod');
             window.scrollTo(0,0);
         };
@@ -422,24 +399,19 @@
             document.getElementById('p-img').value = "";
             document.getElementById('p-stock').value = "";
             document.getElementById('p-is-free').checked = false;
-            
             toggleFreePrice();
-            
             document.getElementById('form-title').innerText = "Deploy New Asset";
             document.getElementById('editing-indicator').style.display = "none";
             document.getElementById('uploadBtn').innerText = "UPLOAD TO STOREFRONT";
             document.getElementById('cancelEditBtn').style.display = "none";
         };
 
-        // --- USERS MANAGEMENT (OPTIMIZED FOR INSTANT LOADING) ---
         function loadUsers() {
             const tbody = document.getElementById('user-rows');
-            
             onSnapshot(collection(db, "users"), (snap) => {
                 snap.docChanges().forEach(change => {
                     const u = change.doc.data();
                     const userId = change.doc.id;
-                    
                     if (change.type === "added") {
                         if (!document.getElementById(`user-row-${userId}`)) {
                             const row = document.createElement('tr');
@@ -456,22 +428,18 @@
                             tbody.appendChild(row);
                         }
                     }
-                    
                     if (change.type === "modified") {
                         const existingRow = document.getElementById(`user-row-${userId}`);
                         if (existingRow) {
                             existingRow.querySelector('.user-balance').innerText = `₦${(u.balance || 0).toLocaleString()}`;
-                            
                             const statusSpan = existingRow.querySelector('.user-status span');
                             statusSpan.innerText = u.status || 'active';
                             statusSpan.style.color = u.status === 'banned' ? '#ff4d4d' : '#00ff88';
-                            
                             const banBtn = existingRow.querySelector('.action-ban');
                             banBtn.innerText = u.status === 'banned' ? 'Unban' : 'Ban';
                             banBtn.setAttribute('onclick', `toggleBan('${userId}', '${u.status}')`);
                         }
                     }
-                    
                     if (change.type === "removed") {
                         const existingRow = document.getElementById(`user-row-${userId}`);
                         if (existingRow) existingRow.remove();
@@ -492,22 +460,25 @@
             await updateDoc(doc(db, "users", id), { status: newStatus });
         };
 
-        // --- DEPOSITS MANAGEMENT ---
+        // --- UPDATED DEPOSITS (AUTO PAYSTACK INFO) ---
         function loadDeposits() {
-            onSnapshot(query(collection(db, "deposits"), where("status", "==", "pending")), (snap) => {
+            const q = query(collection(db, "deposits"), where("status", "==", "success"), orderBy("timestamp", "desc"));
+            onSnapshot(q, (snap) => {
                 const container = document.getElementById('deposit-container');
-                container.innerHTML = snap.empty ? "<p style='color:#555'>No pending deposits.</p>" : "";
+                container.innerHTML = snap.empty ? "<p style='color:#555'>No successful deposits logged yet.</p>" : "";
                 snap.forEach(dDoc => {
                     const d = dDoc.data();
+                    const date = d.timestamp ? d.timestamp.toDate().toLocaleString() : 'Recent';
                     const card = document.createElement('div');
                     card.className = 'deposit-card';
                     card.innerHTML = `
-                        <div>
-                            <p><strong>User:</strong> ${d.email} <br> <strong>Amount:</strong> ₦${d.amount.toLocaleString()}<br><strong>Method:</strong> ${d.method || 'Manual'}</p>
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn btn-approve btn-sm" onclick="handleDeposit('${dDoc.id}', '${d.uid}', ${d.amount}, 'approved')">APPROVE</button>
-                            <button class="btn btn-danger btn-sm" onclick="handleDeposit('${dDoc.id}', null, null, 'declined')">REJECT</button>
+                        <div style="width: 100%">
+                            <div style="display:flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: var(--neon-cyan); font-weight: bold;">₦${d.amount.toLocaleString()}</span>
+                                <span style="color: #666; font-size: 0.7rem;">${date}</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #bbb; margin: 0;"><strong>User:</strong> ${d.email}</p>
+                            <p style="font-size: 0.7rem; color: #666; margin: 2px 0 0 0;"><strong>Ref:</strong> ${d.reference || 'N/A'}</p>
                         </div>
                     `;
                     container.appendChild(card);
@@ -515,23 +486,7 @@
             });
         }
 
-        window.handleDeposit = async (docId, userUid, amount, status) => {
-            if(!confirm(`Are you sure you want to ${status} this deposit?`)) return;
-
-            try {
-                if(status === 'approved' && userUid) {
-                    await setDoc(doc(db, "users", userUid), { 
-                        balance: increment(amount) 
-                    }, { merge: true });
-                }
-                await updateDoc(doc(db, "deposits", docId), { status: status });
-                alert(`Transaction ${status}.`);
-            } catch (e) { 
-                alert("Processing Error: " + e.message); 
-            }
-        };
-
-        // --- INVENTORY MANAGEMENT ---
+        // --- UPDATED INVENTORY (AUTO-SKIP SINGLE SECRETS IN LOW STOCK) ---
         window.loadInventory = function() {
             const filterEl = document.getElementById('view-filter');
             onSnapshot(collection(db, "products"), (snap) => {
@@ -542,15 +497,18 @@
                 snap.forEach(pDoc => {
                     const p = pDoc.data();
                     
-                    // Filter Logic
-                    if(filter === 'LOW' && p.stockCount >= 3) return;
-                    if(filter !== 'ALL' && filter !== 'LOW' && p.category !== filter) return;
+                    if(filter === 'LOW') {
+                        // Skip if it's Single Secret mode (permanent stock) or if stock is actually high
+                        if(p.mode === 'SINGLE' || p.stockCount >= 3) return;
+                    } else if(filter !== 'ALL' && p.category !== filter) {
+                        return;
+                    }
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
                         <td>₦${p.price.toLocaleString()}</td>
-                        <td class="${p.stockCount < 3 ? 'low-stock' : ''}">${p.stockCount}</td>
+                        <td class="${p.stockCount < 3 && p.mode !== 'SINGLE' ? 'low-stock' : ''}">${p.mode === 'SINGLE' ? '∞' : p.stockCount}</td>
                         <td>
                             <button class="btn btn-approve btn-sm" onclick="editProduct('${pDoc.id}')">EDIT</button>
                             <button class="btn btn-primary btn-sm" onclick="copyDirectLink('${pDoc.id}')">🔗 Link</button>
@@ -563,14 +521,11 @@
         }
 
         window.copyDirectLink = function(id) {
-            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'buy.html');
+            const baseUrl = window.location.origin + window.location.pathname.replace('adminq.html', 'buy.html');
             const fullLink = `${baseUrl}?id=${id}`;
-            
             navigator.clipboard.writeText(fullLink).then(() => {
                 alert("Direct product link copied to clipboard!");
-            }).catch(err => {
-                alert("Link: " + fullLink);
-            });
+            }).catch(err => alert("Link: " + fullLink));
         }
 
         window.deleteAsset = async (id) => {
