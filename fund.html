@@ -263,6 +263,7 @@
         }
 
         function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
+        window.closeModal = closeModal;
     </script>
 
     <script type="module">
@@ -310,7 +311,7 @@
         });
 
         document.getElementById('finalProceed').addEventListener('click', () => {
-            closeModal();
+            window.closeModal();
             const amount = parseFloat(document.getElementById('amount').value);
 
             try {
@@ -320,7 +321,7 @@
                     amount: Math.round(amount * 100),
                     currency: "NGN",
                     callback: function(response) {
-                        handleSuccess(amount, response.reference);
+                        window.handleSuccess(amount, response.reference);
                     }
                 });
                 handler.openIframe();
@@ -346,6 +347,8 @@
                 alert("Payment successful but database update failed. Contact support with Ref: " + ref);
             }
         }
+        
+        window.handleSuccess = handleSuccess;
 
         function loadTransactions(uid) {
             const q = query(collection(db, "deposits"), where("uid", "==", uid), orderBy("timestamp", "desc"));
