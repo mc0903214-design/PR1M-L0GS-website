@@ -460,9 +460,14 @@
             await updateDoc(doc(db, "users", id), { status: newStatus });
         };
 
-        // --- UPDATED DEPOSITS (AUTO PAYSTACK INFO) ---
         function loadDeposits() {
-            const q = query(collection(db, "deposits"), where("status", "==", "success"), orderBy("timestamp", "desc"));
+            // Updated to filter ONLY for "success" status
+            const q = query(
+                collection(db, "deposits"), 
+                where("status", "==", "success"), 
+                orderBy("timestamp", "desc")
+            );
+            
             onSnapshot(q, (snap) => {
                 const container = document.getElementById('deposit-container');
                 container.innerHTML = snap.empty ? "<p style='color:#555'>No successful deposits logged yet.</p>" : "";
@@ -486,7 +491,6 @@
             });
         }
 
-        // --- UPDATED INVENTORY (AUTO-SKIP SINGLE SECRETS IN LOW STOCK) ---
         window.loadInventory = function() {
             const filterEl = document.getElementById('view-filter');
             onSnapshot(collection(db, "products"), (snap) => {
@@ -498,7 +502,6 @@
                     const p = pDoc.data();
                     
                     if(filter === 'LOW') {
-                        // Skip if it's Single Secret mode (permanent stock) or if stock is actually high
                         if(p.mode === 'SINGLE' || p.stockCount >= 3) return;
                     } else if(filter !== 'ALL' && p.category !== filter) {
                         return;
@@ -508,32 +511,4 @@
                     row.innerHTML = `
                         <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
                         <td>₦${p.price.toLocaleString()}</td>
-                        <td class="${p.stockCount < 3 && p.mode !== 'SINGLE' ? 'low-stock' : ''}">${p.mode === 'SINGLE' ? '∞' : p.stockCount}</td>
-                        <td>
-                            <button class="btn btn-approve btn-sm" onclick="editProduct('${pDoc.id}')">EDIT</button>
-                            <button class="btn btn-primary btn-sm" onclick="copyDirectLink('${pDoc.id}')">🔗 Link</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteAsset('${pDoc.id}')">Del</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            });
-        }
-
-        window.copyDirectLink = function(id) {
-            const baseUrl = window.location.origin + window.location.pathname.replace('adminq.html', 'buy.html');
-            const fullLink = `${baseUrl}?id=${id}`;
-            navigator.clipboard.writeText(fullLink).then(() => {
-                alert("Direct product link copied to clipboard!");
-            }).catch(err => alert("Link: " + fullLink));
-        }
-
-        window.deleteAsset = async (id) => {
-            if(confirm("Delete this product permanently?")) {
-                await deleteDoc(doc(db, "products", id));
-            }
-        };
-
-    </script>
-</body>
-    </html>
+                        <td class="${p.stockCount < 3 && p.mode !== 'SINGLE' ? 'low-stock' : ''}">${p.mode === 'SINGLE' ? '∞'
