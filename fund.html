@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +73,7 @@
         input[type="number"] {
             width: 100%;
             padding: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             background: #000;
             border: 1px solid #333;
             color: white;
@@ -87,7 +88,6 @@
             border-color: var(--neon-cyan);
         }
 
-        /* Auto-fill Price Box Container */
         .preset-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -162,7 +162,6 @@
     </div>
 
     <script>
-        // Automatic price box filler function
         function setAmount(value) {
             document.getElementById("depositAmount").value = value;
         }
@@ -173,42 +172,63 @@
             e.preventDefault();
 
             const amountInput = document.getElementById("depositAmount").value;
-            
-            // Converting Naira to Kobo for Paystack system
             const finalAmountKobo = amountInput * 100;
 
-            // Automatically generating an anonymous placeholder email since Paystack mandates it
-            const placeholderEmail = "customer_" + Math.floor(Math.random() * 100000) + "@prime.com";
+            // Checking for user session variables stored by your Firebase authentication script
+            const currentUserId = localStorage.getItem("userId") || "ANONYMOUS_USER";
+            const currentUserEmail = localStorage.getItem("userEmail") || "customer_" + Math.floor(Math.random() * 100000) + "@prime.com";
 
             let handler = PaystackPop.setup({
                 key: 'pk_live_c647352d8d23f8f73ade3d2b4b11c8f13eaa1f74', 
-                email: placeholderEmail,
+                email: currentUserEmail,
                 amount: finalAmountKobo,
                 currency: 'NGN',
                 ref: 'PRIME_' + Math.floor((Math.random() * 1000000000) + 1),
                 
-                // Triggers automatically when payment is successful
                 callback: function(response){
-                    alert('Payment successful! Verifying and crediting wallet...');
+                    alert('Payment Confirmed! Crediting your wallet configuration...');
                     
-                    // --- YOUR FIREBASE CODE RUNS HERE ---
-                    // This updates the client balance and adds the log to your Command Center deposits collection instantly
-                    /*
-                    db.collection("users").doc(currentUserId).update({
-                        balance: firebase.firestore.FieldValue.increment(Number(amountInput))
-                    }).then(() => {
-                        return db.collection("deposits").add({
-                            amount: amountInput,
+                    // Direct automated execution to Firebase Realtime Database / Firestore 
+                    // Automatically tags the item status as "Approved" for logs extraction in adminq.html
+                    if (window.db || (window.firebase && firebase.database) || (window.firebase && firebase.firestore)) {
+                        
+                        const depositPayload = {
+                            userId: currentUserId,
+                            email: currentUserEmail,
+                            amount: Number(amountInput),
                             reference: response.reference,
                             status: "Approved",
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    }).then(() => {
+                            date: new Date().toLocaleString()
+                        };
+
+                        // Realtime Database Auto-Execution
+                        if (firebase.database) {
+                            firebase.database().ref('users/' + currentUserId).once('value').then((snapshot) => {
+                                let currentBalance = snapshot.val() ? (snapshot.val().balance || 0) : 0;
+                                return firebase.database().ref('users/' + currentUserId).update({
+                                    balance: currentBalance + Number(amountInput)
+                                });
+                            }).then(() => {
+                                return firebase.database().ref('deposits').push(depositPayload);
+                            }).then(() => {
+                                window.location.href = "shop.html";
+                            });
+                        } 
+                        // Firestore Auto-Execution Alternative
+                        else if (firebase.firestore) {
+                            const userRef = firebase.firestore().collection("users").doc(currentUserId);
+                            userRef.update({
+                                balance: firebase.firestore.FieldValue.increment(Number(amountInput))
+                            }).then(() => {
+                                return firebase.firestore().collection("deposits").add(depositPayload);
+                            }).then(() => {
+                                window.location.href = "shop.html";
+                            });
+                        }
+                    } else {
+                        // Fallback redirect loop if global database components are initialized elsewhere on your system template
                         window.location.href = "shop.html";
-                    });
-                    */
-                    
-                    window.location.href = "shop.html"; 
+                    }
                 },
                 
                 onClose: function(){
@@ -221,3 +241,4 @@
     </script>
 </body>
 </html>
+```
