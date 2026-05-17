@@ -174,7 +174,7 @@
             <h2 id="view-name">Loading...</h2>
             <div class="desc-box" id="view-desc">Fetching asset details...</div>
             <button class="confirm-btn" onclick="goToConfirm()">GET</button>
-            <a href="shop.html" class="cancel-btn">Back to Store</a>
+            <a href="javascript:history.back()" class="cancel-btn">Back to Store</a>
         </div>
 
         <div id="step-referral" style="display: none;">
@@ -190,7 +190,7 @@
                 <button class="copy-btn" onclick="copyRef()">Copy Link</button>
             </div>
             <br>
-            <a href="shop.html" class="cancel-btn">Back to Shop</a>
+            <a href="javascript:history.back()" class="cancel-btn">Back to Shop</a>
         </div>
 
         <div id="step-confirm" style="display: none;">
@@ -226,7 +226,7 @@
             <p id="error-desc">Insufficient balance or item out of stock.</p>
             <a href="fund.html" class="confirm-btn" id="error-action" style="text-decoration: none; display: inline-block;">Fund Wallet</a>
             <br>
-            <a href="shop.html" class="cancel-btn">Back to Shop</a>
+            <a href="javascript:history.back()" class="cancel-btn">Back to Shop</a>
         </div>
 
     </div>
@@ -268,8 +268,9 @@
                 const isVideo = /\.(mp4|webm|mov|ogg)$/i.test(mediaUrl);
                 const container = document.getElementById('media-container');
 
+                // Fixed Video Logic: controls added, autoplay/muted/loop removed
                 container.innerHTML = isVideo 
-                    ? `<video src="${mediaUrl}" class="prod-full-img" autoplay loop muted playsinline></video>`
+                    ? `<video src="${mediaUrl}" class="prod-full-img" controls playsinline></video>`
                     : `<img src="${mediaUrl}" alt="Product" class="prod-full-img">`;
                 
                 document.getElementById('prod-name').innerText = data.name;
@@ -289,7 +290,6 @@
                 const userData = userSnap.data();
                 const refCount = userData.referralCount || 0;
                 
-                // Logic: Check Referral Count for FREE items
                 if (window.finalPrice <= 0 && refCount < 4) {
                     document.getElementById('step-preview').style.display = 'none';
                     document.getElementById('step-referral').style.display = 'block';
