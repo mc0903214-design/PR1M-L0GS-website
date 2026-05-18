@@ -26,6 +26,7 @@
             width: 90%;
             max-width: 350px;
             position: relative;
+            contain: content;
         }
 
         /* --- BUTTON SPINNER --- */
@@ -38,6 +39,7 @@
             animation: spin 0.8s linear infinite;
             display: inline-block;
             vertical-align: middle;
+            will-change: transform;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -65,17 +67,13 @@
             cursor: pointer;
             color: var(--neon-cyan);
             user-select: none;
-            font-size: 0.65rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: rgba(255,255,255,0.05);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.3s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
         }
-        .eye-btn:hover { background: rgba(0, 243, 255, 0.1); }
+        .eye-btn:hover { opacity: 0.8; }
 
         #status-msg {
             font-size: 0.85rem;
@@ -103,7 +101,7 @@
             gap: 10px;
         }
         .toggle-text { text-align: center; font-size: 0.8rem; margin-top: 15px; color: #888; cursor: pointer; }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -115,7 +113,7 @@
         
         <div class="input-group">
             <input type="password" id="password" placeholder="Password">
-            <span class="eye-btn" id="eye-text" onclick="togglePass()">Show</span>
+            <span class="eye-btn" id="eye-text" onclick="togglePass()">👁️</span>
         </div>
 
         <div id="ref-group" class="hidden">
@@ -147,49 +145,72 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Cached DOM Elements
         const statusDiv = document.getElementById('status-msg');
         const btnLoader = document.getElementById('btn-loader');
         const btnText = document.getElementById('btn-text');
+        const passInput = document.getElementById('password');
+        const eyeText = document.getElementById('eye-text');
+        const authTitle = document.getElementById('auth-title');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const refGroup = document.getElementById('ref-group');
+        const emailInput = document.getElementById('email');
+        const referralInput = document.getElementById('referral');
+
+        // Clean Friendly Error Parser
+        function parseAuthError(error) {
+            if (!navigator.onLine || error.code === 'auth/network-request-failed') {
+                return "no internet connection";
+            }
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                case 'auth/wrong-password':
+                    return "invalid login details";
+                case 'auth/user-not-found':
+                    return "account not found";
+                case 'auth/invalid-email':
+                    return "invalid email format";
+                case 'auth/email-already-in-use':
+                    return "account already exists";
+                case 'auth/weak-password':
+                    return "password should be at least 6 characters";
+                default:
+                    return "something went wrong, try again";
+            }
+        }
 
         // AUTO-FILL REFERRAL FROM URL & SET TO SIGNUP
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const refCode = params.get('ref');
             if (refCode) {
-                document.getElementById('referral').value = refCode;
-                const title = document.getElementById('auth-title');
-                if (title.innerText === 'LOGIN') {
+                referralInput.value = refCode;
+                if (authTitle.innerText === 'LOGIN') {
                     toggleAuth();
                 }
             }
         });
 
         window.togglePass = function() {
-            const passInput = document.getElementById('password');
-            const eyeText = document.getElementById('eye-text');
             if (passInput.type === 'password') {
                 passInput.type = 'text';
-                eyeText.innerText = 'Hide';
+                eyeText.innerText = '🙈';
             } else {
                 passInput.type = 'password';
-                eyeText.innerText = 'Show';
+                eyeText.innerText = '👁️';
             }
         };
 
         window.toggleAuth = function() {
-            const title = document.getElementById('auth-title');
-            const btn = document.getElementById('toggle-btn');
-            const refGroup = document.getElementById('ref-group');
-            
             statusDiv.innerText = ""; 
             
-            if (title.innerText === 'LOGIN') {
-                title.innerText = 'SIGNUP';
-                btn.innerText = 'Already have an account? Login';
+            if (authTitle.innerText === 'LOGIN') {
+                authTitle.innerText = 'SIGNUP';
+                toggleBtn.innerText = 'Already have an account? Login';
                 refGroup.classList.remove('hidden');
             } else {
-                title.innerText = 'LOGIN';
-                btn.innerText = "Don't have an account? Signup";
+                authTitle.innerText = 'LOGIN';
+                toggleBtn.innerText = "Don't have an account? Signup";
                 refGroup.classList.add('hidden');
             }
         };
@@ -202,10 +223,10 @@
         }
 
         document.getElementById('auth-submit').addEventListener('click', async () => {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const refCode = document.getElementById('referral').value.trim();
-            const isLogin = document.getElementById('auth-title').innerText === 'LOGIN';
+            const email = emailInput.value.trim();
+            const password = passInput.value;
+            const refCode = referralInput.value.trim();
+            const isLogin = authTitle.innerText === 'LOGIN';
 
             if(!email || !password) return setStatus("Please fill all fields.");
 
@@ -243,7 +264,7 @@
                     window.location.href = "shop.html";
                 }
             } catch (error) {
-                setStatus(error.message);
+                setStatus(parseAuthError(error));
             }
         });
     </script>
