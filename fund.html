@@ -9,7 +9,7 @@
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-bg: rgba(255, 255, 255, 0.04);
             --dark-bg: #0a0a0c;
         }
 
@@ -26,10 +26,11 @@
             background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
             min-height: 100vh;
             padding: 20px;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 480px;
             margin: 0 auto;
         }
 
@@ -37,21 +38,29 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            padding-top: 10px;
+            padding-top: 5px;
         }
 
         .back-btn {
             text-decoration: none;
             color: var(--neon-cyan);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-right: 15px;
+            transition: opacity 0.2s;
+        }
+        .back-btn:hover { opacity: 0.8; }
+
+        .header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         /* Balance Card Styling */
         .balance-card {
-            background: linear-gradient(135deg, rgba(188, 19, 254, 0.1), rgba(0, 243, 255, 0.1));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(188, 19, 254, 0.06), rgba(0, 243, 255, 0.06));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
             display: flex;
@@ -60,39 +69,58 @@
             backdrop-filter: blur(10px);
         }
 
-        .balance-info h3 { font-size: 0.8rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
-        .balance-amount { font-size: 1.8rem; font-weight: 800; margin-top: 5px; color: white; }
+        .balance-info h3 { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            color: #666; 
+            letter-spacing: 0.8px; 
+            font-weight: 600;
+        }
+        .balance-amount { 
+            font-size: 1.7rem; 
+            font-weight: 500; 
+            margin-top: 4px; 
+            color: white; 
+            letter-spacing: -0.5px;
+        }
         
         .visibility-toggle {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--neon-cyan);
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.7rem;
-            font-weight: bold;
+            font-size: 1.1rem;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
         }
+        .visibility-toggle:hover { background: rgba(255, 255, 255, 0.08); }
 
         .fund-card {
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
         }
 
         label {
             display: block;
             margin-bottom: 10px;
-            color: #aaa;
-            font-size: 0.9rem;
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .input-group {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .input-group span {
@@ -101,19 +129,19 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--neon-cyan);
-            font-weight: bold;
+            font-weight: 500;
         }
 
         input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px 15px 15px 40px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 14px 15px 14px 35px;
+            border-radius: 10px;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             outline: none;
-            transition: 0.3s;
+            transition: border-color 0.2s;
         }
 
         input:focus { border-color: var(--neon-cyan); }
@@ -121,34 +149,68 @@
         .quick-amounts {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 8px;
+            margin-bottom: 20px;
         }
 
         .amount-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #ccc;
             padding: 10px;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: border-color 0.2s, color 0.2s;
         }
 
         .amount-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
 
         .fund-btn {
             width: 100%;
-            padding: 16px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 10px;
             border: none;
             background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
             color: white;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(0, 243, 255, 0.15);
+            transition: opacity 0.2s;
+        }
+        .fund-btn:hover { opacity: 0.9; }
+
+        /* --- CUSTOM TOAST NOTIFICATION SYSTEM --- */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(10, 10, 12, 0.95);
+            border: 1px solid var(--neon-cyan);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0, 243, 255, 0.15);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            white-space: nowrap;
+        }
+        .toast-notification.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast-notification.error-toast {
+            border-color: #ff4d4d;
+            box-shadow: 0 8px 32px rgba(255, 77, 77, 0.15);
         }
 
         /* Popup Styling */
@@ -156,8 +218,8 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -166,50 +228,85 @@
 
         .modal-content {
             background: #121218;
-            border: 1px solid var(--neon-cyan);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 400px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 380px;
             width: 100%;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .modal-content h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--neon-cyan); }
-        .modal-content p { color: #ccc; margin-bottom: 25px; line-height: 1.5; font-size: 0.95rem; }
+        .modal-content h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: var(--neon-cyan); }
+        .modal-content p { color: #aaa; margin-bottom: 20px; line-height: 1.45; font-size: 0.85rem; }
 
-        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
-        .modal-proceed { background: var(--neon-cyan); color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .modal-cancel { background: transparent; color: #ff4d4d; border: none; padding: 10px; cursor: pointer; font-size: 0.85rem; }
+        .modal-btns { display: flex; flex-direction: column; gap: 8px; }
+        .modal-proceed { background: var(--neon-cyan); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .modal-cancel { background: transparent; color: #ff4d4d; border: none; padding: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 500; }
 
-        .history-title { font-size: 1rem; margin-bottom: 15px; color: var(--neon-cyan); }
+        .history-title { font-size: 0.85rem; margin-bottom: 12px; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 
         .transaction-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 3px solid var(--neon-purple);
+            border-left: 2px solid var(--neon-purple);
+            border-top: 1px solid rgba(255,255,255,0.01);
+            border-right: 1px solid rgba(255,255,255,0.01);
+            border-bottom: 1px solid rgba(255,255,255,0.01);
         }
 
-        .status-badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
-        .status-badge.success { background: rgba(0, 255, 136, 0.1); color: #00ff88; }
+        .transaction-item h5 { font-size: 0.95rem; font-weight: 500; color: #fff; letter-spacing: -0.2px; }
+        .transaction-item p { font-size: 0.7rem; color: #555; margin-top: 2px; }
+
+        .status-badge { font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.3px; }
+        .status-badge.success { background: rgba(0, 255, 136, 0.08); color: #00ff88; }
+
+        /* --- UX STATES --- */
+        .loading-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+        }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state, .error-state {
+            text-align: center;
+            color: #444;
+            font-size: 0.8rem;
+            padding: 24px 0;
+            font-weight: 500;
+        }
+        .error-state { color: rgba(255, 77, 77, 0.6); }
     </style>
 </head>
 <body>
 
     <div id="confirmModal">
         <div class="modal-content">
-            <h2>Confirm Wallet Funding</h2>
-            <p id="confirmMsg">You are about to fund your wallet with ₦500 via Paystack. You will be redirected to complete payment.</p>
+            <h2>Confirm Transaction</h2>
+            <p id="confirmMsg">You are about to deposit ₦500 via Paystack. You will be redirected securely to finalize your transaction.</p>
             <div class="modal-btns">
                 <button class="modal-proceed" id="finalProceed">PROCEED TO PAYMENT</button>
                 <button class="modal-cancel" onclick="closeModal()">CANCEL</button>
             </div>
         </div>
     </div>
+
+    <div id="toast-container" class="toast-notification"></div>
 
     <div class="container">
         <div class="header">
@@ -222,7 +319,7 @@
                 <h3>Your Balance</h3>
                 <div class="balance-amount" id="balanceDisplay">₦0.00</div>
             </div>
-            <button class="visibility-toggle" onclick="toggleBalance()">HIDE</button>
+            <button class="visibility-toggle" onclick="toggleBalance()">👁️</button>
         </div>
 
         <div class="fund-card">
@@ -245,7 +342,9 @@
         </div>
 
         <h4 class="history-title">Recent Deposits</h4>
-        <div id="transactionList"></div>
+        <div id="transactionList">
+            <div class="loading-state"><div class="spinner"></div></div>
+        </div>
     </div>
 
     <script>
@@ -258,8 +357,8 @@
             const display = document.getElementById('balanceDisplay');
             const btn = document.querySelector('.visibility-toggle');
             isHidden = !isHidden;
-            display.innerText = isHidden ? "₦ ••••••" : `₦${realBalance.toLocaleString()}`;
-            btn.innerText = isHidden ? "SHOW" : "HIDE";
+            display.innerText = isHidden ? "••••••" : `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            btn.innerText = isHidden ? "👁️" : "🙈";
         }
 
         function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
@@ -284,16 +383,48 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Cached UI Elements
+        const toastContainer = document.getElementById('toast-container');
+        const transactionList = document.getElementById('transactionList');
+        const balanceDisplay = document.getElementById('balanceDisplay');
+
         let currentUser = null;
+        let toastTimeout;
+
+        function showNotification(message, isError = false) {
+            clearTimeout(toastTimeout);
+            toastContainer.innerText = message;
+            if(isError) {
+                toastContainer.classList.add('error-toast');
+            } else {
+                toastContainer.classList.remove('error-toast');
+            }
+            toastContainer.classList.add('active');
+            toastTimeout = setTimeout(() => {
+                toastContainer.classList.remove('active');
+            }, 3500);
+        }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Live Balance Listener
-                onSnapshot(doc(db, "users", user.uid), (doc) => {
-                    if(doc.exists()) {
-                        realBalance = doc.data().balance || 0;
-                        if (!isHidden) document.getElementById('balanceDisplay').innerText = `₦${realBalance.toLocaleString()}`;
+
+                // Load initial cached balance if available to prevent flash/flicker
+                const cachedBal = sessionStorage.getItem('cached_balance');
+                if (cachedBal !== null) {
+                    realBalance = parseFloat(cachedBal);
+                    if (!isHidden) balanceDisplay.innerText = `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+
+                // Live Dynamic Balance Synchronization Listener
+                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if(docSnap.exists()) {
+                        const nextBal = docSnap.data().balance || 0;
+                        if(nextBal !== realBalance || balanceDisplay.innerText === "₦0.00") {
+                            realBalance = nextBal;
+                            if (!isHidden) balanceDisplay.innerText = `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                            sessionStorage.setItem('cached_balance', realBalance);
+                        }
                     }
                 });
                 loadTransactions(user.uid);
@@ -304,9 +435,9 @@
 
         document.getElementById('payButton').addEventListener('click', () => {
             const amount = parseFloat(document.getElementById('amount').value);
-            if (!amount || amount < 100) return alert("Minimum is ₦100");
+            if (!amount || amount < 100) return showNotification("Minimum allocation is ₦100", true);
             
-            document.getElementById('confirmMsg').innerText = `You are about to fund your wallet with ₦${amount.toLocaleString()} via Paystack. You will be redirected to complete payment.`;
+            document.getElementById('confirmMsg').innerText = `You are about to deposit ₦${amount.toLocaleString(undefined, {minimumFractionDigits: 2})} via Paystack. You will be redirected securely to finalize your transaction.`;
             document.getElementById('confirmModal').style.display = 'flex';
         });
 
@@ -322,11 +453,14 @@
                     currency: "NGN",
                     callback: function(response) {
                         window.handleSuccess(amount, response.reference);
+                    },
+                    onClose: function() {
+                        showNotification("Payment interface dismissed.", false);
                     }
                 });
                 handler.openIframe();
             } catch (err) {
-                alert("Payment gateway error.");
+                showNotification("Unable to initialize payment gateway. Please verify network access.", true);
             }
         });
 
@@ -342,34 +476,53 @@
                 });
 
                 await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(amount) });
-                alert("Wallet Funded Successfully!");
+                showNotification("Wallet initialized and funded successfully!");
             } catch (e) {
-                alert("Payment successful but database update failed. Contact support with Ref: " + ref);
+                showNotification("Payment recorded. Sync adjustment required. Support Code: " + ref, true);
             }
         }
         
         window.handleSuccess = handleSuccess;
 
         function loadTransactions(uid) {
+            // Firestore Query Engine matching operational bounds
             const q = query(collection(db, "deposits"), where("uid", "==", uid), orderBy("timestamp", "desc"));
+            
             onSnapshot(q, (snapshot) => {
-                const list = document.getElementById('transactionList');
-                list.innerHTML = "";
-                if(snapshot.empty) list.innerHTML = `<p style="text-align:center; color:#444; font-size:0.8rem">No previous deposits found.</p>`;
+                if (snapshot.empty) {
+                    transactionList.innerHTML = `<div class="empty-state">No previous deposits found.</div>`;
+                    return;
+                }
+                
+                // Fast String Batch Concatenation to mitigate heavy single-loop micro-reflow patterns
+                let fragmentHTML = "";
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    list.innerHTML += `
+                    const formattedAmt = (data.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    const safeRef = data.reference || "-------";
+                    const safeStatus = data.status || "success";
+                    
+                    fragmentHTML += `
                         <div class="transaction-item">
                             <div>
-                                <h5>₦${data.amount.toLocaleString()}</h5>
-                                <p style="font-size:0.7rem; color:#666">${data.reference}</p>
+                                <h5>₦${formattedAmt}</h5>
+                                <p>${safeRef}</p>
                             </div>
-                            <span class="status-badge success">${data.status}</span>
+                            <span class="status-badge success">${safeStatus}</span>
                         </div>
                     `;
                 });
+                
+                transactionList.innerHTML = fragmentHTML;
             }, (error) => {
-                console.log("Error fetching deposits:", error);
+                // Gracefully intercept incomplete Firestore configurations or unindexed complex parameters
+                if (error.code === 'failed-precondition' || error.message.indexOf('index') > -1) {
+                    transactionList.innerHTML = `<div class="error-state">Transaction updates currently unavailable. Try again later.</div>`;
+                    showNotification("Database operational constraint detected. Index building required.", true);
+                } else {
+                    transactionList.innerHTML = `<div class="error-state">Unable to load transactions right now.</div>`;
+                    showNotification("Network sync failed. Please check your web connection.", true);
+                }
             });
         }
     </script>
