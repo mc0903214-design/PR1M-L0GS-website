@@ -8,11 +8,11 @@
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-bg: rgba(255, 255, 255, 0.04);
             --dark-bg: #0a0a0c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
 
         body {
             background-color: var(--dark-bg);
@@ -20,13 +20,15 @@
             background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
             min-height: 100vh;
             padding: 20px;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- REVEAL ANIMATION --- */
         .reveal {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(12px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
@@ -34,129 +36,158 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .back-btn {
             color: var(--neon-cyan);
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+            transition: opacity 0.2s;
         }
+        .back-btn:hover { opacity: 0.8; }
 
         /* --- PROFILE CARD --- */
         .profile-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            contain: content;
         }
 
         .avatar {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
             border-radius: 50%;
-            margin: 0 auto 15px;
+            margin: 0 auto 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            font-size: 1.8rem;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
         }
 
-        .username { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; word-break: break-all; }
-        .user-email-display { font-size: 0.85rem; color: #aaa; margin-bottom: 5px; }
-        .user-id { font-size: 0.75rem; color: #666; letter-spacing: 1px; }
+        .username { font-size: 1.25rem; font-weight: 600; margin-bottom: 4px; word-break: break-all; letter-spacing: -0.3px; }
+        .user-email-display { font-size: 0.8rem; color: #8a8a8a; margin-bottom: 4px; font-weight: 400; }
+        .user-id { font-size: 0.7rem; color: #555; letter-spacing: 0.5px; }
 
         /* --- STATS GRID --- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .stat-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
         }
 
-        .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--neon-cyan); }
-        .stat-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        .stat-val { display: block; font-size: 1.05rem; font-weight: 500; color: var(--neon-cyan); letter-spacing: -0.2px; }
+        .stat-label { font-size: 0.65rem; color: #666; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-top: 2px; }
 
         /* --- REFERRAL SECTION --- */
         .referral-card {
-            background: rgba(188, 19, 254, 0.05);
-            border: 1px solid rgba(188, 19, 254, 0.2);
-            border-radius: 20px;
-            padding: 20px;
+            background: rgba(188, 19, 254, 0.03);
+            border: 1px solid rgba(188, 19, 254, 0.15);
+            border-radius: 16px;
+            padding: 16px;
             margin-top: 20px;
             text-align: left;
         }
-        .ref-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .ref-title { font-size: 0.85rem; font-weight: bold; color: var(--neon-purple); text-transform: uppercase; }
-        .ref-count { font-size: 0.9rem; color: white; }
+        .ref-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .ref-title { font-size: 0.75rem; font-weight: 600; color: var(--neon-purple); text-transform: uppercase; letter-spacing: 0.5px; }
+        .ref-count { font-size: 0.8rem; color: #eee; font-weight: 500; }
         
-        .progress-bg { background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin: 10px 0; overflow: hidden; }
-        .progress-fill { background: var(--neon-purple); height: 100%; width: 0%; transition: 1s ease; }
+        .progress-bg { background: rgba(255,255,255,0.06); height: 5px; border-radius: 3px; margin: 8px 0; overflow: hidden; }
+        .progress-fill { background: var(--neon-purple); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         
         .ref-link-box {
             display: flex;
-            background: rgba(0,0,0,0.4);
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 15px;
+            background: rgba(0,0,0,0.25);
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-top: 12px;
             align-items: center;
             gap: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.03);
         }
-        .ref-url { font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
-        .copy-small { background: var(--neon-cyan); color: #000; border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .ref-url { font-size: 0.75rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
+        .copy-small { background: var(--neon-cyan); color: #000; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        .copy-small:hover { opacity: 0.9; }
 
-        /* --- STATUS MESSAGE --- */
-        #status-msg { text-align: center; font-size: 0.8rem; margin-bottom: 10px; min-height: 1.2rem; }
-        .error { color: #ff4d4d; }
-        .info { color: var(--neon-cyan); }
+        /* --- CUSTOM NOTIFICATION SYSTEM --- */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(10, 10, 12, 0.95);
+            border: 1px solid var(--neon-cyan);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0, 243, 255, 0.15);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            white-space: nowrap;
+        }
+        .toast-notification.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         /* --- SETTINGS LIST --- */
-        .settings-group { margin-top: 30px; }
+        .settings-group { margin-top: 24px; }
         .settings-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px;
+            padding: 16px;
             background: var(--glass-bg);
-            border-radius: 15px;
+            border-radius: 14px;
             margin-bottom: 10px;
             text-decoration: none;
             color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s, border-color 0.2s;
         }
-        .settings-item:active { border-color: var(--neon-cyan); background: rgba(0, 243, 255, 0.05); }
-        .item-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
-        .item-info p { font-size: 0.75rem; color: #aaa; }
-        .action-text { font-size: 0.75rem; font-weight: bold; color: var(--neon-cyan); text-transform: uppercase; }
+        .settings-item:hover { border-color: rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.06); }
+        .settings-item:active { border-color: var(--neon-cyan); background: rgba(0, 243, 255, 0.04); }
+        .item-info h4 { font-size: 0.85rem; font-weight: 500; margin-bottom: 2px; }
+        .item-info p { font-size: 0.75rem; color: #8a8a8a; font-weight: 400; }
+        .action-text { font-size: 0.7rem; font-weight: 600; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.3px; }
 
         .logout-btn {
-            margin-top: 30px;
+            margin-top: 24px;
             width: 100%;
-            padding: 15px;
-            background: rgba(255, 77, 77, 0.1);
+            padding: 14px;
+            background: rgba(255, 77, 77, 0.06);
             color: #ff4d4d;
-            border: 1px solid rgba(255, 77, 77, 0.2);
-            border-radius: 15px;
-            font-weight: bold;
+            border: 1px solid rgba(255, 77, 77, 0.15);
+            border-radius: 14px;
+            font-weight: 600;
             cursor: pointer;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
         }
+        .logout-btn:hover { background: rgba(255, 77, 77, 0.1); }
 
     </style>
 </head>
@@ -164,15 +195,15 @@
 
     <header class="reveal">
         <a href="shop.html" class="back-btn">←</a>
-        <h2 style="font-size: 1.2rem; letter-spacing: 1px;">MY PROFILE</h2>
+        <h2 style="font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px;">MY PROFILE</h2>
     </header>
 
-    <div id="status-msg"></div>
+    <div id="toast-container" class="toast-notification"></div>
 
     <div class="profile-card reveal">
-        <div class="avatar" id="avatar-initial">?</div>
-        <div class="username" id="display-name">Loading...</div>
-        <div class="user-email-display" id="user-email-header">...</div>
+        <div class="avatar" id="avatar-initial">-</div>
+        <div class="username" id="display-name">Syncing profile...</div>
+        <div class="user-email-display" id="user-email-header">Loading account details...</div>
         <div class="user-id">UID: <span id="uid-display">-------</span></div>
 
         <div class="stats-grid">
@@ -181,19 +212,19 @@
                 <span class="stat-label">Orders</span>
             </div>
             <div class="stat-box">
-                <span class="stat-val" id="total-spent">₦0</span>
-                <span class="stat-label">Spent</span>
+                <span class="stat-val" id="total-spent">₦0.00</span>
+                <span class="stat-label">Total Spent</span>
             </div>
         </div>
 
         <div class="referral-card">
             <div class="ref-header">
                 <span class="ref-title">Free Zone Goal</span>
-                <span class="ref-count" id="ref-count-display">0/4 Invites</span>
+                <span class="ref-count" id="ref-count-display">0 / 4 Invites</span>
             </div>
             <div class="progress-bg"><div class="progress-fill" id="ref-progress-bar"></div></div>
             <div class="ref-link-box">
-                <span class="ref-url" id="ref-link-text">Generating link...</span>
+                <span class="ref-url" id="ref-link-text">Synchronizing link...</span>
                 <button class="copy-small" onclick="copyRefLink()">COPY</button>
             </div>
         </div>
@@ -221,7 +252,7 @@
         </div>
     </div>
 
-    <button class="logout-btn reveal" id="logout-trigger">Log Out Account</button>
+    <button class="logout-btn reveal" id="logout-trigger">Sign Out Account</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -241,46 +272,80 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Cached DOM Elements
+        const uidDisplay = document.getElementById('uid-display');
+        const userEmailHeader = document.getElementById('user-email-header');
+        const avatarInitial = document.getElementById('avatar-initial');
+        const displayName = document.getElementById('display-name');
+        const refLinkText = document.getElementById('ref-link-text');
+        const currentBalance = document.getElementById('current-balance');
+        const refCountDisplay = document.getElementById('ref-count-display');
+        const refProgressBar = document.getElementById('ref-progress-bar');
+        const totalPurchases = document.getElementById('total-purchases');
+        const totalSpentDisplay = document.getElementById('total-spent');
+        const toastContainer = document.getElementById('toast-container');
+
+        let toastTimeout;
+        function showNotification(message) {
+            clearTimeout(toastTimeout);
+            toastContainer.innerText = message;
+            toastContainer.classList.add('active');
+            toastTimeout = setTimeout(() => {
+                toastContainer.classList.remove('active');
+            }, 3000);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
-            }, 100);
+            }, 50);
         });
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                document.getElementById('uid-display').innerText = user.uid;
-                document.getElementById('user-email-header').innerText = user.email;
+                // Read and initialize cached records immediately if available to reduce flicker
+                const cachedBal = sessionStorage.getItem('cached_balance');
+                if (cachedBal !== null) {
+                    const balance = parseFloat(cachedBal);
+                    currentBalance.innerText = `₦${balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+
+                uidDisplay.innerText = user.uid;
+                userEmailHeader.innerText = user.email;
                 
                 const initial = user.email ? user.email.charAt(0).toUpperCase() : '?';
-                document.getElementById('avatar-initial').innerText = initial;
+                avatarInitial.innerText = initial;
                 
                 const namePart = user.email ? user.email.split('@')[0] : 'User';
-                document.getElementById('display-name').innerText = namePart.toUpperCase();
+                displayName.innerText = namePart.toUpperCase();
 
                 const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-                document.getElementById('ref-link-text').innerText = `${baseUrl}/login.html?ref=${user.uid}`;
+                refLinkText.innerText = `${baseUrl}/login.html?ref=${user.uid}`;
 
                 try {
+                    // Batched calls mapped to concurrent async executions for immediate data populating
                     const userDocRef = doc(db, "users", user.uid);
-                    const userDoc = await getDoc(userDocRef);
+                    const ordersQuery = query(collection(db, "orders"), where("userId", "==", user.uid));
+
+                    const [userDoc, ordersSnapshot] = await Promise.all([
+                        getDoc(userDocRef),
+                        getDocs(ordersQuery)
+                    ]);
                     
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         
                         const balance = userData.balance || 0;
-                        document.getElementById('current-balance').innerText = `₦${Number(balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                        currentBalance.innerText = `₦${Number(balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                        sessionStorage.setItem('cached_balance', balance);
                         
                         const invites = userData.invites || 0;
-                        document.getElementById('ref-count-display').innerText = `${invites}/4 Invites`;
+                        refCountDisplay.innerText = `${invites} / 4 Invites`;
                         
                         const progressPercent = Math.min((invites / 4) * 100, 100);
-                        document.getElementById('ref-progress-bar').style.width = `${progressPercent}%`;
+                        refProgressBar.style.width = `${progressPercent}%`;
                     }
 
-                    const ordersQuery = query(collection(db, "orders"), where("userId", "==", user.uid));
-                    const ordersSnapshot = await getDocs(ordersQuery);
-                    
                     let totalSpent = 0;
                     let orderCount = 0;
                     
@@ -292,11 +357,11 @@
                         orderCount++;
                     });
                     
-                    document.getElementById('total-purchases').innerText = orderCount;
-                    document.getElementById('total-spent').innerText = `₦${totalSpent.toLocaleString()}`;
+                    totalPurchases.innerText = orderCount;
+                    totalSpentDisplay.innerText = `₦${totalSpent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
                 } catch (error) {
-                    console.error("Error fetching data:", error);
+                    console.error("Data synchronization failed:", error);
                 }
             } else {
                 window.location.href = "login.html";
@@ -304,21 +369,21 @@
         });
 
         window.copyRefLink = function() {
-            const linkText = document.getElementById('ref-link-text').innerText;
-            if(linkText && linkText !== "Generating link...") {
+            const linkText = refLinkText.innerText;
+            if(linkText && linkText !== "Synchronizing link...") {
                 navigator.clipboard.writeText(linkText).then(() => {
-                    const status = document.getElementById('status-msg');
-                    status.innerHTML = "<span class='info'>Referral link copied to clipboard!</span>";
-                    setTimeout(() => status.innerHTML = "", 3000);
+                    showNotification("Referral link copied safely to clipboard!");
                 });
             }
         };
 
         document.getElementById('logout-trigger').addEventListener('click', () => {
             signOut(auth).then(() => {
+                sessionStorage.removeItem('cached_balance');
+                sessionStorage.removeItem('tg_popup_shown');
                 window.location.href = "login.html";
             }).catch((error) => {
-                console.error("Logout error:", error);
+                console.error("Sign out process error:", error);
             });
         });
     </script>
