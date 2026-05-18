@@ -8,7 +8,7 @@
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-bg: rgba(255, 255, 255, 0.04);
             --dark-bg: #0a0a0c;
             --dashboard-blue: #3a76f0;
         }
@@ -25,31 +25,34 @@
             color: white;
             background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
             min-height: 100vh;
-            padding: 15px;
+            padding: 20px;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- LOADING SPINNER --- */
         .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255,255,255,0.2);
-            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top: 2px solid white;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             display: inline-block;
+            will-change: transform;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- DASHBOARD CARD --- */
         .dashboard-card {
             background: var(--dashboard-blue);
-            border-radius: 25px;
-            padding: 30px 22px;
-            margin: 10px 0 30px 0;
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin: 10px 0 25px 0;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(58, 118, 240, 0.3);
+            box-shadow: 0 4px 20px rgba(58, 118, 240, 0.15);
+            contain: content;
         }
 
         .dashboard-card::after {
@@ -59,7 +62,7 @@
             right: -40px;
             width: 120px;
             height: 120px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 50%;
         }
 
@@ -67,82 +70,87 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .balance-label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            opacity: 0.9;
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.85;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            letter-spacing: 0.3px;
         }
 
         /* Professional Visibility Toggle */
         .visibility-toggle {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(5px);
-            transition: 0.3s;
-        }
-        .visibility-toggle:hover { background: rgba(0, 0, 0, 0.4); }
-
-        .balance-amount {
-            font-size: 2.4rem;
-            font-weight: 800;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
-            min-height: 45px;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .visibility-toggle:hover { background: rgba(0, 0, 0, 0.25); border-color: rgba(255, 255, 255, 0.3); }
+
+        .balance-amount {
+            font-size: 2.1rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            letter-spacing: -0.5px;
         }
 
         .fund-btn-new {
             background: #000;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            transition: 0.3s;
+            gap: 6px;
+            transition: opacity 0.2s;
         }
+        .fund-btn-new:hover { opacity: 0.9; }
 
         /* --- TELEGRAM POPUP --- */
         #tg-popup {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
+            transform: translate(-50%, -50%) scale(0.95);
             width: 85%;
-            max-width: 350px;
-            background: rgba(18, 18, 20, 0.95);
+            max-width: 340px;
+            background: rgba(18, 18, 20, 0.96);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--neon-purple);
-            border-radius: 25px;
-            padding: 30px 20px;
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-radius: 20px;
+            padding: 25px 20px;
             z-index: 3000;
             text-align: center;
             opacity: 0;
             pointer-events: none;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 40px rgba(188, 19, 254, 0.2);
+            transition: opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         #tg-popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        .tg-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
-        .tg-text { font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; color: #eee; }
+        .tg-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+        .tg-text { font-size: 0.9rem; line-height: 1.4rem; margin-bottom: 18px; color: #ccc; font-weight: 400; }
 
         /* --- SIDE NAV --- */
         .side-nav {
@@ -151,59 +159,67 @@
             right: -100%;
             width: 280px;
             height: 100%;
-            background: rgba(10, 10, 12, 0.98);
+            background: rgba(10, 10, 12, 0.96);
             backdrop-filter: blur(25px);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 1000;
-            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             padding: 80px 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         .side-nav.active { right: 0; }
-        .nav-item { color: white; text-decoration: none; font-size: 1rem; font-weight: 600; padding: 15px; background: var(--glass-bg); border-radius: 12px; display: flex; align-items: center; gap: 15px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 14px; background: var(--glass-bg); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.03); display: flex; align-items: center; gap: 12px; transition: background 0.2s; }
+        .nav-item:hover { background: rgba(255, 255, 255, 0.08); }
 
         /* --- SUPPORT MODAL --- */
         .modal {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
+            transform: translate(-50%, -50%) scale(0.95);
             width: 90%;
-            max-width: 400px;
+            max-width: 380px;
             background: #121214;
-            border: 1px solid var(--neon-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
             border-radius: 20px;
-            padding: 25px;
+            padding: 24px;
             z-index: 2000;
             opacity: 0;
             pointer-events: none;
-            transition: 0.3s;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         .modal.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        .modal textarea { width: 100%; height: 120px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; color: white; resize: none; margin-bottom: 15px; outline: none; }
+        .modal h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 14px; }
+        .modal textarea { width: 100%; height: 120px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; color: white; resize: none; margin-bottom: 14px; outline: none; font-size: 0.9rem; }
+        .modal textarea:focus { border-color: var(--neon-cyan); }
 
-        .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 999; }
+        .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 999; backdrop-filter: blur(2px); }
         .nav-overlay.active { display: block; }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px 15px 5px; }
-        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: 3px; text-shadow: 0 0 10px var(--neon-cyan); }
-        .menu-btn { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; padding: 5px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 5px 5px 15px 5px; }
+        .logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 8px rgba(0, 243, 255, 0.5); }
+        .menu-btn { background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 5px; opacity: 0.85; transition: opacity 0.2s; }
+        .menu-btn:hover { opacity: 1; }
 
-        .section-title { font-size: 0.9rem; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; padding-left: 5px; }
+        .section-title { font-size: 0.8rem; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; padding-left: 4px; }
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .category-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px 15px; border-radius: 18px; text-align: center; transition: 0.3s; cursor: pointer; position: relative; }
-        .category-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
-        .category-name { font-weight: 600; font-size: 0.85rem; color: #eee; }
+        .category-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); padding: 24px 12px; border-radius: 14px; text-align: center; transition: background 0.2s, border-color 0.2s, transform 0.2s; cursor: pointer; position: relative; contain: content; }
+        .category-card:hover { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+        .category-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+        .category-name { font-weight: 500; font-size: 0.8rem; color: #ddd; }
 
-        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal { opacity: 0; transform: translateY(15px); transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); will-change: opacity, transform; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        .hidden { display: none; }
-        .sms-card { opacity: 0.8; cursor: not-allowed; }
-        .coming-soon-badge { position: absolute; top: 10px; right: 10px; background: var(--neon-cyan); color: black; font-size: 0.6rem; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; }
-        .free-card { border: 1px solid #00ff88; background: rgba(0, 255, 136, 0.05); }
+        .hidden { display: none !important; }
+        .sms-card { opacity: 0.5; cursor: not-allowed; }
+        .sms-card:hover { background: var(--glass-bg); border-color: rgba(255, 255, 255, 0.05); transform: none; }
+        .coming-soon-badge { position: absolute; top: 8px; right: 8px; background: var(--neon-cyan); color: black; font-size: 0.55rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .free-card { border: 1px solid rgba(0, 255, 136, 0.2); background: rgba(0, 255, 136, 0.02); }
+        .free-card:hover { border-color: rgba(0, 255, 136, 0.3); background: rgba(0, 255, 136, 0.04); }
 
     </style>
 </head>
@@ -213,24 +229,24 @@
 
     <div id="tg-popup">
         <span class="tg-icon">📢</span>
-        <p class="tg-text">Join our update channel on telegram for giveaways and updates</p>
-        <a href="https://t.me/pr1meupd8s" class="fund-btn-new" style="background:var(--neon-purple); width:100%; justify-content:center; margin-bottom:15px;" target="_blank">Join Channel</a>
-        <button style="background:none; border:none; color:#555; cursor:pointer; text-transform:uppercase; font-size:0.7rem;" onclick="closeTgPopup()">Dismiss</button>
+        <p class="tg-text">Join our Telegram updates channel for exclusive community giveaways and fast operational updates.</p>
+        <a href="https://t.me/pr1meupd8s" class="fund-btn-new" style="background:var(--neon-purple); width:100%; justify-content:center; margin-bottom:12px;" target="_blank">Join Channel</a>
+        <button style="background:none; border:none; color:#666; cursor:pointer; text-transform:uppercase; font-size:0.65rem; font-weight:600; letter-spacing:0.5px;" onclick="closeTgPopup()">Dismiss</button>
     </div>
 
     <nav class="side-nav" id="sideNav">
         <a href="prof.html" class="nav-item">👤 Profile</a>
-        <a href="mine.html" class="nav-item">🛍️ My Purchases</a>
-        <a href="fund.html" class="nav-item">💳 Fund Wallet</a>
-        <a href="javascript:void(0)" class="nav-item" onclick="openSupport()">🆘 Contact Support</a>
-        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; opacity: 0.5;">🚪 Logout</a>
+        <a href="mine.html" class="nav-item">🛍️ Order History</a>
+        <a href="fund.html" class="nav-item">💳 Top Up Wallet</a>
+        <a href="javascript:void(0)" class="nav-item" onclick="openSupport()">🆘 Get Support</a>
+        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; opacity: 0.5;">🚪 Sign Out</a>
     </nav>
 
     <div class="modal" id="supportModal">
-        <h2>🆘 Open Ticket</h2>
-        <textarea id="ticketMsg" placeholder="Describe your issue or request..."></textarea>
-        <button class="fund-btn-new" style="width: 100%; justify-content:center; background:linear-gradient(45deg, var(--neon-purple), var(--neon-cyan))" id="sendTicket">Send to Admins</button>
-        <button class="menu-btn" style="width: 100%; font-size: 0.8rem; margin-top: 10px;" onclick="closeSupport()">Cancel</button>
+        <h2>🆘 Open Support Ticket</h2>
+        <textarea id="ticketMsg" placeholder="Describe your request or account issue here..."></textarea>
+        <button class="fund-btn-new" style="width: 100%; justify-content:center; background:linear-gradient(45deg, var(--neon-purple), var(--neon-cyan))" id="sendTicket">Submit Ticket</button>
+        <button class="menu-btn" style="width: 100%; font-size: 0.75rem; margin-top: 10px; font-weight: 500;" onclick="closeSupport()">Cancel</button>
     </div>
 
     <header class="reveal">
@@ -241,25 +257,25 @@
     <div class="dashboard-card reveal">
         <div class="balance-header">
             <div class="balance-label">
-                <span>💳 Wallet Balance</span>
+                <span>Available Balance</span>
             </div>
-            <button class="visibility-toggle" id="bal-toggle" onclick="toggleShopBalance()">Hide</button>
+            <button class="visibility-toggle" id="bal-toggle" onclick="toggleShopBalance()">👁️</button>
         </div>
         <div class="balance-amount">
             <div id="balance-loader" class="spinner"></div>
             <span id="balance-text" class="hidden">₦<span id="balance">0.00</span></span>
         </div>
         <a href="fund.html" class="fund-btn-new">
-            <span style="font-size:1.2rem">+</span> Fund Wallet
+            <span style="font-size:1.1rem; font-weight:400; line-height:1;">+</span> Top Up Wallet
         </a>
     </div>
 
-    <div class="section-title reveal">Marketplace</div>
+    <div class="section-title reveal">Marketplace Categories</div>
 
     <div class="category-grid">
         <div class="category-card sms-card reveal">
             <span class="coming-soon-badge">Coming Soon</span>
-            <span class="category-icon">💬</span><div class="category-name">SMS OTP Verification</div>
+            <span class="category-icon">💬</span><div class="category-name">SMS Verification</div>
         </div>
         <div class="category-card reveal" onclick="location.href='products.html?cat=Logs'">
             <span class="category-icon">🚀</span><div class="category-name">Logs</div>
@@ -280,7 +296,7 @@
             <span class="category-icon">📝</span><div class="category-name">FMT & Updates</div>
         </div>
         <div class="category-card reveal" onclick="location.href='products.html?cat=Tools'">
-            <span class="category-icon">🛠️</span><div class="category-name">TOOLS</div>
+            <span class="category-icon">🛠️</span><div class="category-name">Tools</div>
         </div>
         <div class="category-card reveal" onclick="location.href='products.html?cat=Bots'">
             <span class="category-icon">🤖</span><div class="category-name">Bots</div>
@@ -308,45 +324,62 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Cached DOM Elements
+        const sideNav = document.getElementById('sideNav');
+        const overlay = document.getElementById('overlay');
+        const supportModal = document.getElementById('supportModal');
+        const tgPopup = document.getElementById('tg-popup');
+        const balanceLoader = document.getElementById('balance-loader');
+        const balanceText = document.getElementById('balance-text');
+        const balanceDisplay = document.getElementById('balance');
+        const balToggleBtn = document.getElementById('bal-toggle');
+
         let currentUser = null;
         let shopBalance = 0;
         let isShopBalHidden = false;
 
+        // Populate initial UI state instantly if cache exists
+        const cachedBal = sessionStorage.getItem('cached_balance');
+        if(cachedBal !== null) {
+            shopBalance = parseFloat(cachedBal);
+            balanceLoader.classList.add('hidden');
+            balanceText.classList.remove('hidden');
+            balanceDisplay.innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+        }
+
         window.toggleMenu = function() {
-            document.getElementById('sideNav').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
+            sideNav.classList.toggle('active');
+            overlay.classList.toggle('active');
         };
 
         window.toggleShopBalance = function() {
-            const display = document.getElementById('balance');
-            const btn = document.getElementById('bal-toggle');
             isShopBalHidden = !isShopBalHidden;
             
             if (isShopBalHidden) {
-                display.innerText = "••••••";
-                btn.innerText = "Show";
+                balanceDisplay.innerText = "••••••";
+                balToggleBtn.innerText = "🙈";
             } else {
-                display.innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
-                btn.innerText = "Hide";
+                balanceDisplay.innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+                balToggleBtn.innerText = "👁️";
             }
         };
 
         window.openSupport = function() {
             toggleMenu();
-            document.getElementById('supportModal').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
+            supportModal.classList.add('active');
+            overlay.classList.add('active');
         };
 
         window.closeSupport = function() {
-            document.getElementById('supportModal').classList.remove('active');
-            if(!document.getElementById('tg-popup').classList.contains('active')) {
-                document.getElementById('overlay').classList.remove('active');
+            supportModal.classList.remove('active');
+            if(!tgPopup.classList.contains('active')) {
+                overlay.classList.remove('active');
             }
         };
 
         window.closeTgPopup = function() {
-            document.getElementById('tg-popup').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
+            tgPopup.classList.remove('active');
+            overlay.classList.remove('active');
             sessionStorage.setItem('tg_popup_shown', 'true');
         };
 
@@ -354,19 +387,10 @@
             if (user) {
                 currentUser = user;
 
-                // Instant Balance Load from Cache
-                const cachedBal = sessionStorage.getItem('cached_balance');
-                if(cachedBal) {
-                    shopBalance = parseFloat(cachedBal);
-                    document.getElementById('balance-loader').classList.add('hidden');
-                    document.getElementById('balance-text').classList.remove('hidden');
-                    document.getElementById('balance').innerText = isShopBalHidden ? "••••••" : shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
-                }
-
                 if (!sessionStorage.getItem('tg_popup_shown')) {
                     setTimeout(() => {
-                        document.getElementById('tg-popup').classList.add('active');
-                        document.getElementById('overlay').classList.add('active');
+                        tgPopup.classList.add('active');
+                        overlay.classList.add('active');
                     }, 1500);
                 }
                 
@@ -381,15 +405,19 @@
                 // Background Sync with Firestore
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
-                        shopBalance = docSnap.data().balance || 0;
-                        document.getElementById('balance-loader').classList.add('hidden');
-                        document.getElementById('balance-text').classList.remove('hidden');
+                        const newBalance = docSnap.data().balance || 0;
                         
-                        if (!isShopBalHidden) {
-                            document.getElementById('balance').innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+                        // Prevent UI rewriting if data didn't change
+                        if (newBalance !== shopBalance || balanceText.classList.contains('hidden')) {
+                            shopBalance = newBalance;
+                            balanceLoader.classList.add('hidden');
+                            balanceText.classList.remove('hidden');
+                            
+                            if (!isShopBalHidden) {
+                                balanceDisplay.innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+                            }
+                            sessionStorage.setItem('cached_balance', shopBalance);
                         }
-                        
-                        sessionStorage.setItem('cached_balance', shopBalance);
                     }
                 });
             } else {
@@ -399,7 +427,7 @@
 
         document.getElementById('sendTicket').addEventListener('click', async () => {
             const msg = document.getElementById('ticketMsg').value.trim();
-            if(!msg) return alert('Enter your message first.');
+            if(!msg) return alert('Please enter your message first.');
             try {
                 await addDoc(collection(db, "support"), {
                     uid: currentUser.uid,
@@ -408,10 +436,10 @@
                     status: "open",
                     timestamp: serverTimestamp()
                 });
-                alert('Ticket sent!');
+                alert('Support ticket submitted successfully!');
                 document.getElementById('ticketMsg').value = '';
                 closeSupport();
-            } catch (e) { alert('Error sending ticket.'); }
+            } catch (e) { alert('Failed to submit ticket. Please try again.'); }
         });
 
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
@@ -427,7 +455,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.05 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
