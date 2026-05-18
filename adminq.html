@@ -40,12 +40,13 @@
         }
 
         /* Navigation */
-        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .tab-btn {
             background: var(--glass); border: 1px solid rgba(255,255,255,0.1); color: #888;
             padding: 12px 20px; cursor: pointer; border-radius: 12px;
             transition: 0.3s; font-weight: 600; font-size: 0.8rem;
             text-transform: uppercase; letter-spacing: 1px;
+            flex-shrink: 0;
         }
         .tab-btn.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 243, 255, 0.1); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
 
@@ -110,7 +111,6 @@
         <button class="tab-btn" onclick="showTab('users-list')">USERS</button>
         <button class="tab-btn" onclick="showTab('deps-list')">DEPOSITS</button>
         <button class="tab-btn" onclick="showTab('all-prods')">INVENTORY</button>
-        <button class="tab-btn" onclick="showTab('sms-config')" style="border-color: var(--neon-purple);">SMS CONFIG</button>
     </div>
 
     <div id="add-prod" class="panel active">
@@ -169,23 +169,6 @@
             <button class="btn btn-primary" style="flex: 2;" id="uploadBtn" onclick="uploadProduct()">UPLOAD TO STOREFRONT</button>
             <button class="btn btn-danger" style="flex: 1; display: none;" id="cancelEditBtn" onclick="cancelEdit()">CANCEL EDIT</button>
         </div>
-    </div>
-
-    <div id="sms-config" class="panel">
-        <h2>SMS Gateway API Rates</h2>
-        <div class="form-group">
-            <label>Exchange Rate (1 USD to Naira)</label>
-            <input type="number" id="sms-rate" placeholder="e.g. 1550">
-        </div>
-        <div class="form-group">
-            <label>Profit Margin (Flat Naira added to each number)</label>
-            <input type="number" id="sms-margin" placeholder="e.g. 500">
-        </div>
-        <div class="form-group">
-            <label>5Sim API Key (Keep Private)</label>
-            <input type="password" id="sms-key" placeholder="Enter API Key">
-        </div>
-        <button class="btn btn-primary" onclick="saveSMSSettings()">Update SMS Pricing</button>
     </div>
 
     <div id="users-list" class="panel">
@@ -255,6 +238,7 @@
         const db = getFirestore(app);
 
         let currentEditId = null;
+        let inventoryUnsubscribe = null;
 
         window.checkPass = () => {
             if(document.getElementById('sys-pass').value === '1100') {
@@ -269,7 +253,6 @@
             loadUsers();
             loadDeposits();
             loadInventory();
-            loadSMSSettings();
         }
 
         window.showTab = (id) => {
@@ -292,29 +275,6 @@
                 priceInput.disabled = false;
                 priceInput.style.opacity = "1";
             }
-        };
-
-        window.loadSMSSettings = async () => {
-            const sDoc = await getDoc(doc(db, "settings", "sms_config"));
-            if(sDoc.exists()){
-                const data = sDoc.data();
-                document.getElementById('sms-rate').value = data.rate || "";
-                document.getElementById('sms-margin').value = data.margin || "";
-                document.getElementById('sms-key').value = data.apiKey || "";
-            }
-        };
-
-        window.saveSMSSettings = async () => {
-            const rate = document.getElementById('sms-rate').value;
-            const margin = document.getElementById('sms-margin').value;
-            const apiKey = document.getElementById('sms-key').value;
-            await setDoc(doc(db, "settings", "sms_config"), {
-                rate: parseFloat(rate),
-                margin: parseFloat(margin),
-                apiKey: apiKey,
-                updatedAt: serverTimestamp()
-            });
-            alert("SMS Config Saved!");
         };
 
         window.toggleStockLabel = () => {
@@ -422,7 +382,7 @@
                                 <td class="user-status"><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
                                 <td>
                                     <button class="btn btn-approve btn-sm" onclick="editWallet('${userId}', '${u.email}')">Edit ₦</button>
-                                    <button class="btn btn-danger btn-sm action-ban" onclick="toggleBan('${userId}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
+                                    <button class="btn btn-danger btn-sm" onclick="toggleBan('${userId}', '${u.status}')">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
                                 </td>
                             `;
                             tbody.appendChild(row);
@@ -435,7 +395,7 @@
                             const statusSpan = existingRow.querySelector('.user-status span');
                             statusSpan.innerText = u.status || 'active';
                             statusSpan.style.color = u.status === 'banned' ? '#ff4d4d' : '#00ff88';
-                            const banBtn = existingRow.querySelector('.action-ban');
+                            const banBtn = existingRow.querySelector('.btn-danger');
                             banBtn.innerText = u.status === 'banned' ? 'Unban' : 'Ban';
                             banBtn.setAttribute('onclick', `toggleBan('${userId}', '${u.status}')`);
                         }
@@ -460,7 +420,6 @@
             await updateDoc(doc(db, "users", id), { status: newStatus });
         };
 
-        // --- UPDATED DEPOSITS (AUTO PAYSTACK INFO) ---
         function loadDeposits() {
             const q = query(collection(db, "deposits"), where("status", "==", "success"), orderBy("timestamp", "desc"));
             onSnapshot(q, (snap) => {
@@ -486,39 +445,41 @@
             });
         }
 
-        // --- UPDATED INVENTORY (AUTO-SKIP SINGLE SECRETS IN LOW STOCK) ---
         window.loadInventory = function() {
+            if (inventoryUnsubscribe) {
+                inventoryUnsubscribe();
+            }
             const filterEl = document.getElementById('view-filter');
-            onSnapshot(collection(db, "products"), (snap) => {
+            inventoryUnsubscribe = onSnapshot(collection(db, "products"), (snap) => {
                 const tbody = document.getElementById('inventory-rows');
                 const filter = filterEl.value;
-                tbody.innerHTML = "";
+                let htmlContent = "";
 
                 snap.forEach(pDoc => {
                     const p = pDoc.data();
                     
                     if(filter === 'LOW') {
-                        // Skip if it's Single Secret mode (permanent stock) or if stock is actually high
                         if(p.mode === 'SINGLE' || p.stockCount >= 3) return;
                     } else if(filter !== 'ALL' && p.category !== filter) {
                         return;
                     }
 
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
-                        <td>₦${p.price.toLocaleString()}</td>
-                        <td class="${p.stockCount < 3 && p.mode !== 'SINGLE' ? 'low-stock' : ''}">${p.mode === 'SINGLE' ? '∞' : p.stockCount}</td>
-                        <td>
-                            <button class="btn btn-approve btn-sm" onclick="editProduct('${pDoc.id}')">EDIT</button>
-                            <button class="btn btn-primary btn-sm" onclick="copyDirectLink('${pDoc.id}')">🔗 Link</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteAsset('${pDoc.id}')">Del</button>
-                        </td>
+                    htmlContent += `
+                        <tr>
+                            <td><strong>${p.name}</strong><br><small style="color:#666">${p.category}</small></td>
+                            <td>₦${p.price.toLocaleString()}</td>
+                            <td class="${p.stockCount < 3 && p.mode !== 'SINGLE' ? 'low-stock' : ''}">${p.mode === 'SINGLE' ? '∞' : p.stockCount}</td>
+                            <td>
+                                <button class="btn btn-approve btn-sm" onclick="editProduct('${pDoc.id}')">EDIT</button>
+                                <button class="btn btn-primary btn-sm" onclick="copyDirectLink('${pDoc.id}')">🔗 Link</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAsset('${pDoc.id}')">Del</button>
+                            </td>
+                        </tr>
                     `;
-                    tbody.appendChild(row);
                 });
+                tbody.innerHTML = htmlContent;
             });
-        }
+        };
 
         window.copyDirectLink = function(id) {
             const baseUrl = window.location.origin + window.location.pathname.replace('adminq.html', 'buy.html');
