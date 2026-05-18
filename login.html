@@ -151,16 +151,18 @@
         const btnLoader = document.getElementById('btn-loader');
         const btnText = document.getElementById('btn-text');
 
-        // AUTO-FILL REFERRAL FROM URL
-        window.onload = () => {
+        // AUTO-FILL REFERRAL FROM URL & SET TO SIGNUP
+        window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const refCode = params.get('ref');
             if (refCode) {
                 document.getElementById('referral').value = refCode;
-                // If there's a ref code, we assume they want to signup
-                if(document.getElementById('auth-title').innerText === 'LOGIN') toggleAuth();
+                const title = document.getElementById('auth-title');
+                if (title.innerText === 'LOGIN') {
+                    toggleAuth();
+                }
             }
-        };
+        });
 
         window.togglePass = function() {
             const passInput = document.getElementById('password');
@@ -192,6 +194,13 @@
             }
         };
 
+        function setStatus(msg, isError = true) {
+            statusDiv.className = isError ? "error" : "info";
+            statusDiv.innerText = msg;
+            btnLoader.classList.add('hidden');
+            btnText.innerText = "CONTINUE";
+        }
+
         document.getElementById('auth-submit').addEventListener('click', async () => {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
@@ -208,52 +217,35 @@
                 await setPersistence(auth, browserLocalPersistence);
 
                 if (isLogin) {
-                    const res = await signInWithEmailAndPassword(auth, email, password);
-                    const userSnap = await getDoc(doc(db, "users", res.user.uid));
-                    if (userSnap.exists() && userSnap.data().status === 'banned') {
-                        await auth.signOut();
-                        throw new Error("suspended");
-                    }
-                    window.location.href = 'shop.html';
+                    await signInWithEmailAndPassword(auth, email, password);
+                    window.location.href = "shop.html";
                 } else {
-                    const res = await createUserWithEmailAndPassword(auth, email, password);
-                    
-                    // Create user profile
-                    await setDoc(doc(db, "users", res.user.uid), {
-                        uid: res.user.uid,
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    await setDoc(doc(db, "users", user.uid), {
                         email: email,
                         balance: 0,
-                        referralCount: 0,
+                        role: "user",
                         referredBy: refCode || null,
-                        status: 'active',
-                        joinedAt: serverTimestamp()
+                        createdAt: serverTimestamp()
                     });
 
-                    // Update referrer's count if code exists
                     if (refCode) {
-                        const refRef = doc(db, "users", refCode);
-                        const refSnap = await getDoc(refRef);
-                        if (refSnap.exists()) {
-                            await updateDoc(refRef, { referralCount: increment(1) });
+                        const refDocRef = doc(db, "users", refCode);
+                        const refDoc = await getDoc(refDocRef);
+                        if (refDoc.exists()) {
+                            await updateDoc(refDocRef, {
+                                invites: increment(1)
+                            });
                         }
                     }
-
-                    window.location.href = 'shop.html';
+                    window.location.href = "shop.html";
                 }
-            } catch (err) {
-                btnLoader.classList.add('hidden');
-                btnText.innerText = "CONTINUE";
-                if(err.message === "suspended") setStatus("Account suspended.");
-                else if(err.code === 'auth/email-already-in-use') setStatus("Email already exists.");
-                else if(err.code === 'auth/invalid-credential') setStatus("Invalid email or password.");
-                else setStatus("Error. Try again.");
+            } catch (error) {
+                setStatus(error.message);
             }
         });
-
-        function setStatus(text) {
-            statusDiv.innerText = text;
-            statusDiv.className = "error";
-        }
     </script>
 </body>
 </html>
