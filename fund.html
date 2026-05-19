@@ -358,7 +358,7 @@
             const btn = document.querySelector('.visibility-toggle');
             isHidden = !isHidden;
             display.innerText = isHidden ? "••••••" : `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            btn.innerText = isHidden ? "👁️" : "🙈";
+            btn.innerText = isHidden ? "🙈" : "👁️";
         }
 
         function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
@@ -405,6 +405,9 @@
             }, 3500);
         }
 
+        // Export utility to window namespace for local script interface access
+        window.showNotification = showNotification;
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -429,7 +432,9 @@
                 });
                 loadTransactions(user.uid);
             } else {
-                window.location.href = 'index.html';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
             }
         });
 
@@ -444,6 +449,14 @@
         document.getElementById('finalProceed').addEventListener('click', () => {
             window.closeModal();
             const amount = parseFloat(document.getElementById('amount').value);
+
+            if (!currentUser) {
+                return showNotification("Please wait...", true);
+            }
+
+            if (typeof PaystackPop === 'undefined') {
+                return showNotification("Paystack failed to load", true);
+            }
 
             try {
                 const handler = PaystackPop.setup({
@@ -460,6 +473,7 @@
                 });
                 handler.openIframe();
             } catch (err) {
+                console.error("Paystack initialization failed error trace:", err);
                 showNotification("Unable to initialize payment gateway. Please verify network access.", true);
             }
         });
@@ -478,6 +492,7 @@
                 await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(amount) });
                 showNotification("Wallet initialized and funded successfully!");
             } catch (e) {
+                console.error("Firestore balance sync failed error trace:", e);
                 showNotification("Payment recorded. Sync adjustment required. Support Code: " + ref, true);
             }
         }
@@ -515,6 +530,7 @@
                 
                 transactionList.innerHTML = fragmentHTML;
             }, (error) => {
+                console.error("Transaction subscription runtime fault:", error);
                 // Gracefully intercept incomplete Firestore configurations or unindexed complex parameters
                 if (error.code === 'failed-precondition' || error.message.indexOf('index') > -1) {
                     transactionList.innerHTML = `<div class="error-state">Transaction updates currently unavailable. Try again later.</div>`;
