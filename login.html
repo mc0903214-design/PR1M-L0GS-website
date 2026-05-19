@@ -113,7 +113,7 @@
         
         <div class="input-group">
             <input type="password" id="password" placeholder="Password">
-            <span class="eye-btn" id="eye-text" onclick="togglePass()">👁️</span>
+            <span class="eye-btn" id="eye-text" onclick="togglePass()">👁</span>
         </div>
 
         <div id="ref-group" class="hidden">
@@ -194,10 +194,10 @@
         window.togglePass = function() {
             if (passInput.type === 'password') {
                 passInput.type = 'text';
-                eyeText.innerText = '🙈';
+                eyeText.innerText = '👁‍🗨';
             } else {
                 passInput.type = 'password';
-                eyeText.innerText = '👁️';
+                eyeText.innerText = '👁';
             }
         };
 
@@ -246,7 +246,7 @@
 
                     await setDoc(doc(db, "users", user.uid), {
                         email: email,
-                        balance: 0,
+                        balance: 500,
                         role: "user",
                         referredBy: refCode || null,
                         createdAt: serverTimestamp()
