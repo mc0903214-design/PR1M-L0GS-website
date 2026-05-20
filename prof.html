@@ -8,256 +8,266 @@
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --dark-bg: #0a0a0c;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark-bg: #060608;
+            --accent-glow: rgba(0, 243, 255, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
             background-color: var(--dark-bg);
-            color: white;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            color: #f1f1f3;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- REVEAL ANIMATION --- */
         .reveal {
             opacity: 0;
-            transform: translateY(12px);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            padding: 4px 8px 30px 8px;
         }
 
         .back-btn {
-            color: var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 12px;
+            padding: 10px;
             text-decoration: none;
-            font-size: 1.4rem;
-            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
         }
-        .back-btn:hover { opacity: 0.8; }
 
-        /* --- PROFILE CARD --- */
-        .profile-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 24px;
+        /* --- PROFILE IDENTITY --- */
+        .profile-identity {
             text-align: center;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-            contain: content;
+            margin-bottom: 32px;
         }
 
-        .avatar {
-            width: 72px;
-            height: 72px;
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+        .avatar-container {
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
-            margin: 0 auto 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--glass-border);
+            margin: 0 auto 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 600;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            position: relative;
         }
 
-        .username { font-size: 1.25rem; font-weight: 600; margin-bottom: 4px; word-break: break-all; letter-spacing: -0.3px; }
-        .user-email-display { font-size: 0.8rem; color: #8a8a8a; margin-bottom: 4px; font-weight: 400; }
-        .user-id { font-size: 0.7rem; color: #555; letter-spacing: 0.5px; }
-
-        /* --- STATS GRID --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
+        .avatar-container svg {
+            color: #718096;
         }
 
-        .stat-box {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
+        .user-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        /* --- MENU LIST (MATCHING UPLOADED IMAGE) --- */
+        .menu-container {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:active { background: rgba(255, 255, 255, 0.05); }
+
+        .icon-box {
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
         }
 
-        .stat-val { display: block; font-size: 1.05rem; font-weight: 500; color: var(--neon-cyan); letter-spacing: -0.2px; }
-        .stat-label { font-size: 0.65rem; color: #666; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-top: 2px; }
+        .icon-blue { background: rgba(30, 60, 114, 0.3); color: var(--neon-cyan); }
+        .icon-green { background: rgba(0, 255, 136, 0.1); color: #00ff88; }
+        .icon-purple { background: rgba(188, 19, 254, 0.1); color: var(--neon-purple); }
+        .icon-red { background: rgba(255, 75, 75, 0.1); color: #ff4b4b; }
+
+        .item-content { flex: 1; }
+        .item-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 2px; }
+        .item-sub { font-size: 0.75rem; color: #718096; }
+
+        .chevron { color: #4a5568; margin-left: 8px; }
+
+        /* --- TOP UP BUTTON --- */
+        .topup-btn {
+            background: linear-gradient(135deg, #4d13fe, #bc13fe);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 8px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(188, 19, 254, 0.3);
+            transition: opacity 0.2s;
+        }
+        .topup-btn:active { opacity: 0.8; }
 
         /* --- REFERRAL SECTION --- */
         .referral-card {
-            background: rgba(188, 19, 254, 0.03);
-            border: 1px solid rgba(188, 19, 254, 0.15);
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 20px;
-            text-align: left;
+            background: linear-gradient(135deg, rgba(188, 19, 254, 0.1) 0%, rgba(30, 60, 114, 0.1) 100%);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
         }
-        .ref-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .ref-title { font-size: 0.75rem; font-weight: 600; color: var(--neon-purple); text-transform: uppercase; letter-spacing: 0.5px; }
-        .ref-count { font-size: 0.8rem; color: #eee; font-weight: 500; }
-        
-        .progress-bg { background: rgba(255,255,255,0.06); height: 5px; border-radius: 3px; margin: 8px 0; overflow: hidden; }
-        .progress-fill { background: var(--neon-purple); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        
-        .ref-link-box {
-            display: flex;
-            background: rgba(0,0,0,0.25);
-            padding: 8px 10px;
-            border-radius: 8px;
-            margin-top: 12px;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        .ref-url { font-size: 0.75rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
-        .copy-small { background: var(--neon-cyan); color: #000; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-        .copy-small:hover { opacity: 0.9; }
 
-        /* --- CUSTOM NOTIFICATION SYSTEM --- */
-        .toast-notification {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(10, 10, 12, 0.95);
-            border: 1px solid var(--neon-cyan);
-            padding: 12px 24px;
+        .ref-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .ref-title { font-size: 0.8rem; font-weight: 700; color: var(--neon-purple); text-transform: uppercase; letter-spacing: 1px; }
+        .ref-stats { font-size: 0.8rem; font-weight: 600; color: #fff; }
+
+        .ref-link-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 12px;
-            color: #fff;
-            font-size: 0.85rem;
-            font-weight: 500;
-            z-index: 9999;
-            box-shadow: 0 8px 32px rgba(0, 243, 255, 0.15);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-            white-space: nowrap;
-        }
-        .toast-notification.active {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* --- SETTINGS LIST --- */
-        .settings-group { margin-top: 24px; }
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
+            padding: 12px;
             align-items: center;
-            padding: 16px;
-            background: var(--glass-bg);
-            border-radius: 14px;
-            margin-bottom: 10px;
-            text-decoration: none;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: background 0.2s, border-color 0.2s;
+            margin-top: 15px;
+            border: 1px solid var(--glass-border);
         }
-        .settings-item:hover { border-color: rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.06); }
-        .settings-item:active { border-color: var(--neon-cyan); background: rgba(0, 243, 255, 0.04); }
-        .item-info h4 { font-size: 0.85rem; font-weight: 500; margin-bottom: 2px; }
-        .item-info p { font-size: 0.75rem; color: #8a8a8a; font-weight: 400; }
-        .action-text { font-size: 0.7rem; font-weight: 600; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.3px; }
 
-        .logout-btn {
-            margin-top: 24px;
-            width: 100%;
-            padding: 14px;
-            background: rgba(255, 77, 77, 0.06);
-            color: #ff4d4d;
-            border: 1px solid rgba(255, 77, 77, 0.15);
-            border-radius: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
+        .ref-url { font-size: 0.75rem; color: #a0aec0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+        .copy-btn { background: var(--neon-cyan); color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+
+        /* --- TOAST --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-cyan);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: none;
+            z-index: 10000;
         }
-        .logout-btn:hover { background: rgba(255, 77, 77, 0.1); }
-
     </style>
 </head>
 <body>
 
     <header class="reveal">
-        <a href="shop.html" class="back-btn">←</a>
-        <h2 style="font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px;">MY PROFILE</h2>
+        <a href="shop.html" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </a>
+        <div style="font-weight: 700; letter-spacing: 1px; color: var(--neon-cyan);">PROFILE</div>
+        <div style="width: 40px;"></div>
     </header>
 
-    <div id="toast-container" class="toast-notification"></div>
+    <div class="profile-identity reveal">
+        <div class="avatar-container">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </div>
+        <div class="user-name" id="user-username">Loading...</div>
+        <div class="user-email" id="user-email">...</div>
+    </div>
 
-    <div class="profile-card reveal">
-        <div class="avatar" id="avatar-initial">-</div>
-        <div class="username" id="display-name">Syncing profile...</div>
-        <div class="user-email-display" id="user-email-header">Loading account details...</div>
-        <div class="user-id">UID: <span id="uid-display">-------</span></div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span class="stat-val" id="total-purchases">0</span>
-                <span class="stat-label">Orders</span>
+    <div class="menu-container reveal">
+        <div class="menu-item">
+            <div class="icon-box icon-blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
             </div>
-            <div class="stat-box">
-                <span class="stat-val" id="total-spent">₦0.00</span>
-                <span class="stat-label">Total Spent</span>
+            <div class="item-content">
+                <div class="item-title">Account Balance</div>
+                <div class="item-sub" id="user-balance">NGN 0.00</div>
             </div>
+            <a href="fund.html" class="topup-btn">+ Top up</a>
         </div>
 
-        <div class="referral-card">
-            <div class="ref-header">
-                <span class="ref-title">Free Zone Goal</span>
-                <span class="ref-count" id="ref-count-display">0 / 4 Invites</span>
+        <a href="mine.html" class="menu-item">
+            <div class="icon-box icon-green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
             </div>
-            <div class="progress-bg"><div class="progress-fill" id="ref-progress-bar"></div></div>
-            <div class="ref-link-box">
-                <span class="ref-url" id="ref-link-text">Synchronizing link...</span>
-                <button class="copy-small" onclick="copyRefLink()">COPY</button>
+            <div class="item-content">
+                <div class="item-title">Purchase History</div>
+                <div class="item-sub" id="order-count">0 orders total</div>
             </div>
+            <div class="chevron">›</div>
+        </a>
+
+        <a href="javascript:void(0)" class="menu-item" id="logout-btn">
+            <div class="icon-box icon-red">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </div>
+            <div class="item-content" style="color: #ff4b4b;">
+                <div class="item-title">Log Out</div>
+                <div class="item-sub" style="color: rgba(255,75,75,0.6);">Click Here to Log Out</div>
+            </div>
+            <div class="chevron">›</div>
+        </a>
+    </div>
+
+    <div class="referral-card reveal">
+        <div class="ref-header">
+            <div class="ref-title">Referral Link</div>
+            <div class="ref-stats" id="invites-text">0/4 referrals</div>
+        </div>
+        <div class="item-sub" style="margin-bottom: 10px;">Invite up to four members to unlock free section</div>
+        <div class="ref-link-container">
+            <div class="ref-url" id="ref-link">...</div>
+            <button class="copy-btn" onclick="copyRef()">COPY</button>
         </div>
     </div>
 
-    <div class="settings-group">
-        <div class="reveal">
-            <a href="fund.html" class="settings-item">
-                <div class="item-info">
-                    <h4>Wallet Balance</h4>
-                    <p id="current-balance">₦0.00</p>
-                </div>
-                <span class="action-text">Add Funds ›</span>
-            </a>
-        </div>
-
-        <div class="reveal">
-            <a href="mine.html" class="settings-item">
-                <div class="item-info">
-                    <h4>Purchase History</h4>
-                    <p>Access your digital assets & logs</p>
-                </div>
-                <span class="action-text">View Assets ›</span>
-            </a>
-        </div>
-    </div>
-
-    <button class="logout-btn reveal" id="logout-trigger">Sign Out Account</button>
+    <div id="toast" class="toast">Link Copied!</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -272,120 +282,47 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Cached DOM Elements
-        const uidDisplay = document.getElementById('uid-display');
-        const userEmailHeader = document.getElementById('user-email-header');
-        const avatarInitial = document.getElementById('avatar-initial');
-        const displayName = document.getElementById('display-name');
-        const refLinkText = document.getElementById('ref-link-text');
-        const currentBalance = document.getElementById('current-balance');
-        const refCountDisplay = document.getElementById('ref-count-display');
-        const refProgressBar = document.getElementById('ref-progress-bar');
-        const totalPurchases = document.getElementById('total-purchases');
-        const totalSpentDisplay = document.getElementById('total-spent');
-        const toastContainer = document.getElementById('toast-container');
-
-        let toastTimeout;
-        function showNotification(message) {
-            clearTimeout(toastTimeout);
-            toastContainer.innerText = message;
-            toastContainer.classList.add('active');
-            toastTimeout = setTimeout(() => {
-                toastContainer.classList.remove('active');
-            }, 3000);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
-            }, 50);
-        });
-
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Read and initialize cached records immediately if available to reduce flicker
-                const cachedBal = sessionStorage.getItem('cached_balance');
-                if (cachedBal !== null) {
-                    const balance = parseFloat(cachedBal);
-                    currentBalance.innerText = `₦${balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                }
-
-                uidDisplay.innerText = user.uid;
-                userEmailHeader.innerText = user.email;
-                
-                const initial = user.email ? user.email.charAt(0).toUpperCase() : '?';
-                avatarInitial.innerText = initial;
-                
-                const namePart = user.email ? user.email.split('@')[0] : 'User';
-                displayName.innerText = namePart.toUpperCase();
-
-                const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-                refLinkText.innerText = `${baseUrl}/login.html?ref=${user.uid}`;
-
-                try {
-                    // Batched calls mapped to concurrent async executions for immediate data populating
-                    const userDocRef = doc(db, "users", user.uid);
-                    const ordersQuery = query(collection(db, "orders"), where("userId", "==", user.uid));
-
-                    const [userDoc, ordersSnapshot] = await Promise.all([
-                        getDoc(userDocRef),
-                        getDocs(ordersQuery)
-                    ]);
-                    
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
+                // Real-time user data
+                onSnapshot(doc(db, "users", user.uid), (snap) => {
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        const username = data.username || "User";
+                        document.getElementById('user-username').innerText = username;
+                        document.getElementById('user-email').innerText = user.email;
+                        document.getElementById('user-balance').innerText = `NGN ${Number(data.balance || 0).toLocaleString()}`;
+                        document.getElementById('invites-text').innerText = `${data.invites || 0}/4 referrals`;
                         
-                        const balance = userData.balance || 0;
-                        currentBalance.innerText = `₦${Number(balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                        sessionStorage.setItem('cached_balance', balance);
-                        
-                        const invites = userData.invites || 0;
-                        refCountDisplay.innerText = `${invites} / 4 Invites`;
-                        
-                        const progressPercent = Math.min((invites / 4) * 100, 100);
-                        refProgressBar.style.width = `${progressPercent}%`;
+                        // Referral logic using Username instead of UID
+                        const baseUrl = window.location.origin;
+                        document.getElementById('ref-link').innerText = `${baseUrl}/register.html?ref=${username}`;
                     }
+                });
 
-                    let totalSpent = 0;
-                    let orderCount = 0;
-                    
-                    ordersSnapshot.forEach((doc) => {
-                        const orderData = doc.data();
-                        if (orderData.status === "completed" || orderData.status === "success") {
-                            totalSpent += (orderData.amount || 0);
-                        }
-                        orderCount++;
-                    });
-                    
-                    totalPurchases.innerText = orderCount;
-                    totalSpentDisplay.innerText = `₦${totalSpent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                // Fetch Order Count
+                const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+                const orderSnap = await getDocs(q);
+                document.getElementById('order-count').innerText = `${orderSnap.size} orders total`;
 
-                } catch (error) {
-                    console.error("Data synchronization failed:", error);
-                }
+                // Animations
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
             } else {
-                window.location.href = "login.html";
+                window.location.href = 'index.html';
             }
         });
 
-        window.copyRefLink = function() {
-            const linkText = refLinkText.innerText;
-            if(linkText && linkText !== "Synchronizing link...") {
-                navigator.clipboard.writeText(linkText).then(() => {
-                    showNotification("Referral link copied safely to clipboard!");
-                });
-            }
+        window.copyRef = () => {
+            const link = document.getElementById('ref-link').innerText;
+            navigator.clipboard.writeText(link);
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
         };
 
-        document.getElementById('logout-trigger').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                sessionStorage.removeItem('cached_balance');
-                sessionStorage.removeItem('tg_popup_shown');
-                window.location.href = "login.html";
-            }).catch((error) => {
-                console.error("Sign out process error:", error);
-            });
-        });
+        document.getElementById('logout-btn').onclick = () => {
+            signOut(auth).then(() => window.location.href = 'index.html');
+        };
     </script>
 </body>
 </html>
