@@ -8,7 +8,7 @@
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass: rgba(255, 255, 255, 0.04);
+            --glass: rgba(255, 255, 255, 0.05);
             --dark: #0a0a0c;
         }
 
@@ -17,7 +17,7 @@
             background: var(--dark); 
             color: white; 
             margin: 0; 
-            padding: 24px;
+            padding: 20px;
             background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
@@ -27,39 +27,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 25px;
             padding-bottom: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        h2 { margin: 0; font-weight: 800; letter-spacing: 1.5px; color: #fff; font-size: 1.4rem; }
+        h2 { margin: 0; font-weight: 800; letter-spacing: 2px; color: #fff; font-size: 1.4rem; text-transform: uppercase; }
         
         select {
-            width: 180px; padding: 10px 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); 
-            color: white; border-radius: 8px; outline: none; transition: 0.2s; font-size: 0.85rem;
+            width: 160px; padding: 12px 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); 
+            color: white; border-radius: 10px; outline: none; transition: 0.3s; font-size: 0.8rem; font-weight: 600;
         }
-        select:focus { border-color: var(--neon-cyan); }
+        select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.1); }
 
         .panel { 
-            background: var(--glass); padding: 24px; border-radius: 16px; 
+            background: var(--glass); padding: 25px; border-radius: 20px; 
             border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(20px); 
         }
         
+        .table-wrapper { width: 100%; overflow-x: auto; }
         .grid-table { width: 100%; border-collapse: collapse; }
-        .grid-table th { color: var(--neon-cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; }
-        .grid-table td { padding: 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; }
+        .grid-table th { color: var(--neon-cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; }
+        .grid-table td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; vertical-align: middle; }
         .grid-table tr:hover { background: rgba(255, 255, 255, 0.01); }
 
         .btn {
-            padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.3px;
+            padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; margin: 2px;
         }
-        .btn:active { transform: scale(0.96); }
-        .btn-approve { background: rgba(0, 255, 136, 0.1); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.2); }
-        .btn-approve:hover { background: #00ff88; color: #000; }
-        .btn-primary { background: rgba(0, 243, 255, 0.1); color: var(--neon-cyan); border: 1px solid rgba(0, 243, 255, 0.2); }
-        .btn-primary:hover { background: var(--neon-cyan); color: #000; }
-        .btn-danger { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.2); }
-        .btn-danger:hover { background: #ff4d4d; color: #fff; }
+        .btn:active { transform: scale(0.95); }
+        .btn-approve { background: #00ff88; color: #000; }
+        .btn-primary { background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan)); color: white; }
+        .btn-danger { background: #ff4d4d; color: white; }
 
         .low-stock { color: #ffcc00; font-weight: bold; animation: blink 2s infinite; }
         @keyframes blink { 50% { opacity: 0.4; } }
@@ -67,15 +65,16 @@
         /* Dialog UI Overlay */
         #confirm-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); z-index: 11000;
-            align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 11000;
+            align-items: center; justify-content: center; padding: 20px;
         }
         .modal-box {
-            background: #111116; border: 1px solid rgba(255, 77, 77, 0.3); padding: 24px;
-            border-radius: 12px; max-width: 360px; width: 100%; text-align: center;
+            background: #111116; border: 1px solid var(--ff4d4d); padding: 30px;
+            border-radius: 20px; max-width: 400px; width: 100%; text-align: center;
+            border: 1px solid rgba(255, 77, 77, 0.4); box-shadow: 0 0 30px rgba(255, 77, 77, 0.1);
         }
-        .modal-box p { font-size: 0.9rem; color: #ccc; margin-bottom: 20px; line-height: 1.4; }
-        .modal-flex { display: flex; gap: 10px; justify-content: center; }
+        .modal-box p { font-size: 0.9rem; color: #ccc; margin-bottom: 25px; line-height: 1.5; }
+        .modal-flex { display: flex; gap: 12px; justify-content: center; }
 
         /* Toast Component */
         .toast-notification {
@@ -92,19 +91,19 @@
         .toast-notification.error-toast { border-color: #ff4d4d; box-shadow: 0 8px 32px rgba(255, 77, 77, 0.15); }
 
         /* State Modifiers */
-        .loading-view { text-align: center; color: #666; font-size: 0.9rem; padding: 40px 0; }
-        .empty-view { text-align: center; color: #555; font-size: 0.85rem; padding: 40px 0; display: none; }
+        .loading-view { text-align: center; color: #888; font-size: 0.9rem; padding: 40px 0; font-weight: 500; }
+        .empty-view { text-align: center; color: #666; font-size: 0.85rem; padding: 40px 0; display: none; font-weight: 500; }
     </style>
 </head>
 <body>
 
     <div id="confirm-modal">
         <div class="modal-box">
-            <h3 style="color:#ff4d4d; margin:0 0 10px 0; font-size:1.1rem;">Confirm Destruction</h3>
+            <h3 style="color:#ff4d4d; margin:0 0 12px 0; font-size:1.2rem; text-transform:uppercase; letter-spacing:1px;">Confirm Destruction</h3>
             <p id="modal-text">Are you sure you want to delete this asset permanently?</p>
             <div class="modal-flex">
-                <button class="btn btn-danger" id="modal-confirm-btn">DELETE</button>
-                <button class="btn" style="background:rgba(255,255,255,0.06); color:#fff;" id="modal-close-btn">CANCEL</button>
+                <button class="btn btn-danger" id="modal-confirm-btn" style="padding: 12px 24px;">DELETE</button>
+                <button class="btn" style="background:rgba(255,255,255,0.06); color:#fff; padding: 12px 24px;" id="modal-close-btn">CANCEL</button>
             </div>
         </div>
     </div>
@@ -114,7 +113,7 @@
     <div class="header-area">
         <div>
             <h2>Inventory Engine</h2>
-            <div style="font-size: 0.7rem; color: #555; margin-top: 4px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Active Isolated Processing Grid</div>
+            <div style="font-size: 0.7rem; color: #666; margin-top: 5px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Active Isolated Processing Grid</div>
         </div>
         <select id="view-filter">
             <option value="ALL">All Assets</option>
@@ -134,19 +133,21 @@
     </div>
 
     <div class="panel">
-        <table class="grid-table">
-            <thead>
-                <tr>
-                    <th>Asset Details</th>
-                    <th>Price</th>
-                    <th>Available Stock</th>
-                    <th>Control Operations</th>
-                </tr>
-            </thead>
-            <tbody id="inventory-rows">
-                <tr id="initial-loading-row"><td colspan="4" class="loading-view">Synchronizing data stream parameters...</td></tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table class="grid-table">
+                <thead>
+                    <tr>
+                        <th>Asset Details</th>
+                        <th>Price</th>
+                        <th>Available Stock</th>
+                        <th>Control Operations</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-rows">
+                    <tr id="initial-loading-row"><td colspan="4" class="loading-view">Synchronizing data stream parameters...</td></tr>
+                </tbody>
+            </table>
+        </div>
         <div id="empty-notice" class="empty-view">No marketplace configurations discovered matching parameters.</div>
     </div>
 
@@ -201,17 +202,16 @@
             const stockDisplay = p.mode === 'SINGLE' ? '∞' : (p.stockCount ?? 0);
             
             tr.innerHTML = `
-                <td><strong>${p.name || 'Unnamed Asset'}</strong><br><small style="color:#666">${p.category || 'Uncategorized'}</small></td>
-                <td>₦${priceStr}</td>
+                <td><strong style="color: #fff; font-size: 0.95rem;">${p.name || 'Unnamed Asset'}</strong><br><small style="color:#666; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px;">${p.category || 'Uncategorized'}</small></td>
+                <td style="font-weight: 600; color: #eee;">₦${priceStr}</td>
                 <td class="${stockClass}">${stockDisplay}</td>
-                <td>
+                <td style="white-space: nowrap;">
                     <button class="btn btn-approve" id="edit-${id}">EDIT</button>
                     <button class="btn btn-primary" id="link-${id}">🔗 Link</button>
                     <button class="btn btn-danger" id="del-${id}">Del</button>
                 </td>
             `;
 
-            // Micro-optimized inline pointer handlers to completely eliminate raw global state strings
             tr.querySelector(`#edit-${id}`).addEventListener('click', () => editProduct(id));
             tr.querySelector(`#link-${id}`).addEventListener('click', () => copyDirectLink(id));
             tr.querySelector(`#del-${id}`).addEventListener('click', () => deleteAssetRequest(id));
@@ -286,7 +286,6 @@
         }
 
         function editProduct(id) {
-            // Smooth tab allocation redirecting the active state payload directly to deployment dashboard core file
             window.location.href = `adminq.html?editProduct=${id}`;
         }
 
@@ -326,7 +325,6 @@
 
         filterEl.addEventListener('change', applyFilterState);
         
-        // Document Initialization
         loadInventory();
     </script>
 </body>
