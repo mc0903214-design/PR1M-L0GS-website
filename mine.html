@@ -3,140 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ | My Purchases</title>
+    <title>PR1MΞ | Purchase History</title>
     <style>
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass-bg: rgba(255, 255, 255, 0.07);
-            --dark-bg: #0a0a0c;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark-bg: #060608;
+            --accent-glow: rgba(0, 243, 255, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
             background-color: var(--dark-bg);
-            color: white;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            color: #f1f1f3;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SLOW REVEAL --- */
         .reveal {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            padding: 4px 8px 30px 8px;
         }
 
         .back-btn {
-            color: var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 12px;
+            padding: 10px;
             text-decoration: none;
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
         }
 
-        /* --- SEARCH BAR --- */
-        .search-container {
+        .section-title { 
+            font-size: 0.8rem; 
+            color: #718096; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin-bottom: 16px; 
+            padding-left: 4px; 
+        }
+
+        /* --- LOGS LIST CONTAINER --- */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .history-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .card-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .item-price {
+            color: var(--neon-cyan);
+            font-weight: 700;
+        }
+
+        .view-btn {
+            background: rgba(0, 243, 255, 0.06);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            color: var(--neon-cyan);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .view-btn:hover {
+            background: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+            color: #060608;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        /* --- POPUP MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.92);
+            width: 92%;
+            max-width: 380px;
+            background: rgba(14, 14, 18, 0.96);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-radius: 24px;
+            padding: 24px;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-box.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+
+        .modal-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .modal-sub {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 16px;
+        }
+
+        .secret-display-area {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            color: #e2e8f0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-all;
             margin-bottom: 20px;
         }
 
-        .search-bar {
-            width: 100%;
-            background: var(--glass-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 20px;
+        .action-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-action-btn {
+            flex: 1;
+            padding: 12px;
             border-radius: 12px;
-            color: white;
-            outline: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+        .modal-action-btn:active { opacity: 0.8; }
+        
+        .btn-copy { background: linear-gradient(135deg, #4d13fe, #bc13fe); color: white; }
+        .btn-close { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: #cbd5e0; }
+
+        /* --- UTILITY SPINNER & TOAST --- */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2.5px solid rgba(255,255,255,0.1);
+            border-top: 2.5px solid var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-cyan);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: none;
+            z-index: 10000;
+        }
+
+        .empty-history {
+            padding: 32px;
+            text-align: center;
+            color: #718096;
+            border: 1px dashed var(--glass-border);
+            border-radius: 16px;
             font-size: 0.9rem;
         }
-
-        .search-bar:focus { border-color: var(--neon-cyan); }
-
-        /* --- PURCHASE LIST --- */
-        .order-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .order-name { font-weight: bold; color: var(--neon-cyan); font-size: 1rem; }
-        .order-date { font-size: 0.7rem; color: #555; }
-
-        .secret-display {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: #ccc;
-            word-break: break-all;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .mini-copy {
-            background: var(--neon-purple);
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.65rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        #empty-state { text-align: center; color: #555; margin-top: 50px; display: none; }
-        #status-msg { text-align: center; font-size: 0.8rem; margin-bottom: 10px; color: #ff4d4d; }
     </style>
 </head>
 <body>
 
     <header class="reveal">
-        <a href="shop.html" class="back-btn">←</a>
-        <h2 style="font-size: 1.2rem; letter-spacing: 1px;">PURCHASE HISTORY</h2>
+        <a href="shop.html" id="dynamicBackBtn" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </a>
+        <div style="font-weight: 700; letter-spacing: 1px; color: var(--neon-cyan);">INVENTORY</div>
+        <div style="width: 40px;"></div>
     </header>
 
-    <div id="status-msg"></div>
+    <div class="section-title reveal">My Purchased Products</div>
 
-    <div class="search-container reveal">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search your digital assets...">
+    <div class="history-list reveal" id="historyList">
+        <div class="spinner"></div>
     </div>
 
-    <div id="orders-list">
-        <!-- Purchased items injected here -->
+    <!-- SECRET OVERLAY POPUP -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeSecretPopup()"></div>
+    <div class="modal-box" id="secretModal">
+        <div class="modal-header" id="modalTitle">Extracted Content</div>
+        <div class="modal-sub" id="modalMeta">Delivered items package data</div>
+        <div class="secret-display-area" id="modalSecretContent">...</div>
+        <div class="action-row">
+            <button class="modal-action-btn btn-close" onclick="closeSecretPopup()">Dismiss</button>
+            <button class="modal-action-btn btn-copy" onclick="copySecretData()">Copy Content</button>
+        </div>
     </div>
 
-    <div id="empty-state">
-        <p>Your vault is currently empty.</p>
-    </div>
+    <div id="toast" class="toast">Copied to Clipboard!</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -151,113 +305,107 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const statusDiv = document.getElementById('status-msg');
+        const listContainer = document.getElementById('historyList');
+        let rawOrdersCache = {};
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = "login.html";
-                return;
-            }
+        // --- INTELLIGENT BACK BUTTON REFERRER TRAFFIC MANAGEMENT ---
+        const lastPage = document.referrer;
+        const dynamicBackBtn = document.getElementById('dynamicBackBtn');
+        if (lastPage.includes('prof.html')) {
+            dynamicBackBtn.href = 'prof.html';
+        } else {
+            dynamicBackBtn.href = 'shop.html';
+        }
 
+        async function loadUserPurchaseHistory(uid) {
             try {
-                // Fetch the user's specific purchase array from their document
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
-
-                if (userSnap.exists()) {
-                    const data = userSnap.data();
-                    
-                    // Session security check
-                    if (data.status === 'banned') {
-                        await auth.signOut();
-                        window.location.href = "login.html";
-                        return;
-                    }
-
-                    const purchases = data.myPurchases || [];
-                    renderPurchases(purchases);
-
-                    // Log activity
-                    await addDoc(collection(db, "logs"), {
-                        type: "VAULT_ACCESS",
-                        details: `${user.email} opened their purchase history.`,
-                        timestamp: serverTimestamp()
-                    });
-                } else {
-                    document.getElementById('empty-state').style.display = 'block';
-                }
-            } catch (err) {
-                statusDiv.innerText = "Sync Error: " + err.message;
-            }
-        });
-
-        function renderPurchases(items) {
-            const list = document.getElementById('orders-list');
-            list.innerHTML = '';
-            
-            if (items.length === 0) {
-                document.getElementById('empty-state').style.display = 'block';
-                return;
-            }
-
-            // Display newest items at the top
-            [...items].reverse().forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'order-card reveal';
+                // Queries the order logs table ordered by freshest timestamp records down
+                const q = query(
+                    collection(db, "orders"), 
+                    where("userId", "==", uid),
+                    orderBy("timestamp", "desc")
+                );
                 
-                // Formats timestamp if available, else uses raw date string
-                const dateDisplay = item.date || "Just now";
+                const snap = await getDocs(q);
+                listContainer.innerHTML = "";
+                rawOrdersCache = {};
 
-                card.innerHTML = `
-                    <div class="order-header">
-                        <span class="order-name">${item.name}</span>
-                        <span class="order-date">${dateDisplay}</span>
-                    </div>
-                    <div class="secret-display">
-                        <span class="secret-val">${item.secret}</span>
-                        <button class="mini-copy">Copy</button>
-                    </div>
-                `;
+                if (snap.empty) {
+                    listContainer.innerHTML = '<div class="empty-history">You have not purchased any assets yet.</div>';
+                    return;
+                }
 
-                card.querySelector('.mini-copy').onclick = function() {
-                    copyToClipboard(this, item.secret);
-                };
+                snap.forEach((doc) => {
+                    const data = doc.data();
+                    const orderId = doc.id;
+                    rawOrdersCache[orderId] = data.data || "No item data or secrets attached to this order record.";
 
-                list.appendChild(card);
-                // Staggered reveal effect
-                setTimeout(() => card.classList.add('active'), 150);
-            });
+                    const finalPrice = typeof data.totalPaid === 'number' ? data.totalPaid : parseFloat(data.price || 0);
+                    const nameString = data.productName || "Crypto Asset Item";
+                    const itemQuantity = data.quantity || 1;
+
+                    const formattedDate = data.timestamp 
+                        ? new Date(data.timestamp.seconds * 1000).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'})
+                        : "Processed";
+
+                    const card = document.createElement('div');
+                    card.className = 'history-card';
+                    card.innerHTML = `
+                        <div class="card-left">
+                            <div class="item-name">${nameString}</div>
+                            <div class="item-meta">
+                                <span class="item-price">₦${finalPrice.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                                <span style="opacity: 0.3;">•</span>
+                                <span>Qty: ${itemQuantity}</span>
+                                <span style="opacity: 0.3;">•</span>
+                                <span style="font-size: 0.75rem;">${formattedDate}</span>
+                            </div>
+                        </div>
+                        <button class="view-btn" onclick="openSecretPopup('${orderId}', '${escapeHtml(nameString)}')">View</button>
+                    `;
+                    listContainer.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                listContainer.innerHTML = '<div class="empty-history" style="color: #ff4b4b;">Error pulling database logs.</div>';
+            }
         }
 
-        window.copyToClipboard = function(btn, text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = btn.innerText;
-                btn.innerText = "COPIED";
-                btn.style.background = "#00ff88";
-                btn.style.color = "#000";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = "var(--neon-purple)";
-                    btn.style.color = "white";
-                }, 2000);
-            }).catch(err => {
-                statusDiv.innerText = "Clipboard access restricted.";
-            });
+        window.openSecretPopup = function(orderId, name) {
+            const payload = rawOrdersCache[orderId] || "Unavailable";
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalSecretContent').innerText = payload;
+            
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('secretModal').classList.add('active');
+        };
+
+        window.closeSecretPopup = function() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('secretModal').classList.remove('active');
+        };
+
+        window.copySecretData = function() {
+            const dataStr = document.getElementById('modalSecretContent').innerText;
+            navigator.clipboard.writeText(dataStr);
+            
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        };
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // Real-time search filtering
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.order-card').forEach(card => {
-                const name = card.querySelector('.order-name').innerText.toLowerCase();
-                card.style.display = name.includes(term) ? 'block' : 'none';
-            });
-        });
-
-        // Trigger animations for header elements
-        window.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('header').classList.add('active');
-            document.querySelector('.search-container').classList.add('active');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadUserPurchaseHistory(user.uid);
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+            } else {
+                window.location.href = 'index.html';
+            }
         });
     </script>
 </body>
