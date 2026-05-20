@@ -3,393 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ | SMS Verification</title>
+    <title>PR1MΞ SMS - Under Construction</title>
     <style>
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass-bg: rgba(255, 255, 255, 0.07);
-            --dark-bg: #0a0a0c;
-            --skeletal: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark-bg: #060608;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+        }
 
         body {
             background-color: var(--dark-bg);
-            color: white;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            color: #f1f1f3;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container { max-width: 600px; margin: 0 auto; }
-
-        header { display: flex; align-items: center; margin-bottom: 30px; gap: 15px; }
-        .back-link { color: var(--neon-cyan); text-decoration: none; font-size: 1.5rem; }
-        
-        .intro-card {
-            background: var(--glass-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .intro-card h1 { font-size: 1.4rem; color: var(--neon-cyan); margin-bottom: 10px; }
-        .intro-card p { font-size: 0.9rem; color: #888; line-height: 1.6; }
-
-        .form-group { margin-bottom: 20px; position: relative; }
-        label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-
-        select, .search-input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            color: white;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .price-display {
-            background: rgba(0, 243, 255, 0.05);
-            border: 1px dashed var(--neon-cyan);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .price-display span { font-size: 1.8rem; font-weight: 800; color: white; }
-
-        .action-btn {
-            width: 100%;
-            padding: 18px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-
-        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-
-        /* ACTIVE ORDER SECTION */
-        #active-order {
-            background: var(--glass-bg);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 20px;
-            padding: 30px;
-            margin-top: 25px;
-            text-align: center;
-        }
-
-        .number-display { font-size: 2rem; letter-spacing: 3px; color: var(--neon-cyan); margin: 15px 0; font-weight: bold; }
-        .timer { font-size: 0.9rem; color: #ff4d4d; margin-bottom: 20px; }
-        
-        .code-box {
-            background: #000;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 15px 0;
-            font-size: 1.5rem;
-            color: #00ff88;
-            font-family: monospace;
-            border: 1px solid #333;
-        }
-
-        .cancel-btn { background: transparent; color: #666; border: none; cursor: pointer; margin-top: 15px; text-decoration: underline; }
-
-        .hidden { display: none; }
-
-        .history-item {
-            background: var(--glass-bg);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.05);
+            padding: 24px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* --- CONTAINER WORKSPACE --- */
+        .maintenance-card {
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.2) 0%, rgba(14, 14, 18, 0.6) 100%);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 24px;
+            padding: 40px 24px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* --- ANIMATED PULSE GLOW --- */
+        .icon-wrapper {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 24px auto;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); transform: scale(1); }
+            100% { box-shadow: 0 0 25px rgba(0, 243, 255, 0.5); transform: scale(1.03); }
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        p {
+            color: #a0aec0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        /* --- BACK BUTTON --- */
+        .back-btn {
+            background: linear-gradient(90deg, var(--neon-purple) 0%, #9d4edd 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.3);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .back-btn:hover { 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(188, 19, 254, 0.45);
+            opacity: 0.95;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <a href="shop.html" class="back-link">←</a>
-        <h2>SMS Gateway</h2>
-    </header>
-
-    <div class="intro-card">
-        <h1>Global SMS Verifications</h1>
-        <p>Get instant OTP numbers for WhatsApp, Telegram, Google, and more. Numbers are held for 15 minutes. No code, no charge.</p>
-    </div>
-
-    <div id="order-form">
-        <div class="form-group">
-            <label>Select Country</label>
-            <select id="country-select">
-                <option value="">Fetching countries...</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Select Service</label>
-            <select id="service-select">
-                <option value="">Select country first...</option>
-            </select>
-        </div>
-
-        <div class="price-display">
-            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">ESTIMATED PRICE</p>
-            <span>₦<span id="final-price">0</span></span>
-        </div>
-
-        <button class="action-btn" id="purchase-btn">Purchase Number</button>
-    </div>
-
-    <div id="active-order" class="hidden">
-        <h3>Your Dedicated Number</h3>
-        <div class="number-display" id="disp-number">...</div>
-        <div class="timer">Expires in: <span id="time-left">15:00</span></div>
-        
-        <label>Verification Code:</label>
-        <div class="code-box" id="disp-code">WAITING FOR SMS...</div>
-        
-        <div style="display: flex; gap: 10px;">
-            <button class="action-btn" style="flex: 2;" id="manual-check-btn">Manual Refresh</button>
-            <button class="action-btn" style="flex: 1; background: #333;" id="copy-btn">Copy</button>
+    <div class="maintenance-card">
+        <div class="icon-wrapper">
+            <!-- Gear/Production SVG Icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
         </div>
         
-        <button class="cancel-btn" id="cancel-btn">Cancel & Refund</button>
-    </div>
-
-    <div style="margin-top: 40px;">
-        <h4 style="color: #444; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 15px;">Recent SMS History</h4>
-        <div id="sms-history"></div>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, increment, setDoc, collection, onSnapshot, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
-        authDomain: "primelogs-web.firebaseapp.com",
-        projectId: "primelogs-web",
-        storageBucket: "primelogs-web.firebasestorage.app",
-        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    let currentUser = null;
-    let userBalance = 0;
-    let adminRate = 1500;
-    let adminMargin = 500;
-    let apiKey = "";
-    let activeOrderId = null;
-    let pollInterval = null;
-    let countdownInterval = null;
-
-    const proxy = "https://corsproxy.io/?";
-
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) return window.location.href = "index.html";
-        currentUser = user;
-
-        onSnapshot(doc(db, "users", user.uid), (snap) => {
-            if (snap.exists()) userBalance = snap.data().balance || 0;
-        });
-
-        const settings = await getDoc(doc(db, "settings", "sms_config"));
-        if (settings.exists()) {
-            const data = settings.data();
-            apiKey = data.apiKey;
-            adminRate = data.rate || 1500;
-            adminMargin = data.margin || 500;
-            
-            // Only init market AFTER apiKey is set
-            if(apiKey) {
-                initMarket();
-            } else {
-                document.getElementById('country-select').innerHTML = '<option>API Key Missing in Admin</option>';
-            }
-        }
-        loadHistory();
-    });
-
-    async function initMarket() {
-        try {
-            const res = await fetch(`${proxy}${encodeURIComponent('https://5sim.net/v1/guest/products/countries')}`, {
-                headers: { 'Accept': 'application/json' }
-            });
-            const countries = await res.json();
-            const select = document.getElementById('country-select');
-            select.innerHTML = '<option value="">Select Country</option>';
-            Object.keys(countries).sort().forEach(c => {
-                select.innerHTML += `<option value="${c}">${c.toUpperCase()}</option>`;
-            });
-        } catch (e) { 
-            console.error(e);
-            document.getElementById('country-select').innerHTML = '<option>Error loading countries</option>';
-        }
-    }
-
-    document.getElementById('country-select').onchange = async (e) => {
-        const country = e.target.value;
-        if (!country) return;
-        const serviceSelect = document.getElementById('service-select');
-        serviceSelect.innerHTML = '<option>Loading services...</option>';
-
-        try {
-            const res = await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/guest/products/${country}/any`)}`, {
-                headers: { 'Accept': 'application/json' }
-            });
-            const products = await res.json();
-            serviceSelect.innerHTML = '<option value="">Select Service</option>';
-            Object.keys(products).forEach(p => {
-                const costUSD = products[p].cost;
-                const priceNGN = Math.ceil((costUSD * adminRate) + adminMargin);
-                serviceSelect.innerHTML += `<option value="${p}" data-price="${priceNGN}">${p.toUpperCase()} - ₦${priceNGN}</option>`;
-            });
-        } catch (e) { console.error(e); }
-    };
-
-    document.getElementById('service-select').onchange = (e) => {
-        const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
-        document.getElementById('final-price').innerText = price;
-    };
-
-    document.getElementById('purchase-btn').onclick = async () => {
-        const country = document.getElementById('country-select').value;
-        const service = document.getElementById('service-select').value;
-        const price = parseFloat(document.getElementById('final-price').innerText);
-
-        if (!country || !service) return alert("Please select options");
-        if (userBalance < price) return alert("Insufficient Balance");
-
-        document.getElementById('purchase-btn').disabled = true;
-        document.getElementById('purchase-btn').innerText = "Processing...";
-
-        try {
-            await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(-price) });
-
-            const res = await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/user/buy/activation/${country}/any/${service}`)}`, {
-                headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
-            });
-            const order = await res.json();
-
-            if (order.id) {
-                startOrderUI(order, price);
-            } else {
-                throw new Error(order.category || "Number currently unavailable");
-            }
-        } catch (e) {
-            alert(e.message);
-            await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(price) });
-            document.getElementById('purchase-btn').disabled = false;
-            document.getElementById('purchase-btn').innerText = "Purchase Number";
-        }
-    };
-
-    function startOrderUI(order, price) {
-        activeOrderId = order.id;
-        document.getElementById('order-form').classList.add('hidden');
-        document.getElementById('active-order').classList.remove('hidden');
-        document.getElementById('disp-number').innerText = order.phone;
-
-        let seconds = 900;
-        countdownInterval = setInterval(() => {
-            seconds--;
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            document.getElementById('time-left').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if (seconds <= 0) cancelOrder(true);
-        }, 1000);
-
-        pollInterval = setInterval(checkSMS, 5000);
-    }
-
-    async function checkSMS() {
-        try {
-            const res = await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/user/check/${activeOrderId}`)}`, {
-                headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
-            });
-            const data = await res.json();
-            if (data.sms && data.sms.length > 0) {
-                const code = data.sms[0].code;
-                document.getElementById('disp-code').innerText = code;
-                clearInterval(pollInterval);
-                clearInterval(countdownInterval);
-                
-                await setDoc(doc(db, "sms_history", activeOrderId.toString()), {
-                    uid: currentUser.uid,
-                    phone: data.phone,
-                    code: code,
-                    service: data.product,
-                    timestamp: serverTimestamp()
-                });
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    async function cancelOrder(isAuto = false) {
-        if (!isAuto && !confirm("Cancel and refund?")) return;
+        <h1>PR1MΞ SMS</h1>
+        <p>This section is currently in production and it will be live soon. Stay tuned for temporary VoIP activation modules.</p>
         
-        clearInterval(pollInterval);
-        clearInterval(countdownInterval);
+        <a href="shop.html" class="back-btn">
+            ← Return to Market
+        </a>
+    </div>
 
-        try {
-            await fetch(`${proxy}${encodeURIComponent(`https://5sim.net/v1/user/cancel/${activeOrderId}`)}`, {
-                headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
-            });
-            const price = parseFloat(document.getElementById('final-price').innerText);
-            await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(price) });
-            alert("Order Canceled & Refunded");
-            location.reload();
-        } catch (e) { console.error(e); }
-    }
-
-    function loadHistory() {
-        const q = query(collection(db, "sms_history"), where("uid", "==", currentUser.uid), orderBy("timestamp", "desc"), limit(5));
-        onSnapshot(q, (snap) => {
-            const container = document.getElementById('sms-history');
-            container.innerHTML = "";
-            snap.forEach(d => {
-                const data = d.data();
-                container.innerHTML += `
-                    <div class="history-item">
-                        <div><b>${data.service.toUpperCase()}</b><br><small>${data.phone}</small></div>
-                        <div style="color:var(--neon-cyan); font-family:monospace; font-weight:bold;">${data.code}</div>
-                    </div>
-                `;
-            });
-        });
-    }
-
-    document.getElementById('manual-check-btn').onclick = checkSMS;
-    document.getElementById('cancel-btn').onclick = () => cancelOrder(false);
-    document.getElementById('copy-btn').onclick = () => {
-        const code = document.getElementById('disp-code').innerText;
-        if (code.includes("WAITING")) return;
-        navigator.clipboard.writeText(code);
-        alert("Copied!");
-    };
-</script>
 </body>
 </html>
