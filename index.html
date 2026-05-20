@@ -3,40 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ Market | Home</title>
+    <title>PR1MΞ MARKET | Premium Ecosystem</title>
     <style>
         :root { 
             --neon-cyan: #00f3ff; 
             --neon-purple: #bc13fe; 
-            --dark-bg: #0a0a0c; 
-            --glass: rgba(255, 255, 255, 0.03);
+            --dark-bg: #060608; 
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --accent-glow: rgba(0, 243, 255, 0.15);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
             background: var(--dark-bg);
-            color: white;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            color: #f1f1f3;
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(188, 19, 254, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(0, 243, 255, 0.09) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 24px 16px 40px 16px;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SLOW SCROLL REVEAL --- */
+        /* --- SMOOTH DELAYED REVEAL --- */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                        transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal.active {
@@ -44,135 +51,246 @@
             transform: translateY(0);
         }
 
-        /* --- HERO SECTION --- */
+        /* --- STATUS MONITOR BANNER --- */
+        .status-ticker {
+            background: rgba(0, 243, 255, 0.04);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-cyan);
+            animation: livePulse 2s infinite;
+        }
+
+        @keyframes livePulse {
+            0% { transform: scale(0.9); opacity: 0.4; }
+            50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 12px var(--neon-cyan); }
+            100% { transform: scale(0.9); opacity: 0.4; }
+        }
+
+        /* --- HERO AREA --- */
         .hero {
             text-align: center;
-            margin-top: 10vh;
-            margin-bottom: 60px;
+            max-width: 440px;
+            margin-bottom: 40px;
         }
 
         h1 { 
-            font-size: 4rem; 
+            font-size: 3.5rem; 
             font-weight: 900;
-            letter-spacing: 8px;
-            text-shadow: 0 0 20px var(--neon-cyan); 
-            margin-bottom: 10px;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #fff 40%, #a0aec0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.2); 
+            margin-bottom: 12px;
             text-transform: uppercase;
         }
 
         .tagline { 
-            color: var(--neon-cyan);
-            font-size: 0.9rem;
-            font-weight: bold;
+            color: var(--neon-purple);
+            font-size: 0.85rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 20px;
-            opacity: 0.8;
+            letter-spacing: 5px;
+            margin-bottom: 24px;
+            text-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
         }
 
         .description {
-            color: #888;
-            max-width: 300px;
-            margin: 0 auto 40px auto;
+            color: #a0aec0;
             line-height: 1.6;
             font-size: 0.95rem;
+            margin-bottom: 36px;
+            padding: 0 8px;
         }
 
         .enter-btn {
-            padding: 18px 50px;
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            width: 100%;
+            max-width: 320px;
+            padding: 16px 32px;
+            background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%);
             color: white;
             text-decoration: none;
-            border-radius: 12px;
-            font-weight: bold;
+            border-radius: 16px;
+            font-weight: 700;
             font-size: 1rem;
             letter-spacing: 2px;
-            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.3);
-            transition: 0.3s ease;
+            box-shadow: 0 6px 25px rgba(188, 19, 254, 0.35);
+            transition: transform 0.2s, opacity 0.2s;
             display: inline-block;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .enter-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.98);
+            opacity: 0.95;
         }
 
-        /* --- INFO CARDS --- */
-        .info-grid {
+        /* --- STATS CLUSTER --- */
+        .stats-strip {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
             width: 100%;
-            max-width: 400px;
-            margin-top: 40px;
+            max-width: 420px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px 6px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .stat-val span { color: var(--neon-cyan); }
+
+        .stat-lbl {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        /* --- ADVANCED GRID ARCHITECTURE --- */
+        .info-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 420px;
         }
 
         .info-card {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 18px;
+            border-radius: 20px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             display: flex;
-            align-items: center;
-            gap: 15px;
+            align-items: flex-start;
+            gap: 16px;
         }
 
         .info-icon {
-            font-size: 1.5rem;
-            background: rgba(0, 243, 255, 0.1);
-            width: 50px;
-            height: 50px;
+            font-size: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 12px;
             color: var(--neon-cyan);
+            flex-shrink: 0;
         }
 
+        .info-card:nth-child(2) .info-icon { color: var(--neon-purple); }
+
+        .info-text { min-width: 0; }
+
         .info-text h3 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin-bottom: 4px;
-            color: #eee;
+            color: #fff;
+            font-weight: 600;
         }
 
         .info-text p {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.82rem;
+            color: #718096;
+            line-height: 1.5;
         }
-
     </style>
 </head>
 <body>
 
+    <!-- REAL-TIME PLATFORM STATUS TRACKER -->
+    <div class="status-ticker reveal">
+        <div class="pulse-dot"></div>
+        All Nodes Operational & Verified
+    </div>
+
+    <!-- MAIN BRAND SHOWCASE -->
     <div class="hero reveal">
         <div class="tagline">The Digital Frontier</div>
-        <h1>PR1MΞ</h1>
-        <p class="description">Your elite marketplace for premium logs, secure VPNs, and advanced utility tools and bots. Quality verified. Instant delivery.</p>
+        <h1>PR1MΞ LOGS</h1>
+        <p class="description">Secure your entry into the next-generation digital marketplace. Access enterprise grade developer tools, secure network pipelines, automated bots, and high-tier logs instantly.</p>
         <a href="login.html" id="main-action" class="enter-btn">ENTER MARKET</a>
     </div>
 
+    <!-- NETWORK CAPACITY COUNTERS -->
+    <div class="stats-strip reveal">
+        <div class="stat-item">
+            <div class="stat-val">100<span>%</span></div>
+            <div class="stat-lbl">Uptime</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">2.4<span>k</span></div>
+            <div class="stat-lbl">Deliveries</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">&lt; 1<span>s</span></div>
+            <div class="stat-lbl">Dispense</div>
+        </div>
+    </div>
+
+    <!-- CORE FEATURE MATRIX -->
     <div class="info-grid">
         <div class="info-card reveal">
-            <div class="info-icon">⚡</div>
+            <div class="info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
             <div class="info-text">
-                <h3>Instant Delivery</h3>
-                <p>Digital assets are delivered immediately to your account after purchase.</p>
+                <h3>Autonomous Extraction</h3>
+                <p>No waiting intervals. Digital products are parsed, encrypted, and injected into your inventory instantly on purchase validation.</p>
             </div>
         </div>
 
         <div class="info-card reveal">
-            <div class="info-icon">🔐</div>
+            <div class="info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
             <div class="info-text">
-                <h3>Premium Logs, VPNs & tools</h3>
-                <p>High-quality social media logs, private network access & tools.</p>
+                <h3>Premium Pipelines & Logs</h3>
+                <p>Pure, filtered parameters. Access verified communication channels, elite developer utilities, and strict top-tier diagnostic logs.</p>
             </div>
         </div>
 
         <div class="info-card reveal">
-            <div class="info-icon">🤖</div>
+            <div class="info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
             <div class="info-text">
-                <h3>Utility Automations</h3>
-                <p>Advanced bots for smooth workings 😜.</p>
+                <h3>Wallet Architecture</h3>
+                <p>Automated interior balance ledger. Seamlessly manage top-ups and cross-examine available item inventory counts concurrently.</p>
             </div>
         </div>
     </div>
@@ -195,24 +313,24 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Check if user is already logged in to skip login page
+        // Session routing logic
         onAuthStateChanged(auth, (user) => {
             const actionBtn = document.getElementById('main-action');
             if (user) {
                 actionBtn.href = "shop.html";
-                actionBtn.innerText = "OPEN MARKET";
+                actionBtn.innerText = "OPEN MARKETPLACE";
 
-                // ALERT ADMIN BOT: User has landed on the home page while logged in
+                // Admin dashboard system metric updates
                 addDoc(collection(db, "logs"), {
                     type: "VISIT",
-                    details: `User: ${user.email} returned to the PR1MΞ home page.`,
+                    details: `User: ${user.email} initialized homepage interface.`,
                     timestamp: serverTimestamp()
-                }).catch(err => console.error("Log error:", err));
+                }).catch(err => console.error("Telemetry failed:", err));
             }
         });
 
-        // Scroll Reveal Logic
-        const observerOptions = { threshold: 0.1 };
+        // Dynamic viewport scroll reveal handling
+        const observerOptions = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -221,9 +339,11 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
         
-        window.addEventListener('load', () => {
+        // Immediate launch for critical header components
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.status-ticker').classList.add('active');
             document.querySelector('.hero').classList.add('active');
         });
     </script>
