@@ -267,6 +267,50 @@
         .notification-toast.active { transform: translateX(-50%) translateY(0); }
         .notification-toast.info-style { background: var(--neon-cyan); color: #000; box-shadow: 0 8px 24px rgba(0, 243, 255, 0.3); }
 
+        /* --- DYNAMIC REFERRAL POPUP BLOCK --- */
+        .ref-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .ref-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .ref-modal-content {
+            background: rgba(14, 14, 18, 0.98);
+            border: 1px solid rgba(188, 19, 254, 0.4);
+            border-radius: 24px;
+            padding: 28px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .ref-modal-overlay.active .ref-modal-content { transform: scale(1); }
+        .ref-modal-title { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+        .ref-modal-text { font-size: 0.9rem; color: #cbd5e0; line-height: 1.5; margin-bottom: 20px; }
+        .progress-badge { font-weight: 700; color: var(--neon-purple); font-size: 1.1rem; }
+        .ref-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            word-break: break-all;
+            margin-bottom: 16px;
+        }
+        .ref-modal-btn-row { display: flex; flex-direction: column; gap: 10px; }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -341,6 +385,22 @@
         </div>
     </div>
 
+    <!-- REFERRAL LOCKED MODAL -->
+    <div class="ref-modal-overlay" id="refModal">
+        <div class="ref-modal-content">
+            <div class="ref-modal-title">🔒 Category Locked</div>
+            <div class="ref-modal-text">
+                Items inside the Freebies category require at least 4 completed invites.<br><br>
+                Your Current Progress: <span class="progress-badge" id="modal-progress-text">0/4</span>
+            </div>
+            <div class="ref-box" id="modal-ref-link">...</div>
+            <div class="ref-modal-btn-row">
+                <button class="btn-action-submit" onclick="copyModalRef()">Copy Link</button>
+                <button class="back-btn" style="justify-content: center;" onclick="closeRefModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast-notif" class="notification-toast"></div>
 
     <script type="module">
@@ -367,6 +427,7 @@
         let currentQuantity = 1;
         let runningTotal = 0;
         let availableStockCount = 0;
+        let userDataCache = null;
 
         // Extract Product ID from Window URL Query parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -392,6 +453,12 @@
             }
 
             try {
+                // Fetch user data first to store data points for referral matching configurations
+                const userDoc = await getDoc(doc(db, "users", userSession.uid));
+                if(userDoc.exists()) {
+                    userDataCache = userDoc.data();
+                }
+
                 const productDoc = await getDoc(doc(db, "products", productID));
                 if (!productDoc.exists()) {
                     triggerNotification("Target product does not exist.");
@@ -464,8 +531,32 @@
             document.getElementById('p-total').innerText = `₦${runningTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         }
 
+        window.closeRefModal = function() {
+            document.getElementById('refModal').classList.remove('active');
+        };
+
+        window.copyModalRef = function() {
+            const linkText = document.getElementById('modal-ref-link').innerText;
+            navigator.clipboard.writeText(linkText);
+            triggerNotification("Referral Link copied successfully!", "info");
+        };
+
         window.executePurchase = async function() {
             if (!userSession || !productDetails) return;
+
+            // Freebies Gatekeeper Logic
+            if(productDetails.category === "Freebies") {
+                const invitesCount = userDataCache ? Number(userDataCache.invites || 0) : 0;
+                if(invitesCount < 4) {
+                    const username = userDataCache?.username || "User";
+                    const baseUrl = window.location.origin;
+                    
+                    document.getElementById('modal-progress-text').innerText = `${invitesCount}/4`;
+                    document.getElementById('modal-ref-link').innerText = `${baseUrl}/register.html?ref=${username}`;
+                    document.getElementById('refModal').classList.add('active');
+                    return;
+                }
+            }
 
             const btn = document.getElementById('buy-now-btn');
             const txt = document.getElementById('btn-text');
