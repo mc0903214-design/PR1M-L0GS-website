@@ -3,134 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ | Access</title>
+    <title>PR1MΞ | Secure Authentication</title>
     <style>
-        :root { --neon-cyan: #00f3ff; --neon-purple: #bc13fe; --glass: rgba(255, 255, 255, 0.05); }
+        :root { 
+            --neon-cyan: #00f3ff; 
+            --neon-purple: #bc13fe; 
+            --dark-bg: #060608; 
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --stock-red: #ff4b4b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
         body { 
-            background: #0a0a0c; 
-            color: white; 
-            font-family: sans-serif; 
+            background: var(--dark-bg); 
+            color: #f1f1f3; 
+            min-height: 100vh; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            height: 100vh; 
-            margin: 0;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            padding: 16px;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(0, 243, 255, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
         }
+
         .auth-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 90%;
-            max-width: 350px;
-            position: relative;
-            contain: content;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 32px 24px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* --- BUTTON SPINNER --- */
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            will-change: transform;
+        h2 { 
+            text-align: center; 
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 6px; 
+            color: #fff; 
+            letter-spacing: 3px; 
+            text-transform: uppercase;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        h2 { text-align: center; margin-bottom: 20px; color: var(--neon-cyan); letter-spacing: 2px; }
-        
-        .input-group { position: relative; margin: 10px 0; }
+        .subtitle {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- INPUT MATRIX TRACKS --- */
+        .input-group { 
+            position: relative; 
+            margin-bottom: 16px; 
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #a0aec0;
+            margin-bottom: 6px;
+            padding-left: 2px;
+        }
         
         input {
             width: 100%;
-            padding: 12px;
-            background: #000;
-            border: 1px solid #333;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
             color: white;
-            border-radius: 8px;
+            font-size: 0.95rem;
+            border-radius: 12px;
             outline: none;
+            transition: all 0.2s ease;
         }
-        input:focus { border-color: var(--neon-cyan); }
-        
-        /* Professional Toggle Styling */
-        .eye-btn {
+        input:focus { 
+            border-color: var(--neon-cyan); 
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.05);
+        }
+        input::placeholder { color: #4a5568; }
+
+        /* Modern Vector Toggle Alignment */
+        .eye-container {
             position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 14px;
+            bottom: 13px;
             cursor: pointer;
-            color: var(--neon-cyan);
-            user-select: none;
-            font-size: 1.1rem;
+            color: #718096;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s;
+            transition: color 0.2s;
+            width: 20px;
+            height: 20px;
         }
-        .eye-btn:hover { opacity: 0.8; }
+        .eye-container:hover { color: var(--neon-cyan); }
+        .eye-container svg { width: 100%; height: 100%; }
 
+        /* --- MESSAGING MATRIX --- */
         #status-msg {
-            font-size: 0.85rem;
-            margin-bottom: 10px;
+            font-size: 0.8rem;
+            margin-bottom: 16px;
             text-align: center;
             min-height: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
-        .error { color: #ff4d4d; }
+        .error { color: var(--stock-red); }
         .info { color: var(--neon-cyan); }
 
+        /* --- SUBMIT ACTIONS --- */
         .submit-btn {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            padding: 15px;
+            background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%);
             border: none;
             color: white;
-            font-weight: bold;
-            border-radius: 8px;
-            margin-top: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 14px;
+            margin-top: 8px;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 4px 20px rgba(188, 19, 254, 0.25);
+            transition: transform 0.2s, opacity 0.2s;
         }
-        .toggle-text { text-align: center; font-size: 0.8rem; margin-top: 15px; color: #888; cursor: pointer; }
+        .submit-btn:active { transform: scale(0.98); opacity: 0.95; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .redirect-link { 
+            text-align: center; 
+            font-size: 0.8rem; 
+            margin-top: 20px; 
+            color: #718096; 
+        }
+        .redirect-link a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        .redirect-link a:hover { text-decoration: underline; }
+        
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
     <div class="auth-card">
-        <h2 id="auth-title">LOGIN</h2>
+        <h2>Login</h2>
+        <div class="subtitle">Access your digital asset profile</div>
+        
         <div id="status-msg"></div>
         
-        <input type="email" id="email" placeholder="Email Address">
+        <div class="input-group">
+            <label for="email">Email Terminal</label>
+            <input type="email" id="email" placeholder="name@domain.com" autocomplete="email">
+        </div>
         
         <div class="input-group">
-            <input type="password" id="password" placeholder="Password">
-            <span class="eye-btn" id="eye-text" onclick="togglePass()">👁</span>
-        </div>
-
-        <div id="ref-group" class="hidden">
-            <input type="text" id="referral" placeholder="Referral Code (Optional)">
+            <label for="password">Security Key</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+            <div class="eye-container" id="eye-toggle" onclick="togglePassVisibility()">
+                <!-- Eye On (Visible Default State) -->
+                <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <!-- Eye Off (Hidden State) -->
+                <svg id="eye-closed" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+            </div>
         </div>
         
         <button class="submit-btn" id="auth-submit">
-            <span id="btn-text">CONTINUE</span>
+            <span id="btn-text">Authenticate</span>
             <div id="btn-loader" class="spinner hidden"></div>
         </button>
-        <p class="toggle-text" id="toggle-btn" onclick="toggleAuth()">Don't have an account? Signup</p>
+        
+        <p class="redirect-link">New pipeline user?<a href="register.html">Create Account</a></p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, collection, addDoc, getDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -143,128 +235,76 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
 
-        // Cached DOM Elements
+        // Core Cached Elements
         const statusDiv = document.getElementById('status-msg');
         const btnLoader = document.getElementById('btn-loader');
         const btnText = document.getElementById('btn-text');
+        const submitBtn = document.getElementById('auth-submit');
         const passInput = document.getElementById('password');
-        const eyeText = document.getElementById('eye-text');
-        const authTitle = document.getElementById('auth-title');
-        const toggleBtn = document.getElementById('toggle-btn');
-        const refGroup = document.getElementById('ref-group');
         const emailInput = document.getElementById('email');
-        const referralInput = document.getElementById('referral');
+        const eyeOpenIcon = document.getElementById('eye-open');
+        const eyeClosedIcon = document.getElementById('eye-closed');
 
-        // Clean Friendly Error Parser
         function parseAuthError(error) {
             if (!navigator.onLine || error.code === 'auth/network-request-failed') {
-                return "no internet connection";
+                return "Network interface offline.";
             }
             switch (error.code) {
                 case 'auth/invalid-credential':
                 case 'auth/wrong-password':
-                    return "invalid login details";
                 case 'auth/user-not-found':
-                    return "account not found";
+                    return "Invalid core access credentials.";
                 case 'auth/invalid-email':
-                    return "invalid email format";
-                case 'auth/email-already-in-use':
-                    return "account already exists";
-                case 'auth/weak-password':
-                    return "password should be at least 6 characters";
+                    return "Invalid email syntax structure.";
+                case 'auth/user-disabled':
+                    return "This security node has been suspended.";
                 default:
-                    return "something went wrong, try again";
+                    return "Authentication failure. Try again.";
             }
         }
 
-        // AUTO-FILL REFERRAL FROM URL & SET TO SIGNUP
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const refCode = params.get('ref');
-            if (refCode) {
-                referralInput.value = refCode;
-                if (authTitle.innerText === 'LOGIN') {
-                    toggleAuth();
-                }
-            }
-        });
-
-        window.togglePass = function() {
+        window.togglePassVisibility = function() {
             if (passInput.type === 'password') {
                 passInput.type = 'text';
-                eyeText.innerText = '👁‍🗨';
+                eyeOpenIcon.classList.add('hidden');
+                eyeClosedIcon.classList.remove('hidden');
             } else {
                 passInput.type = 'password';
-                eyeText.innerText = '👁';
+                eyeClosedIcon.classList.add('hidden');
+                eyeOpenIcon.classList.remove('hidden');
             }
         };
 
-        window.toggleAuth = function() {
-            statusDiv.innerText = ""; 
-            
-            if (authTitle.innerText === 'LOGIN') {
-                authTitle.innerText = 'SIGNUP';
-                toggleBtn.innerText = 'Already have an account? Login';
-                refGroup.classList.remove('hidden');
-            } else {
-                authTitle.innerText = 'LOGIN';
-                toggleBtn.innerText = "Don't have an account? Signup";
-                refGroup.classList.add('hidden');
-            }
-        };
-
-        function setStatus(msg, isError = true) {
+        function displayMessage(msg, isError = true) {
             statusDiv.className = isError ? "error" : "info";
             statusDiv.innerText = msg;
             btnLoader.classList.add('hidden');
-            btnText.innerText = "CONTINUE";
+            btnText.innerText = "Authenticate";
+            submitBtn.disabled = false;
         }
 
-        document.getElementById('auth-submit').addEventListener('click', async () => {
+        submitBtn.addEventListener('click', async () => {
             const email = emailInput.value.trim();
             const password = passInput.value;
-            const refCode = referralInput.value.trim();
-            const isLogin = authTitle.innerText === 'LOGIN';
 
-            if(!email || !password) return setStatus("Please fill all fields.");
+            if (!email || !password) {
+                return displayMessage("Please fill out all operational fields.");
+            }
 
+            submitBtn.disabled = true;
             btnLoader.classList.remove('hidden');
-            btnText.innerText = "PROCESSING";
+            btnText.innerText = "Verifying...";
             statusDiv.innerText = "";
 
             try {
+                // Configure persistent local token validation across sessions
                 await setPersistence(auth, browserLocalPersistence);
-
-                if (isLogin) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    window.location.href = "shop.html";
-                } else {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-
-                    await setDoc(doc(db, "users", user.uid), {
-                        email: email,
-                        balance: 500,
-                        role: "user",
-                        referredBy: refCode || null,
-                        createdAt: serverTimestamp()
-                    });
-
-                    if (refCode) {
-                        const refDocRef = doc(db, "users", refCode);
-                        const refDoc = await getDoc(refDocRef);
-                        if (refDoc.exists()) {
-                            await updateDoc(refDocRef, {
-                                invites: increment(1)
-                            });
-                        }
-                    }
-                    window.location.href = "shop.html";
-                }
+                await signInWithEmailAndPassword(auth, email, password);
+                
+                window.location.href = "shop.html";
             } catch (error) {
-                setStatus(parseAuthError(error));
+                displayMessage(parseAuthError(error));
             }
         });
     </script>
