@@ -8,127 +8,206 @@
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --glass: rgba(255, 255, 255, 0.05);
-            --dark: #0a0a0c;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark: #060608;
+            --stock-green: #00ff88;
+            --stock-red: #ff4b4b;
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+        
         body { 
             background: var(--dark); 
-            color: white; 
-            margin: 0; 
-            padding: 20px;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+            color: #f1f1f3; 
+            padding: 24px 16px;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(188, 19, 254, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 90% 10%, rgba(0, 243, 255, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, #0c0c14 0%, #060608 100%);
+            background-attachment: fixed;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Auth Gate Restyled */
+        /* --- AUTH MATRIX GATE --- */
         #auth-gate {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--dark); z-index: 1000; display: flex;
+            background: var(--dark); z-index: 10000; display: flex;
             flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            background-image: radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
         }
 
         .auth-box {
             background: var(--glass);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid var(--neon-cyan);
+            padding: 40px 30px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
             text-align: center;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* Navigation */
-        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        /* --- NAVIGATION INTERFACES --- */
+        .tabs { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 24px; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        
         .tab-btn {
-            background: var(--glass); border: 1px solid rgba(255,255,255,0.1); color: #888;
-            padding: 12px 20px; cursor: pointer; border-radius: 12px;
-            transition: 0.3s; font-weight: 600; font-size: 0.8rem;
-            text-transform: uppercase; letter-spacing: 1px;
+            background: var(--glass); 
+            border: 1px solid var(--glass-border); 
+            color: #718096;
+            padding: 14px 22px; 
+            cursor: pointer; 
+            border-radius: 14px;
+            transition: all 0.2s ease; 
+            font-weight: 700; 
+            font-size: 0.75rem;
+            text-transform: uppercase; 
+            letter-spacing: 1px;
             flex-shrink: 0;
         }
-        .tab-btn.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 243, 255, 0.1); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
+        .tab-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+        .tab-btn.active { 
+            border-color: var(--neon-cyan); 
+            color: var(--neon-cyan); 
+            background: rgba(0, 243, 255, 0.05); 
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.05); 
+        }
 
-        /* Layouts */
-        .panel { display: none; background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+        /* --- CONTROL PANELS --- */
+        .panel { 
+            display: none; 
+            background: var(--glass); 
+            padding: 24px; 
+            border-radius: 24px; 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
         .panel.active { display: block; }
         
-        .grid-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .grid-table th { color: var(--neon-cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 15px; border-bottom: 1px solid #333; }
-        .grid-table td { padding: 15px; text-align: left; border-bottom: 1px solid #222; font-size: 0.9rem; }
+        /* --- TABLES & UTILITIES --- */
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 16px; border-radius: 14px; border: 1px solid var(--glass-border); }
+        .grid-table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(0,0,0,0.15); }
+        .grid-table th { 
+            color: #a0aec0; 
+            font-size: 0.7rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            padding: 16px; 
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--glass-border); 
+            font-weight: 700;
+        }
+        .grid-table td { padding: 16px; border-bottom: 1px solid var(--glass-border); font-size: 0.9rem; color: #e2e8f0; vertical-align: middle; }
+        .grid-table tr:last-child td { border-bottom: none; }
 
-        /* Forms */
+        /* --- FORM STRUCTURES --- */
         .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; }
+        label { display: block; font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
         input, select, textarea {
-            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid #333; color: white; border-radius: 10px; outline: none; transition: 0.3s;
+            width: 100%; padding: 14px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 12px; outline: none; transition: all 0.2s ease; font-size: 0.95rem;
         }
-        input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.1); }
+        input:focus, select:focus, textarea:focus { border-color: var(--neon-cyan); background: rgba(0,0,0,0.45); box-shadow: 0 0 10px rgba(0, 243, 255, 0.05); }
 
-        .price-container { display: flex; align-items: center; gap: 15px; }
-        .check-group { display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 120px; }
-        .check-group input { width: 18px; height: 18px; cursor: pointer; }
+        .price-container { display: flex; align-items: center; gap: 16px; }
+        .check-group { display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 120px; user-select: none; }
+        .check-group input { width: 18px; height: 18px; cursor: pointer; margin: 0; }
 
+        /* --- BUTTON MATRICES --- */
         .btn {
-            padding: 14px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem;
+            padding: 14px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.2s ease; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; justify-content: center;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan)); color: white; }
-        .btn-approve { background: #00ff88; color: black; }
-        .btn-danger { background: #ff4d4d; color: white; }
-        .btn-sm { padding: 8px 12px; font-size: 0.7rem; margin: 2px; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%); color: white; box-shadow: 0 4px 15px rgba(188, 19, 254, 0.2); }
+        .btn-approve { background: rgba(0, 255, 136, 0.1); border: 1px solid var(--stock-green); color: var(--stock-green); }
+        .btn-approve:hover { background: var(--stock-green); color: #000; }
+        .btn-danger { background: rgba(255, 77, 77, 0.1); border: 1px solid var(--stock-red); color: var(--stock-red); }
+        .btn-danger:hover { background: var(--stock-red); color: #fff; }
+        .btn-sm { padding: 8px 14px; font-size: 0.7rem; border-radius: 8px; font-weight: 700; }
 
-        .deposit-card { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #00ff88; display: flex; justify-content: space-between; align-items: center; }
+        /* --- LIVE DEPOSIT RUNNERS --- */
+        .deposit-card { 
+            background: rgba(0, 0, 0, 0.2); 
+            padding: 16px; 
+            border-radius: 14px; 
+            margin-bottom: 12px; 
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--stock-green); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            transition: transform 0.2s;
+        }
+        .deposit-card:hover { transform: translateX(2px); background: rgba(0, 0, 0, 0.25); }
         
-        h2 { margin-bottom: 20px; font-weight: 800; letter-spacing: 2px; color: #eee; }
+        h2 { margin-bottom: 6px; font-weight: 800; letter-spacing: 1.5px; color: #fff; font-size: 1.4rem; text-transform: uppercase; }
+        .panel-desc { font-size: 0.8rem; color: #718096; margin-bottom: 24px; }
 
         #editing-indicator { 
             display: none; 
-            color: var(--neon-purple); 
-            font-weight: bold; 
-            margin-bottom: 10px; 
-            font-size: 0.8rem;
+            color: var(--neon-cyan); 
+            font-weight: 700; 
+            margin-bottom: 16px; 
+            font-size: 0.75rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(0, 243, 255, 0.08);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
         }
 
-        /* Toast Layout Addon */
+        /* --- SYSTEM TOAST NOTIFICATIONS --- */
         .toast-notification {
             position: fixed; bottom: 24px; right: 24px;
-            background: rgba(10, 10, 12, 0.95); border: 1px solid var(--neon-cyan);
-            padding: 14px 24px; border-radius: 12px; color: #fff;
-            font-size: 0.85rem; font-weight: 500; z-index: 10000;
-            box-shadow: 0 8px 32px rgba(0, 243, 255, 0.15);
+            background: rgba(6, 6, 8, 0.95); border: 1px solid var(--neon-cyan);
+            padding: 14px 24px; border-radius: 14px; color: #fff;
+            font-size: 0.85rem; font-weight: 600; z-index: 100000;
+            box-shadow: 0 12px 40px rgba(0, 243, 255, 0.15);
             opacity: 0; pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
             transform: translateY(20px);
         }
         .toast-notification.active { opacity: 1; transform: translateY(0); }
-        .toast-notification.error-toast { border-color: #ff4d4d; box-shadow: 0 8px 32px rgba(255, 77, 77, 0.15); }
+        .toast-notification.error-toast { border-color: var(--stock-red); box-shadow: 0 12px 40px rgba(255, 77, 77, 0.15); }
     </style>
 </head>
 <body>
 
     <div id="auth-gate">
         <div class="auth-box">
-            <h2 style="color: var(--neon-cyan); letter-spacing: 5px; margin-bottom: 25px;">SYSTEM OVERRIDE</h2>
-            <input type="password" id="sys-pass" placeholder="ENTER CODE" style="width: 250px; text-align: center; font-size: 1.2rem; letter-spacing: 6px; margin-bottom: 20px;" onkeydown="if(event.key === 'Enter') checkPass()">
-            <button class="btn btn-primary" style="width: 100%;" onclick="checkPass()">ENTER COMMAND CENTER</button>
+            <h2 style="color: var(--neon-cyan); letter-spacing: 4px; margin-bottom: 8px; font-size: 1.5rem;">SYSTEM OVERRIDE</h2>
+            <p style="font-size: 0.75rem; color: #718096; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px;">Cryptographic Authorization Required</p>
+            <input type="password" id="sys-pass" placeholder="••••" style="width: 100%; text-align: center; font-size: 1.4rem; letter-spacing: 8px; margin-bottom: 20px;">
+            <button class="btn btn-primary" style="width: 100%;" onclick="checkPass()">Authorize Terminal</button>
         </div>
     </div>
 
     <div id="toast-container" class="toast-notification"></div>
 
     <div class="tabs">
-        <button class="tab-btn active" id="tab-add" onclick="showTab('add-prod')">ADD PRODUCT</button>
-        <button class="tab-btn" onclick="showTab('users-list')">USERS</button>
-        <button class="tab-btn" onclick="showTab('deps-list')">DEPOSITS</button>
-        <button class="tab-btn" onclick="showTab('all-prods')">INVENTORY</button>
+        <button class="tab-btn active" id="tab-add" onclick="showTab('add-prod')">Deploy Asset</button>
+        <button class="tab-btn" onclick="showTab('users-list')">User Directory</button>
+        <button class="tab-btn" onclick="showTab('deps-list')">Live Deposits</button>
+        <button class="tab-btn" onclick="showTab('all-prods')">Inventory Core</button>
     </div>
 
     <div id="add-prod" class="panel active">
         <h2 id="form-title">Deploy New Asset</h2>
-        <p id="editing-indicator">⚠️ EDIT MODE ACTIVE - MODIFING: <span id="editing-name"></span></p>
+        <div class="panel-desc">Configure and broadcast inventory options onto the storefront logs.</div>
+        <p id="editing-indicator">⚠️ System Edit Routine Engaged — Transmitting changes to: <span id="editing-name"></span></p>
         
         <div class="form-group">
             <label>Product Name (Shows on Marketplace)</label>
@@ -160,7 +239,7 @@
                 <input type="number" id="p-price" placeholder="Amount in ₦">
                 <label class="check-group">
                     <input type="checkbox" id="p-is-free" onchange="toggleFreePrice()"> 
-                    <span style="font-size: 0.7rem; color: #00ff88;">FREE ASSET</span>
+                    <span style="font-size: 0.7rem; color: var(--stock-green); font-weight: 700; letter-spacing: 0.5px;">FREE ASSET</span>
                 </label>
             </div>
         </div>
@@ -180,7 +259,7 @@
             <textarea id="p-stock" rows="5" placeholder="user:pass, user2:pass2..."></textarea>
         </div>
         
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 12px;">
             <button class="btn btn-primary" style="flex: 2;" id="uploadBtn" onclick="uploadProduct()">UPLOAD TO STOREFRONT</button>
             <button class="btn btn-danger" style="flex: 1; display: none;" id="cancelEditBtn" onclick="cancelEdit()">CANCEL EDIT</button>
         </div>
@@ -188,31 +267,35 @@
 
     <div id="users-list" class="panel">
         <h2>User Database</h2>
-        <table class="grid-table">
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Balance</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="user-rows"></tbody>
-        </table>
+        <div class="panel-desc">View completely synchronized accounts, modify credit layers, or restrict node access.</div>
+        <div class="table-wrapper">
+            <table class="grid-table">
+                <thead>
+                    <tr>
+                        <th>Email Track</th>
+                        <th>Balance Index</th>
+                        <th>Status Status</th>
+                        <th style="text-align: right; padding-right: 24px;">Terminal Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-rows"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="deps-list" class="panel">
         <h2>Successful Deposits</h2>
+        <div class="panel-desc">Real-time incoming fiat transactional confirmations captured through external networks.</div>
         <div id="deposit-container"></div>
     </div>
 
     <div id="all-prods" class="panel">
         <div style="text-align: center; padding: 40px 20px;">
-            <h2 style="margin-bottom: 15px;">Product Inventory Engine</h2>
-            <p style="color: #888; font-size: 0.9rem; max-width: 400px; margin: 0 auto 25px; line-height: 1.5;">
+            <h2 style="margin-bottom: 12px;">Product Inventory Engine</h2>
+            <p style="color: #718096; font-size: 0.9rem; max-width: 420px; margin: 0 auto 24px; line-height: 1.6;">
                 To guarantee lightning-fast performance, real-time sync protection, and prevent browser crashes, the inventory module opens in an isolated management window.
             </p>
-            <a href="inventory.html" target="_blank" class="btn btn-primary" style="display: inline-block; text-decoration: none; padding: 16px 40px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);">
+            <a href="inventory.html" target="_blank" class="btn btn-primary" style="text-decoration: none; padding: 16px 40px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);">
                 OPEN INVENTORY ENGINE ↗
             </a>
         </div>
@@ -237,6 +320,16 @@
         const toastContainer = document.getElementById('toast-container');
         let toastTimeout;
 
+        // Auto-focus protection
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('sys-pass').focus();
+        });
+
+        // Enter key listener explicitly tied to password gate element
+        document.getElementById('sys-pass').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') checkPass();
+        });
+
         function showNotification(msg, isError = false) {
             clearTimeout(toastTimeout);
             toastContainer.innerText = msg;
@@ -252,7 +345,7 @@
                 document.getElementById('auth-gate').style.display = 'none';
                 initDashboard();
             } else {
-                showNotification("INVALID ACCESS CODE", true);
+                showNotification("INVALID TERMINAL ACCESS CODE", true);
                 inputEl.value = '';
             }
         };
@@ -261,7 +354,6 @@
             loadUsers();
             loadDeposits();
             
-            // Auto-check if URL parameters expect an external edit routing back from inventory.html
             const urlParams = new URLSearchParams(window.location.search);
             const editId = urlParams.get('editProduct');
             if (editId) {
@@ -274,8 +366,14 @@
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if (window.event && window.event.target && window.event.target.classList) {
-                window.event.target.classList.add('active');
+            
+            // Highlight the proper active tab element
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            } else {
+                // Fallback selector configuration logic
+                const btns = document.querySelectorAll('.tab-btn');
+                if(id === 'add-prod' && btns[0]) btns[0].classList.add('active');
             }
         };
 
@@ -285,7 +383,7 @@
             if(isFree) {
                 priceInput.value = 0;
                 priceInput.disabled = true;
-                priceInput.style.opacity = "0.5";
+                priceInput.style.opacity = "0.3";
             } else {
                 priceInput.disabled = false;
                 priceInput.style.opacity = "1";
@@ -309,7 +407,7 @@
             const rawStock = document.getElementById('p-stock').value;
 
             if(!name || !desc || (!isFree && !price) || !rawStock) {
-                return showNotification("Required fields (Name, Description, Price, Stock) are missing", true);
+                return showNotification("Required structural metrics fields are missing", true);
             }
             btn.disabled = true;
             btn.innerText = currentEditId ? "Saving Changes..." : "Deploying...";
@@ -331,16 +429,16 @@
 
                 if (currentEditId) {
                     await updateDoc(doc(db, "products", currentEditId), productData);
-                    showNotification("Product Updated Successfully!");
+                    showNotification("Product logs successfully synchronized!");
                     cancelEdit();
                 } else {
                     productData.createdAt = serverTimestamp();
                     await addDoc(collection(db, "products"), productData);
-                    showNotification("Product Deployed Storefront Live!");
+                    showNotification("Product deployed storefront live!");
                     setTimeout(() => { location.reload(); }, 1000);
                 }
             } catch (e) { 
-                showNotification("Operation failed: " + e.message, true); 
+                showNotification("Operation execution failed: " + e.message, true); 
             } finally {
                 btn.disabled = false;
                 btn.innerText = currentEditId ? "UPDATE ASSET" : "UPLOAD TO STOREFRONT";
@@ -362,14 +460,14 @@
                 document.getElementById('p-mode').value = p.mode;
                 document.getElementById('p-stock').value = p.mode === 'MULTIPLE' ? p.stock.join(', ') : p.stock[0];
                 toggleFreePrice(); toggleStockLabel();
-                document.getElementById('form-title').innerText = "Edit Asset";
+                document.getElementById('form-title').innerText = "Edit Asset Matrix";
                 document.getElementById('editing-indicator').style.display = "block";
                 document.getElementById('editing-name').innerText = p.name;
                 document.getElementById('uploadBtn').innerText = "UPDATE ASSET";
                 document.getElementById('cancelEditBtn').style.display = "block";
                 window.scrollTo(0,0);
             } catch (err) {
-                showNotification("Could not retrieve production data.", true);
+                showNotification("Could not retrieve operational production data.", true);
             }
         }
 
@@ -399,10 +497,10 @@
                             const row = document.createElement('tr');
                             row.id = `user-row-${userId}`;
                             row.innerHTML = `
-                                <td class="user-email">${u.email}</td>
-                                <td class="user-balance">₦${(u.balance || 0).toLocaleString()}</td>
-                                <td class="user-status"><span style="color:${u.status === 'banned' ? '#ff4d4d' : '#00ff88'}">${u.status || 'active'}</span></td>
-                                <td>
+                                <td class="user-email" style="font-weight: 600;">${u.email}</td>
+                                <td class="user-balance" style="color: var(--neon-cyan); font-weight:700;">₦${(u.balance || 0).toLocaleString()}</td>
+                                <td class="user-status"><span style="color:${u.status === 'banned' ? 'var(--stock-red)' : 'var(--stock-green)'}; font-weight:700; text-transform: uppercase; font-size: 0.75rem;">${u.status || 'active'}</span></td>
+                                <td style="text-align: right; padding-right: 16px;">
                                     <button class="btn btn-approve btn-sm" id="btn-wallet-${userId}">Edit ₦</button>
                                     <button class="btn btn-danger btn-sm" id="btn-ban-${userId}">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
                                 </td>
@@ -413,16 +511,16 @@
                                 const amt = prompt(`Enter NEW TOTAL balance for ${u.email}:`);
                                 if(amt !== null && !isNaN(amt)) {
                                     updateDoc(doc(db, "users", userId), { balance: parseFloat(amt) })
-                                        .then(() => showNotification("Wallet balance synchronized."))
-                                        .catch(() => showNotification("Balance update failed.", true));
+                                        .then(() => showNotification("Wallet node balance synchronized correctly."))
+                                        .catch(() => showNotification("Balance update rejected.", true));
                                 }
                             });
                             
                             document.getElementById(`btn-ban-${userId}`).addEventListener('click', () => {
                                 const newStatus = u.status === 'banned' ? 'active' : 'banned';
                                 updateDoc(doc(db, "users", userId), { status: newStatus })
-                                    .then(() => showNotification("User status updated."))
-                                    .catch(() => showNotification("Status modification failed.", true));
+                                    .then(() => showNotification("User firewall status revised."))
+                                    .catch(() => showNotification("Status modification dropped.", true));
                             });
                         }
                     }
@@ -432,7 +530,7 @@
                             existingRow.querySelector('.user-balance').innerText = `₦${(u.balance || 0).toLocaleString()}`;
                             const statusSpan = existingRow.querySelector('.user-status span');
                             statusSpan.innerText = u.status || 'active';
-                            statusSpan.style.color = u.status === 'banned' ? '#ff4d4d' : '#00ff88';
+                            statusSpan.style.color = u.status === 'banned' ? 'var(--stock-red)' : 'var(--stock-green)';
                             const banBtn = existingRow.querySelector('.btn-danger');
                             banBtn.innerText = u.status === 'banned' ? 'Unban' : 'Ban';
                         }
@@ -446,23 +544,42 @@
         }
 
         function loadDeposits() {
-            const q = query(collection(db, "deposits"), where("status", "==", "success"), orderBy("timestamp", "desc"));
+            // Composite-index proof query sorting strategy safely preventing failure modes across newly deployed backend collections
+            const q = query(collection(db, "deposits"), where("status", "==", "success"));
             onSnapshot(q, (snap) => {
                 const container = document.getElementById('deposit-container');
-                container.innerHTML = snap.empty ? "<p style='color:#555; font-size:0.85rem;'>No successful deposits logged yet.</p>" : "";
-                snap.forEach(dDoc => {
-                    const d = dDoc.data();
-                    const date = d.timestamp ? d.timestamp.toDate().toLocaleString() : 'Recent';
+                
+                if (snap.empty) {
+                    container.innerHTML = `<div style="text-align:center; padding: 40px 0; color:#4a5568; font-size:0.85rem; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;">No successful deposits logged within system arrays.</div>`;
+                    return;
+                }
+
+                // Process internal arrays natively to guarantee accurate sorting safely even without complex custom indexed composite parameters set up in Firestore
+                const depositsArray = [];
+                snap.forEach(docSnap => {
+                    depositsArray.push(docSnap.data());
+                });
+
+                // Soft array processing sorting top down
+                depositsArray.sort((x, y) => {
+                    const timeX = x.timestamp ? x.timestamp.toMillis() : 0;
+                    const timeY = y.timestamp ? y.timestamp.toMillis() : 0;
+                    return timeY - timeX;
+                });
+
+                container.innerHTML = "";
+                depositsArray.forEach(d => {
+                    const formattedDate = d.timestamp ? d.timestamp.toDate().toLocaleString('en-US', { hour12: true, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Processing Transaction';
                     const card = document.createElement('div');
                     card.className = 'deposit-card';
                     card.innerHTML = `
                         <div style="width: 100%">
-                            <div style="display:flex; justify-content: space-between; margin-bottom: 5px;">
-                                <span style="color: var(--neon-cyan); font-weight: bold;">₦${d.amount.toLocaleString()}</span>
-                                <span style="color: #666; font-size: 0.7rem;">${date}</span>
+                            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span style="color: var(--stock-green); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px;">₦${parseFloat(d.amount).toLocaleString()}</span>
+                                <span style="color: #718096; font-size: 0.7rem; font-weight:700; text-transform: uppercase;">${formattedDate}</span>
                             </div>
-                            <p style="font-size: 0.8rem; color: #bbb; margin: 0;"><strong>User:</strong> ${d.email}</p>
-                            <p style="font-size: 0.7rem; color: #666; margin: 2px 0 0 0;"><strong>Ref:</strong> ${d.reference || 'N/A'}</p>
+                            <p style="font-size: 0.85rem; color: #cbd5e0; margin: 0; font-weight: 500;"><strong>User Connection:</strong> ${d.email}</p>
+                            <p style="font-size: 0.7rem; color: #4a5568; margin-top: 4px; font-family: monospace; letter-spacing: 0.3px;"><strong>REF_ID:</strong> ${d.reference || 'SYSTEM_MANUAL'}</p>
                         </div>
                     `;
                     container.appendChild(card);
