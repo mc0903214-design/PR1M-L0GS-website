@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Register Pipeline</title>
+    <style>
+        :root { 
+            --neon-cyan: #00f3ff; 
+            --neon-purple: #bc13fe; 
+            --dark-bg: #060608; 
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --stock-red: #ff4b4b;
+            --stock-green: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body { 
+            background: var(--dark-bg); 
+            color: #f1f1f3; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 24px 16px;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(0, 243, 255, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .auth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 32px 24px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 6px; 
+            color: #fff; 
+            letter-spacing: 3px; 
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- INPUT MATRIX TRACKS --- */
+        .input-group { 
+            position: relative; 
+            margin-bottom: 16px; 
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #a0aec0;
+            margin-bottom: 6px;
+            padding-left: 2px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        input:focus { 
+            border-color: var(--neon-cyan); 
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.05);
+        }
+        input::placeholder { color: #4a5568; }
+
+        /* Inline Vector Toggle Alignment */
+        .eye-container {
+            position: absolute;
+            right: 14px;
+            bottom: 13px;
+            cursor: pointer;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            width: 20px;
+            height: 20px;
+        }
+        .eye-container:hover { color: var(--neon-cyan); }
+        .eye-container svg { width: 100%; height: 100%; }
+
+        /* --- MESSAGING MATRIX --- */
+        #status-msg {
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            text-align: center;
+            min-height: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .error { color: var(--stock-red); }
+        .info { color: var(--stock-green); }
+
+        /* --- SUBMIT ACTIONS --- */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%);
+            border: none;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 14px;
+            margin-top: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(188, 19, 254, 0.25);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .submit-btn:active { transform: scale(0.98); opacity: 0.95; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .redirect-link { 
+            text-align: center; 
+            font-size: 0.8rem; 
+            margin-top: 20px; 
+            color: #718096; 
+        }
+        .redirect-link a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        .redirect-link a:hover { text-decoration: underline; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <h2>Register</h2>
+        <div class="subtitle">Deploy your marketplace profile</div>
+        
+        <div id="status-msg"></div>
+
+        <div class="input-group">
+            <label for="username">Unique Username</label>
+            <input type="text" id="username" placeholder="cyber_pilot" autocomplete="username" pattern="^[a-zA-Z0-9_]{3,15}$">
+        </div>
+        
+        <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="name@domain.com" autocomplete="email">
+        </div>
+        
+        <div class="input-group">
+            <label for="password">Security Key</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
+            <div class="eye-container" id="eye-toggle" onclick="togglePassVisibility()">
+                <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg id="eye-closed" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="referral">Referrer Username (Optional)</label>
+            <input type="text" id="referral" placeholder="None">
+        </div>
+        
+        <button class="submit-btn" id="auth-submit">
+            <span id="btn-text">Create Account</span>
+            <div id="btn-loader" class="spinner hidden"></div>
+        </button>
+        
+        <p class="redirect-link">Already registered?<a href="login.html">Login Here</a></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, runTransaction, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // DOM Cache Matrix
+        const statusDiv = document.getElementById('status-msg');
+        const btnLoader = document.getElementById('btn-loader');
+        const btnText = document.getElementById('btn-text');
+        const submitBtn = document.getElementById('auth-submit');
+        const userDocInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const referralInput = document.getElementById('referral');
+        const eyeOpenIcon = document.getElementById('eye-open');
+        const eyeClosedIcon = document.getElementById('eye-closed');
+
+        // Automatically fetch referral username parameters from url string (?ref=username)
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const refUser = params.get('ref');
+            if (refUser) {
+                referralInput.value = refUser.trim().toLowerCase();
+                referralInput.disabled = true;
+            }
+        });
+
+        function parseAuthError(error) {
+            if (!navigator.onLine || error.code === 'auth/network-request-failed') {
+                return "Network connection unavailable.";
+            }
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    return "This email address is already in use.";
+                case 'auth/invalid-email':
+                    return "Invalid email syntax configuration.";
+                case 'auth/weak-password':
+                    return "Password must be at least 6 characters.";
+                default:
+                    return error.message || "Registration failure. Retry.";
+            }
+        }
+
+        window.togglePassVisibility = function() {
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeOpenIcon.classList.add('hidden');
+                eyeClosedIcon.classList.remove('hidden');
+            } else {
+                passInput.type = 'password';
+                eyeClosedIcon.classList.add('hidden');
+                eyeOpenIcon.classList.remove('hidden');
+            }
+        };
+
+        function displayMessage(msg, isError = true) {
+            statusDiv.className = isError ? "error" : "info";
+            statusDiv.innerText = msg;
+            btnLoader.classList.add('hidden');
+            btnText.innerText = "Create Account";
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.addEventListener('click', async () => {
+            const username = userDocInput.value.trim().toLowerCase();
+            const email = emailInput.value.trim();
+            const password = passInput.value;
+            const refCode = referralInput.value.trim().toLowerCase();
+
+            // Structure Formatting Guards
+            if (!username || !email || !password) {
+                return displayMessage("Please completely fill out all system fields.");
+            }
+
+            const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
+            if (!usernameRegex.test(username)) {
+                return displayMessage("Username must be 3-15 alphanumeric characters/underscores.");
+            }
+
+            submitBtn.disabled = true;
+            btnLoader.classList.remove('hidden');
+            btnText.innerText = "Provisioning...";
+            statusDiv.innerText = "";
+
+            try {
+                // Check if username already exists globally inside database records
+                const usernameDocRef = doc(db, "usernames", username);
+                const usernameSnap = await getDoc(usernameDocRef);
+                
+                if (usernameSnap.exists()) {
+                    return displayMessage("This username has already been claimed.");
+                }
+
+                let validatedReferrerUID = null;
+
+                // Validate if the user input matching the referrer username exists
+                if (refCode) {
+                    const referrerUsernameRef = doc(db, "usernames", refCode);
+                    const refUserSnap = await getDoc(referrerUsernameRef);
+                    if (!refUserSnap.exists()) {
+                        return displayMessage("Referrer username does not exist inside our records.");
+                    }
+                    validatedReferrerUID = refUserSnap.data().uid;
+                }
+
+                // Initialize Firebase base signup token persistence models
+                await setPersistence(auth, browserLocalPersistence);
+                const credentials = await createUserWithEmailAndPassword(auth, email, password);
+                const user = credentials.user;
+
+                // Atomic database pipeline execution pairing unique usernames directly to UID indexes concurrently
+                await runTransaction(db, async (transaction) => {
+                    // Claim Username 
+                    transaction.set(doc(db, "usernames", username), { uid: user.uid });
+                    
+                    // Generate baseline default structural settings variables for user node mapping
+                    transaction.set(doc(db, "users", user.uid), {
+                        username: username,
+                        email: email,
+                        balance: 0.00,
+                        role: "user",
+                        referredBy: refCode || null,
+                        referredByUID: validatedReferrerUID,
+                        invites: 0
+                    });
+
+                    // Update corresponding metrics tracking counters cleanly on the targeting referrer data sheet
+                    if (validatedReferrerUID) {
+                        transaction.update(doc(db, "users", validatedReferrerUID), {
+                            invites: increment(1)
+                        });
+                    }
+                });
+
+                window.location.href = "shop.html";
+
+            } catch (error) {
+                displayMessage(parseAuthError(error));
+            }
+        });
+    </script>
+</body>
+</html>
