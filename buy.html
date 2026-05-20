@@ -351,7 +351,8 @@
                 const pData = prodSnap.data();
                 const userData = userSnap.data();
 
-                if (pData.stockCount < 1) return showError("Out of stock.");
+                // Check stock only if it is NOT a single infinite asset mode
+                if (pData.mode !== "SINGLE" && pData.stockCount < 1) return showError("Out of stock.");
                 if (userData.balance < window.finalPrice) return showError("Insufficient balance.", "fund.html", "Fund Wallet");
 
                 let secretToGive = (pData.mode === "SINGLE") ? pData.stock[0] : [...pData.stock].shift();
@@ -367,10 +368,18 @@
                     })
                 });
 
-                await updateDoc(prodRef, {
-                    stock: newStockList,
-                    stockCount: increment(-1)
-                });
+                // Update product document variables based on mode
+                if (pData.mode === "SINGLE") {
+                    // Do not lower stock list or count down if it's meant to sell forever
+                    await updateDoc(prodRef, {
+                        stock: newStockList
+                    });
+                } else {
+                    await updateDoc(prodRef, {
+                        stock: newStockList,
+                        stockCount: increment(-1)
+                    });
+                }
 
                 showSuccess(secretToGive);
             } catch (e) { showError("Transaction failed."); }
