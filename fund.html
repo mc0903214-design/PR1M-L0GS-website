@@ -77,7 +77,6 @@
             text-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
         }
 
-        /* Balance Card Redesign */
         .balance-card {
             background: linear-gradient(135deg, rgba(30, 60, 114, 0.4) 0%, rgba(42, 82, 152, 0.2) 100%);
             backdrop-filter: blur(14px);
@@ -145,7 +144,6 @@
             border-color: rgba(255, 255, 255, 0.25); 
         }
 
-        /* Funding Interactive Panel Redesign */
         .fund-card {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(12px);
@@ -247,7 +245,6 @@
             opacity: 0.95;
         }
 
-        /* Custom Popup Overlay Modals */
         #confirmModal {
             display: none;
             position: fixed;
@@ -303,7 +300,6 @@
         .modal-cancel { background: transparent; color: #ff4d4d; border: none; padding: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
         .modal-cancel:hover { opacity: 0.8; }
 
-        /* Ledger Transactions Redesign */
         .history-title { 
             font-size: 0.8rem; 
             color: #718096; 
@@ -339,11 +335,9 @@
 
         .status-badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
         
-        /* Updated dynamic badge styling based on target class states */
         .status-badge.success, .status-badge.approved { background: rgba(0, 255, 136, 0.08); color: var(--stock-green); border: 1px solid rgba(0, 255, 136, 0.15); }
         .status-badge.declined, .status-badge.failed { background: rgba(255, 75, 75, 0.08); color: var(--stock-red); border: 1px solid rgba(255, 75, 75, 0.15); }
 
-        /* Custom System Notifications Styling */
         .toast-notification {
             position: fixed;
             bottom: 24px;
@@ -367,7 +361,6 @@
         .toast-notification.active { opacity: 1; transform: translateX(-50%) translateY(0); }
         .toast-notification.error-toast { border-color: #ff4d4d; box-shadow: 0 8px 32px rgba(255, 77, 77, 0.2); }
 
-        /* Processing Layout States */
         .loading-state { display: flex; justify-content: center; align-items: center; padding: 32px 0; }
         .spinner {
             width: 24px;
@@ -476,7 +469,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment, addDoc, collection, serverTimestamp, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -491,7 +484,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Cached UI Elements
         const toastContainer = document.getElementById('toast-container');
         const transactionList = document.getElementById('transactionList');
         const balanceDisplay = document.getElementById('balanceDisplay');
@@ -513,29 +505,24 @@
             }, 3500);
         }
 
-        // Export utility to window namespace for local script interface access
         window.showNotification = showNotification;
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
 
-                // Load initial cached balance if available to prevent flash/flicker
                 const cachedBal = sessionStorage.getItem('cached_balance');
                 if (cachedBal !== null) {
                     realBalance = parseFloat(cachedBal);
                     if (!isHidden) balanceDisplay.innerText = `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
                 }
 
-                // Live Dynamic Balance Synchronization Listener
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if(docSnap.exists()) {
                         const nextBal = docSnap.data().balance || 0;
-                        if(nextBal !== realBalance || balanceDisplay.innerText === "₦0.00") {
-                            realBalance = nextBal;
-                            if (!isHidden) balanceDisplay.innerText = `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                            sessionStorage.setItem('cached_balance', realBalance);
-                        }
+                        realBalance = nextBal;
+                        if (!isHidden) balanceDisplay.innerText = `₦${realBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                        sessionStorage.setItem('cached_balance', realBalance);
                     }
                 });
                 loadTransactions(user.uid);
@@ -572,8 +559,17 @@
                     email: currentUser.email,
                     amount: Math.round(amount * 100),
                     currency: "NGN",
+                    metadata: {
+                        custom_fields: [
+                            {
+                                display_name: "User ID",
+                                variable_name: "user_uid",
+                                value: currentUser.uid 
+                            }
+                        ]
+                    },
                     callback: function(response) {
-                        window.handleSuccess(amount, response.reference);
+                        showNotification("Payment successful! Your balance will update automatically.");
                     },
                     onClose: function() {
                         showNotification("Payment interface dismissed.", false);
@@ -581,34 +577,12 @@
                 });
                 handler.openIframe();
             } catch (err) {
-                console.error("Paystack initialization failed error trace:", err);
-                showNotification("Unable to initialize payment gateway. Please verify network access.", true);
+                console.error("Paystack initialization error:", err);
+                showNotification("Unable to initialize payment gateway.", true);
             }
         });
 
-        async function handleSuccess(amount, ref) {
-            try {
-                await addDoc(collection(db, "deposits"), {
-                    uid: currentUser.uid,
-                    email: currentUser.email,
-                    amount: amount,
-                    reference: ref,
-                    status: "success",
-                    timestamp: serverTimestamp()
-                });
-
-                await updateDoc(doc(db, "users", currentUser.uid), { balance: increment(amount) });
-                showNotification("Wallet initialized and funded successfully!");
-            } catch (e) {
-                console.error("Firestore balance sync failed error trace:", e);
-                showNotification("Payment recorded. Sync adjustment required. Support Code: " + ref, true);
-            }
-        }
-        
-        window.handleSuccess = handleSuccess;
-
         function loadTransactions(uid) {
-            // Firestore Query Engine matching operational bounds
             const q = query(collection(db, "deposits"), where("uid", "==", uid), orderBy("timestamp", "desc"));
             
             onSnapshot(q, (snapshot) => {
@@ -617,15 +591,12 @@
                     return;
                 }
                 
-                // Fast String Batch Concatenation to mitigate heavy single-loop micro-reflow patterns
                 let fragmentHTML = "";
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const formattedAmt = (data.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
                     const safeRef = data.reference || "-------";
                     const safeStatus = data.status || "success";
-                    
-                    // Normalize down strings to assign class mappings cleanly
                     const statusClass = safeStatus.toLowerCase();
                     
                     fragmentHTML += `
@@ -641,15 +612,8 @@
                 
                 transactionList.innerHTML = fragmentHTML;
             }, (error) => {
-                console.error("Transaction subscription runtime fault:", error);
-                // Gracefully intercept incomplete Firestore configurations or unindexed complex parameters
-                if (error.code === 'failed-precondition' || error.message.indexOf('index') > -1) {
-                    transactionList.innerHTML = `<div class="error-state">Transaction updates currently unavailable. Try again later.</div>`;
-                    showNotification("Database operational constraint detected. Index building required.", true);
-                } else {
-                    transactionList.innerHTML = `<div class="error-state">Unable to load transactions right now.</div>`;
-                    showNotification("Network sync failed. Please check your web connection.", true);
-                }
+                console.error("Transaction error:", error);
+                transactionList.innerHTML = `<div class="error-state">Unable to load transactions.</div>`;
             });
         }
     </script>
