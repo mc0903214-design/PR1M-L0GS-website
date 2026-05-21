@@ -568,7 +568,8 @@
                         throw new Error("Target core nodes no longer exist.");
                     }
 
-                    const currentBalance = Number(userSnap.data().balance || 0);
+                    const userData = userSnap.data();
+                    const currentBalance = Number(userData.balance || 0);
                     const freshProdData = prodSnap.data();
 
                     if (currentBalance < runningTotal) {
@@ -595,8 +596,26 @@
                         });
                     }
 
+                    // Format human-readable current date string matching historical entries
+                    const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    const formattedDate = new Date().toLocaleDateString('en-US', dateOptions);
+
+                    // Structure history inventory node object 
+                    const historicalItemNode = {
+                        name: productDetails.name || "Crypto Asset Item",
+                        price: productDetails.price || 0,
+                        secret: deliveryPayload,
+                        date: formattedDate
+                    };
+
+                    // Pull current list or default to empty array, then safely add item node
+                    const existingPurchases = Array.isArray(userData.myPurchases) ? [...userData.myPurchases] : [];
+                    existingPurchases.push(historicalItemNode);
+
+                    // Commit changes to balance and asset listing storage vectors
                     transaction.update(userDocRef, {
-                        balance: currentBalance - runningTotal
+                        balance: currentBalance - runningTotal,
+                        myPurchases: existingPurchases
                     });
 
                     const newOrderRef = doc(orderCollectionRef);
@@ -609,13 +628,18 @@
                         totalPaid: runningTotal,
                         data: deliveryPayload,
                         timestamp: serverTimestamp(),
-                        createdAt: Date.now() // Stable fallback for instant UI updates
+                        createdAt: Date.now()
                     });
                 });
 
+                // Display success layout panel view cleanly without blanking page spaces out
                 document.getElementById('purchase-view').classList.add('hidden');
                 document.getElementById('payload-display').innerText = deliveryPayload;
-                document.getElementById('success-view').classList.remove('hidden');
+                
+                const successPanel = document.getElementById('success-view');
+                successPanel.classList.remove('hidden');
+                successPanel.classList.add('active');
+                
                 triggerNotification("Purchase Successful!", "info");
 
             } catch (err) {
