@@ -176,7 +176,7 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: white;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .modal-sub {
             font-size: 0.8rem;
@@ -273,11 +273,10 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- SECRET OVERLAY POPUP -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeSecretPopup()"></div>
     <div class="modal-box" id="secretModal">
         <div class="modal-header" id="modalTitle">Extracted Content</div>
-        <div class="modal-sub" id="modalMeta">Delivered items package data</div>
+        <div class="modal-sub" id="modalMeta">...</div>
         <div class="secret-display-area" id="modalSecretContent">...</div>
         <div class="action-row">
             <button class="modal-action-btn btn-close" onclick="closeSecretPopup()">Dismiss</button>
@@ -319,7 +318,6 @@
 
         async function loadUserPurchaseHistory(uid) {
             try {
-                // Queries the order logs table ordered by freshest timestamp records down
                 const q = query(
                     collection(db, "orders"), 
                     where("userId", "==", uid),
@@ -338,15 +336,20 @@
                 snap.forEach((doc) => {
                     const data = doc.data();
                     const orderId = doc.id;
-                    rawOrdersCache[orderId] = data.data || "No item data or secrets attached to this order record.";
+                    
+                    // Maps exactly to the 'data' field saved in checkout file
+                    rawOrdersCache[orderId] = {
+                        secret: data.data || "No item data available.",
+                        date: data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : "Recently Processed"
+                    };
 
                     const finalPrice = typeof data.totalPaid === 'number' ? data.totalPaid : parseFloat(data.price || 0);
                     const nameString = data.productName || "Crypto Asset Item";
                     const itemQuantity = data.quantity || 1;
 
                     const formattedDate = data.timestamp 
-                        ? new Date(data.timestamp.seconds * 1000).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'})
-                        : "Processed";
+                        ? new Date(data.timestamp.seconds * 1000).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})
+                        : "New";
 
                     const card = document.createElement('div');
                     card.className = 'history-card';
@@ -373,9 +376,10 @@
         }
 
         window.openSecretPopup = function(orderId, name) {
-            const payload = rawOrdersCache[orderId] || "Unavailable";
+            const orderData = rawOrdersCache[orderId];
             document.getElementById('modalTitle').innerText = name;
-            document.getElementById('modalSecretContent').innerText = payload;
+            document.getElementById('modalMeta').innerText = `Purchased on: ${orderData.date}`;
+            document.getElementById('modalSecretContent').innerText = orderData.secret;
             
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('secretModal').classList.add('active');
