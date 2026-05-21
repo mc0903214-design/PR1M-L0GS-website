@@ -326,7 +326,6 @@
 
     <div id="loader-screen" class="spinner"></div>
 
-    <!-- MAIN PURCHASE VIEW -->
     <div id="purchase-view" class="hidden">
         <div class="preview-media-wrapper reveal active" id="media-block"></div>
 
@@ -364,7 +363,6 @@
         </div>
     </div>
 
-    <!-- SUCCESS DELIVERY SCREEN -->
     <div id="success-view" class="info-card reveal hidden" style="margin-top: 10px;">
         <div class="success-panel">
             <div class="status-badge-circle">
@@ -385,7 +383,6 @@
         </div>
     </div>
 
-    <!-- REFERRAL LOCKED MODAL -->
     <div class="ref-modal-overlay" id="refModal">
         <div class="ref-modal-content">
             <div class="ref-modal-title">🔒 Category Locked</div>
@@ -429,7 +426,6 @@
         let availableStockCount = 0;
         let userDataCache = null;
 
-        // Extract Product ID from Window URL Query parameters
         const urlParams = new URLSearchParams(window.location.search);
         productID = urlParams.get('id');
 
@@ -453,7 +449,6 @@
             }
 
             try {
-                // Fetch user data first to store data points for referral matching configurations
                 const userDoc = await getDoc(doc(db, "users", userSession.uid));
                 if(userDoc.exists()) {
                     userDataCache = userDoc.data();
@@ -476,7 +471,6 @@
             document.getElementById('loader-screen').classList.add('hidden');
             document.getElementById('purchase-view').classList.remove('hidden');
 
-            // Render Asset Media
             const mediaBlock = document.getElementById('media-block');
             const url = prod.image || prod.imageUrl || prod.icon || 'https://i.postimg.cc/m2pGVsSV/images.jpg';
             const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
@@ -485,19 +479,17 @@
                 ? `<video src="${url}" autoplay muted loop playsinline></video>`
                 : `<img src="${url}" onerror="this.src='https://i.postimg.cc/m2pGVsSV/images.jpg'">`;
 
-            // Text Inject
             document.getElementById('p-title').innerText = prod.name || "Unnamed Asset";
             document.getElementById('p-desc').innerText = prod.description || "No product description added.";
             
             const unitPrice = typeof prod.price === 'number' ? prod.price : parseFloat(prod.price || 0);
             document.getElementById('p-unit-price').innerText = `₦${unitPrice.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 
-            // Handle Mode Matrix Settings
             const stockLabel = document.getElementById('p-stock');
             if (prod.mode === 'SINGLE') {
                 stockLabel.className = "stock-label high";
                 stockLabel.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle; margin-right:4px;"><path d="M12 12c-2-2.67-4-4-6-4a6 6 0 1 0 0 12c2 0 4-1.33 6-4zm0 0c2 2.67 4 4 6 4a6 6 0 1 0 0-12c-2 0-4 1.33-6 4z"/></svg> Always Available`;
-                document.getElementById('qty-container-row').classList.add('hidden'); // Enforce strict single-purchase mode
+                document.getElementById('qty-container-row').classList.add('hidden');
                 availableStockCount = 999999;
             } else {
                 availableStockCount = Array.isArray(prod.stock) ? prod.stock.length : Number(prod.stockCount || 0);
@@ -544,13 +536,11 @@
         window.executePurchase = async function() {
             if (!userSession || !productDetails) return;
 
-            // Freebies Gatekeeper Logic
             if(productDetails.category === "Freebies") {
                 const invitesCount = userDataCache ? Number(userDataCache.invites || 0) : 0;
                 if(invitesCount < 4) {
                     const username = userDataCache?.username || "User";
                     const baseUrl = window.location.origin;
-                    
                     document.getElementById('modal-progress-text').innerText = `${invitesCount}/4`;
                     document.getElementById('modal-ref-link').innerText = `${baseUrl}/register.html?ref=${username}`;
                     document.getElementById('refModal').classList.add('active');
@@ -570,7 +560,6 @@
             try {
                 let deliveryPayload = "";
 
-                // Use Firestore transactions to guarantee sync accuracy, prevent double charges, and eliminate concurrency conflicts
                 await runTransaction(db, async (transaction) => {
                     const userSnap = await transaction.get(userDocRef);
                     const prodSnap = await transaction.get(productDocRef);
@@ -586,7 +575,6 @@
                         throw new Error("Insufficient balance inside wallet.");
                     }
 
-                    // Stock checking matrix logic
                     if (freshProdData.mode === 'SINGLE') {
                         deliveryPayload = freshProdData.secret || freshProdData.stock || "No secret string compiled.";
                     } else {
@@ -595,26 +583,22 @@
                             throw new Error("Inventory ran out during transaction processing.");
                         }
 
-                        // Pop exact item assets from the arrays dynamically
                         const poppedItems = [];
                         for (let i = 0; i < currentQuantity; i++) {
                             poppedItems.push(currentStockArr.shift());
                         }
                         deliveryPayload = poppedItems.join("\n");
 
-                        // Update dynamic remaining system stock elements
                         transaction.update(productDocRef, {
                             stock: currentStockArr,
                             stockCount: currentStockArr.length
                         });
                     }
 
-                    // Charge User balance
                     transaction.update(userDocRef, {
                         balance: currentBalance - runningTotal
                     });
 
-                    // Add to Orders History (mine.html schema structure mapping)
                     const newOrderRef = doc(orderCollectionRef);
                     transaction.set(newOrderRef, {
                         userId: userSession.uid,
@@ -624,17 +608,18 @@
                         quantity: currentQuantity,
                         totalPaid: runningTotal,
                         data: deliveryPayload,
-                        timestamp: serverTimestamp()
+                        timestamp: serverTimestamp(),
+                        createdAt: Date.now() // Stable fallback for instant UI updates
                     });
                 });
 
-                // Display UI delivery states
                 document.getElementById('purchase-view').classList.add('hidden');
                 document.getElementById('payload-display').innerText = deliveryPayload;
                 document.getElementById('success-view').classList.remove('hidden');
                 triggerNotification("Purchase Successful!", "info");
 
             } catch (err) {
+                console.error("TRANSACTION ERROR:", err.message, err);
                 triggerNotification(err.message || "Transaction aborted.");
                 btn.disabled = false;
                 txt.innerText = "Buy Now";
