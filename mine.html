@@ -307,7 +307,6 @@
         const listContainer = document.getElementById('historyList');
         let rawOrdersCache = {};
 
-        // --- INTELLIGENT BACK BUTTON REFERRER TRAFFIC MANAGEMENT ---
         const lastPage = document.referrer;
         const dynamicBackBtn = document.getElementById('dynamicBackBtn');
         if (lastPage.includes('prof.html')) {
@@ -318,10 +317,11 @@
 
         async function loadUserPurchaseHistory(uid) {
             try {
+                // Use createdAt for stable ordering as it never returns null
                 const q = query(
                     collection(db, "orders"), 
                     where("userId", "==", uid),
-                    orderBy("timestamp", "desc")
+                    orderBy("createdAt", "desc")
                 );
                 
                 const snap = await getDocs(q);
@@ -337,19 +337,28 @@
                     const data = doc.data();
                     const orderId = doc.id;
                     
-                    // Maps exactly to the 'data' field saved in checkout file
+                    let rawDateString = "Recently Processed";
+                    let shortDate = "New";
+
+                    // Safely check for Firestore timestamp or fall back to createdAt integer
+                    if (data.timestamp?.seconds) {
+                        const dateObj = new Date(data.timestamp.seconds * 1000);
+                        rawDateString = dateObj.toLocaleString();
+                        shortDate = dateObj.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+                    } else if (data.createdAt) {
+                        const dateObj = new Date(data.createdAt);
+                        rawDateString = dateObj.toLocaleString();
+                        shortDate = dateObj.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+                    }
+                    
                     rawOrdersCache[orderId] = {
                         secret: data.data || "No item data available.",
-                        date: data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : "Recently Processed"
+                        date: rawDateString
                     };
 
                     const finalPrice = typeof data.totalPaid === 'number' ? data.totalPaid : parseFloat(data.price || 0);
                     const nameString = data.productName || "Crypto Asset Item";
                     const itemQuantity = data.quantity || 1;
-
-                    const formattedDate = data.timestamp 
-                        ? new Date(data.timestamp.seconds * 1000).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})
-                        : "New";
 
                     const card = document.createElement('div');
                     card.className = 'history-card';
@@ -361,7 +370,7 @@
                                 <span style="opacity: 0.3;">•</span>
                                 <span>Qty: ${itemQuantity}</span>
                                 <span style="opacity: 0.3;">•</span>
-                                <span style="font-size: 0.75rem;">${formattedDate}</span>
+                                <span style="font-size: 0.75rem;">${shortDate}</span>
                             </div>
                         </div>
                         <button class="view-btn" onclick="openSecretPopup('${orderId}', '${escapeHtml(nameString)}')">View</button>
@@ -370,7 +379,7 @@
                 });
 
             } catch (err) {
-                console.error(err);
+                console.error("HISTORY FETCH ERROR:", err);
                 listContainer.innerHTML = '<div class="empty-history" style="color: #ff4b4b;">Error pulling database logs.</div>';
             }
         }
