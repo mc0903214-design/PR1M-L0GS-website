@@ -410,6 +410,12 @@
             border-color: rgba(255, 255, 255, 0.15);
             color: #fff;
         }
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            color: var(--neon-cyan);
+        }
 
         /* --- TELEGRAM POPUP --- */
         #tg-popup {
@@ -494,12 +500,30 @@
     </div>
 
     <nav class="side-nav" id="sideNav">
-        <a href="prof.html" class="nav-item">Profile</a>
-        <a href="sms.html" class="nav-item">SMS Verification</a>
-        <a href="mine.html" class="nav-item">Order History</a>
-        <a href="fund.html" class="nav-item">Top Up Wallet</a>
-        <a href="javascript:void(0)" class="nav-item" onclick="openSupport()">Get Support</a>
-        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff4b4b;">Sign Out</a>
+        <a href="prof.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Profile
+        </a>
+        <a href="sms.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 9h8"></path><path d="M8 13h6"></path></svg>
+            SMS Verification
+        </a>
+        <a href="mine.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            Order History
+        </a>
+        <a href="fund.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            Top Up Wallet
+        </a>
+        <a href="javascript:void(0)" class="nav-item" onclick="openSupport()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            Get Support
+        </a>
+        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff4b4b;">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#ff4b4b"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+        </a>
     </nav>
 
     <div class="modal" id="supportModal">
@@ -540,14 +564,14 @@
         <div class="category-navbar" id="categoryNavbar">
             <button class="nav-category-btn active" onclick="filterCategory('All', this)">All Products</button>
             <button class="nav-category-btn" onclick="filterCategory('Logs', this)">Logs</button>
-            <button class="nav-category-btn" onclick="filterCategory('Working pics', this)">Working pics</button>
+            <button class="nav-category-btn" onclick="filterCategory('Working Pics', this)">Working Pics</button>
             <button class="nav-category-btn" onclick="filterCategory('Websites', this)">Websites</button>
-            <button class="nav-category-btn" onclick="filterCategory('Vpn/proxies', this)">Vpn/proxies</button>
-            <button class="nav-category-btn" onclick="filterCategory('USA 🇺🇸 Icloud', this)">USA 🇺🇸 Icloud</button>
-            <button class="nav-category-btn" onclick="filterCategory('Courses/Guides', this)">Courses/Guides</button>
-            <button class="nav-category-btn" onclick="filterCategory('FMTs/Updates', this)">FMTs/Updates</button>
+            <button class="nav-category-btn" onclick="filterCategory('VPNs and Proxies', this)">VPNs/Proxies</button>
+            <button class="nav-category-btn" onclick="filterCategory('iCloud', this)"> iCloud</button>
+            <button class="nav-category-btn" onclick="filterCategory('Courses and Digital Guides', this)">Courses/Guides</button>
+            <button class="nav-category-btn" onclick="filterCategory('FMT and Updates', this)">FMT & Updates</button>
             <button class="nav-category-btn" onclick="filterCategory('Tools', this)">Tools</button>
-            <button class="nav-category-btn" onclick="filterCategory('Movies/Tv', this)">Movies/Tv</button>
+            <button class="nav-category-btn" onclick="filterCategory('Movie and TV', this)">Movie/TV</button>
             <button class="nav-category-btn" onclick="filterCategory('Freebies', this)">Freebies</button>
         </div>
     </div>
@@ -584,6 +608,8 @@
         const usernameDisplay = document.getElementById('username-display');
         const tgPopup = document.getElementById('tg-popup');
         const overlay = document.getElementById('overlay');
+        const sideNav = document.getElementById('sideNav');
+        const supportModal = document.getElementById('supportModal');
 
         let currentUser = null;
         let shopBalance = 0;
@@ -595,7 +621,6 @@
             const eyeIcon = document.getElementById('eye-icon');
             if (isShopBalHidden) {
                 balanceDisplay.innerText = "****";
-                currencySymbol.innerText = "₦"; 
                 eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
             } else {
                 balanceDisplay.innerText = shopBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
