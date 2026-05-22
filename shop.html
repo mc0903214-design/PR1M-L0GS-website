@@ -711,11 +711,49 @@
         const sideNav = document.getElementById('sideNav');
         const supportModal = document.getElementById('supportModal');
         const logoutBtn = document.getElementById('logout-btn');
+        
+        // --- RESTORED LOGICS ---
+        const sendTicketBtn = document.getElementById('sendTicket');
+        const ticketMsg = document.getElementById('ticketMsg');
 
         let currentUser = null;
         let shopBalance = 0;
         let isShopBalHidden = false;
         let allProducts = [];
+
+        // -- TICKET SUBMISSION FIX --
+        sendTicketBtn.addEventListener('click', async () => {
+            if (!currentUser) return;
+            const msg = ticketMsg.value.trim();
+            if (!msg) {
+                alert("Please enter a message to send.");
+                return;
+            }
+
+            sendTicketBtn.innerText = "Submitting...";
+            sendTicketBtn.style.opacity = "0.5";
+            sendTicketBtn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "support_tickets"), {
+                    userId: currentUser.uid,
+                    email: currentUser.email,
+                    message: msg,
+                    status: "Pending",
+                    timestamp: serverTimestamp()
+                });
+                alert("Support ticket submitted successfully!");
+                ticketMsg.value = "";
+                closeSupport();
+            } catch (error) {
+                console.error("Ticket Error: ", error);
+                alert("Failed to submit ticket. Please try again later.");
+            } finally {
+                sendTicketBtn.innerText = "Submit";
+                sendTicketBtn.style.opacity = "1";
+                sendTicketBtn.disabled = false;
+            }
+        });
 
         // -- EYE TOGGLE FIX --
         window.toggleShopBalance = function() {
