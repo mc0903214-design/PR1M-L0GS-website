@@ -373,11 +373,13 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        .product-media-frame img, .product-media-frame video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .product-media-frame img, 
+.product-media-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: mediaFloat 3s ease-in-out infinite;
+}
 
         .product-text-details {
             display: flex;
@@ -449,6 +451,19 @@
         }
 
         /* --- ANIMATED LIST TRANSITION STYLING --- */
+        @keyframes mediaFloat {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+        }
         .fade-slide-entry {
             animation: listPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
