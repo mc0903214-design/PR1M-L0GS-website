@@ -362,23 +362,30 @@
         }
         
         .product-media-frame {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    animation: mediaFloatBox 3s ease-in-out infinite;
+
+    box-shadow:
+        0 0 10px rgba(0, 243, 255, 0.08),
+        0 0 20px rgba(188, 19, 254, 0.04);
+
+    transform-origin: center;
         }
         .product-media-frame img, 
 .product-media-frame video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    animation: mediaFloat 3s ease-in-out infinite;
 }
 
         .product-text-details {
@@ -451,18 +458,21 @@
         }
 
         /* --- ANIMATED LIST TRANSITION STYLING --- */
-        @keyframes mediaFloat {
+        @keyframes mediaFloatBox {
+
     0% {
-        transform: translateY(0px);
+        transform: translateY(0px) rotate(-1deg);
     }
 
     50% {
-        transform: translateY(-4px);
+        transform: translateY(-4px) rotate(1deg);
     }
 
     100% {
-        transform: translateY(0px);
+        transform: translateY(0px) rotate(-1deg);
     }
+
+        }
         }
         .fade-slide-entry {
             animation: listPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
