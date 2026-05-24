@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ LOGS| Secure login/title>
+    <title>PR1MΞ LOGS| Secure Login</title>
     <style>
         :root { 
             --neon-cyan: #00f3ff; 
@@ -186,7 +186,7 @@
 
     <div class="auth-card">
         <h2>Login</h2>
-        <div class="subtitle">Access your digital asset profile</div>
+        <div class="subtitle">Login to access your dashboard</div>
         
         <div id="status-msg"></div>
         
@@ -213,11 +213,11 @@
         </div>
         
         <button class="submit-btn" id="auth-submit">
-            <span id="btn-text">LOGIN</span>
+            <span id="btn-text">Login</span>
             <div id="btn-loader" class="spinner hidden"></div>
         </button>
         
-        <p class="redirect-link">Dont have an account?<a href="register.html">Create Account</a></p>
+        <p class="redirect-link">Don't have an account?<a href="register.html">Create Account</a></p>
     </div>
 
     <script type="module">
@@ -256,9 +256,9 @@
                 case 'auth/user-not-found':
                     return "Invalid credentials.";
                 case 'auth/invalid-email':
-                    return "Invalid imail layout.";
+                    return "Invalid email syntax structure.";
                 case 'auth/user-disabled':
-                    return "Your account has been suspended.";
+                    return "This security node has been suspended.";
                 default:
                     return "Something went wrong. Please try again.";
             }
@@ -280,7 +280,7 @@
             statusDiv.className = isError ? "error" : "info";
             statusDiv.innerText = msg;
             btnLoader.classList.add('hidden');
-            btnText.innerText = "LOGIN";
+            btnText.innerText = "Login";
             submitBtn.disabled = false;
         }
 
@@ -294,7 +294,7 @@
 
             submitBtn.disabled = true;
             btnLoader.classList.remove('hidden');
-            btnText.innerText = "PROCESSING...";
+            btnText.innerText = "Proccessing...";
             statusDiv.innerText = "";
 
             try {
