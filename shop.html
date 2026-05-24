@@ -667,27 +667,96 @@ box-shadow:
     position: fixed;
     bottom: 24px;
     right: 24px;
+
     width: 58px;
     height: 58px;
-    background: #229ED9;
-    border-radius: 50%;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 18px rgba(34, 158, 217, 0.5);
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.06);
+
+    border: 1px solid rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,0.35),
+        inset 0 1px 1px rgba(255,255,255,0.08);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+
     z-index: 5000;
-    transition: transform 0.2s ease;
+
+    overflow: hidden;
+}
+
+.telegram-float::before {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.14),
+            rgba(255,255,255,0.02),
+            rgba(255,255,255,0.08)
+        );
+
+    opacity: 0.8;
+
+    pointer-events: none;
 }
 
 .telegram-float:hover {
-    transform: scale(1.08);
+
+    transform:
+        translateY(-4px)
+        scale(1.06);
+
+    background: rgba(255,255,255,0.1);
+
+    border-color: rgba(0,243,255,0.25);
+
+    box-shadow:
+        0 0 18px rgba(0,243,255,0.18),
+        0 10px 30px rgba(0,0,0,0.45);
+}
+
+.telegram-float:active {
+    transform: scale(0.96);
 }
 
 .telegram-float svg {
-    width: 28px;
-    height: 28px;
+
+    width: 26px;
+    height: 26px;
+
     fill: white;
+
+    opacity: 0.92;
+
+    transition:
+        transform 0.25s ease,
+        opacity 0.25s ease;
 }
+
+.telegram-float:hover svg {
+
+    transform: scale(1.08);
+
+    opacity: 1;
+    }
     </style>
 </head>
 <body>
