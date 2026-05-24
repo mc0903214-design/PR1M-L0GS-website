@@ -280,6 +280,7 @@
         .category-nav-container {
     width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     white-space: nowrap;
 
     padding: 14px 0;
@@ -303,12 +304,11 @@
     box-shadow:
         0 8px 32px rgba(0,0,0,0.35),
         inset 0 1px 1px rgba(255,255,255,0.08);
+}
 
-    overflow: hidden;
-            }
-        .category-nav-container::-webkit-scrollbar {
-            display: none; 
-        }
+.category-nav-container::-webkit-scrollbar {
+    display: none;
+}
         .category-nav-container::before {
     content: '';
 
