@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ LOGS| Secure Login</title>
+    <title>PR1MΞ | Secure Authentication</title>
     <style>
         :root { 
             --neon-cyan: #00f3ff; 
@@ -186,17 +186,17 @@
 
     <div class="auth-card">
         <h2>Login</h2>
-        <div class="subtitle">Login to access your dashboard</div>
+        <div class="subtitle">Access your digital asset profile</div>
         
         <div id="status-msg"></div>
         
         <div class="input-group">
-            <label for="email">Email</label>
+            <label for="email">Email Terminal</label>
             <input type="email" id="email" placeholder="name@domain.com" autocomplete="email">
         </div>
         
         <div class="input-group">
-            <label for="password">Password</label>
+            <label for="password">Security Key</label>
             <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
             <div class="eye-container" id="eye-toggle" onclick="togglePassVisibility()">
                 <!-- Eye On (Visible Default State) -->
@@ -213,11 +213,11 @@
         </div>
         
         <button class="submit-btn" id="auth-submit">
-            <span id="btn-text">Login</span>
+            <span id="btn-text">Authenticate</span>
             <div id="btn-loader" class="spinner hidden"></div>
         </button>
         
-        <p class="redirect-link">Don't have an account?<a href="register.html">Create Account</a></p>
+        <p class="redirect-link">New pipeline user?<a href="register.html">Create Account</a></p>
     </div>
 
     <script type="module">
@@ -254,13 +254,13 @@
                 case 'auth/invalid-credential':
                 case 'auth/wrong-password':
                 case 'auth/user-not-found':
-                    return "Invalid credentials.";
+                    return "Invalid core access credentials.";
                 case 'auth/invalid-email':
                     return "Invalid email syntax structure.";
                 case 'auth/user-disabled':
                     return "This security node has been suspended.";
                 default:
-                    return "Something went wrong. Please try again.";
+                    return "Authentication failure. Try again.";
             }
         }
 
@@ -280,7 +280,7 @@
             statusDiv.className = isError ? "error" : "info";
             statusDiv.innerText = msg;
             btnLoader.classList.add('hidden');
-            btnText.innerText = "Login";
+            btnText.innerText = "Authenticate";
             submitBtn.disabled = false;
         }
 
@@ -289,12 +289,12 @@
             const password = passInput.value;
 
             if (!email || !password) {
-                return displayMessage("Please fill out all fields.");
+                return displayMessage("Please fill out all operational fields.");
             }
 
             submitBtn.disabled = true;
             btnLoader.classList.remove('hidden');
-            btnText.innerText = "Proccessing...";
+            btnText.innerText = "Verifying...";
             statusDiv.innerText = "";
 
             try {
