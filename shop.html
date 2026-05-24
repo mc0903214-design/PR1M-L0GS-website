@@ -165,11 +165,11 @@
     height: 18px;
 }
 
-.hide-bal #eye-closed {
+.hide-bal #eye-open {
     display: none;
 }
 
-.show-bal #eye-open {
+.show-bal #eye-closed {
     display: none;
 }
 
@@ -355,6 +355,8 @@ transform: translateZ(0);
             gap: 14px;
             min-height: 90px;
             transition: all 0.2s ease;
+
+            will-change: transform;
         }
 
         .product-left {
@@ -471,13 +473,13 @@ transform: translateZ(0);
     50% {
         transform: translateY(-4px) rotate(1deg);
     }
-
+            
     100% {
         transform: translateY(0px) rotate(-1deg);
     }
 
         }
-        }
+        
         .fade-slide-entry {
     opacity: 0;
     transform: translateY(10px) scale(0.98);
