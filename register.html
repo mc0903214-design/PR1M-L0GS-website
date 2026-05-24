@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ | Register Pipeline</title>
+    <title>PR1MΞ LOGS| Registeration</title>
     <style>
         :root { 
             --neon-cyan: #00f3ff; 
@@ -187,13 +187,13 @@
 
     <div class="auth-card">
         <h2>Register</h2>
-        <div class="subtitle">Deploy your marketplace profile</div>
+        <div class="subtitle">create an accountand start browsing cheap tols and logs</div>
         
         <div id="status-msg"></div>
 
         <div class="input-group">
-            <label for="username">Unique Username</label>
-            <input type="text" id="username" placeholder="cyber_pilot" autocomplete="username" pattern="^[a-zA-Z0-9_]{3,15}$">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="john_doe" autocomplete="username" pattern="^[a-zA-Z0-9_]{3,15}$">
         </div>
         
         <div class="input-group">
@@ -202,7 +202,7 @@
         </div>
         
         <div class="input-group">
-            <label for="password">Security Key</label>
+            <label for="password">Password</label>
             <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
             <div class="eye-container" id="eye-toggle" onclick="togglePassVisibility()">
                 <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -313,7 +313,7 @@
 
             // Structure Formatting Guards
             if (!username || !email || !password) {
-                return displayMessage("Please completely fill out all system fields.");
+                return displayMessage("Please fill out all fields.");
             }
 
             const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
@@ -323,7 +323,7 @@
 
             submitBtn.disabled = true;
             btnLoader.classList.remove('hidden');
-            btnText.innerText = "Provisioning...";
+            btnText.innerText = "PROCESSING...";
             statusDiv.innerText = "";
 
             try {
