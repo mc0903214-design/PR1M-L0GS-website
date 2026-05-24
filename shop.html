@@ -278,15 +278,54 @@
 
         /* --- HORIZONTAL SCROLLABLE NAV BAR --- */
         .category-nav-container {
-            width: 100%;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 4px 0 16px 0;
-            margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    padding: 14px 0;
+    margin-bottom: 24px;
+
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+
+    -webkit-overflow-scrolling: touch;
+
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+
+    background: rgba(255,255,255,0.03);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.35),
+        inset 0 1px 1px rgba(255,255,255,0.08);
+
+    overflow: hidden;
+            }
         .category-nav-container::-webkit-scrollbar {
             display: none; 
+        }
+        .category-nav-container::before {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.02),
+            rgba(255,255,255,0.12)
+        );
+
+    opacity: 0.7;
+
+    pointer-events: none;
         }
         .category-navbar {
             display: inline-flex;
@@ -310,13 +349,34 @@
             position: relative;
 overflow: hidden;
 transform: translateZ(0);
+            backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+
+background: rgba(255,255,255,0.04);
+
+border: 1px solid rgba(255,255,255,0.08);
+
+box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.08),
+    0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2;
         }
-        .nav-category-btn:hover, .nav-category-btn.active {
-            background: rgba(0, 243, 255, 0.08);
-            border-color: var(--neon-cyan);
-            color: #fff;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-        }
+        .nav-category-btn:hover,
+.nav-category-btn.active {
+
+    background: rgba(255,255,255,0.14);
+
+    border-color: rgba(255,255,255,0.22);
+
+    color: #fff;
+
+    transform: translateY(-2px) scale(1.02);
+
+    box-shadow:
+        0 0 20px rgba(0,243,255,0.18),
+        inset 0 1px 1px rgba(255,255,255,0.14);
+
+}
 
         /* --- LIST PRODUCTS LAYOUT --- */
         .section-title { 
@@ -643,6 +703,85 @@ transform: translateZ(0);
     height: 28px;
     fill: white;
 }
+
+        .nav-particles {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    z-index: 0;
+}
+
+.nav-particles span {
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(255,255,255,0.16),
+        transparent 70%
+    );
+
+    filter: blur(20px);
+
+    animation: floatParticle linear infinite;
+}
+
+/* Different positions */
+
+.nav-particles span:nth-child(1) {
+    top: -20px;
+    left: -40px;
+    animation-duration: 14s;
+}
+
+.nav-particles span:nth-child(2) {
+    top: 10px;
+    left: 30%;
+    animation-duration: 18s;
+}
+
+.nav-particles span:nth-child(3) {
+    top: -10px;
+    right: 20%;
+    animation-duration: 16s;
+}
+
+.nav-particles span:nth-child(4) {
+    bottom: -30px;
+    left: 50%;
+    animation-duration: 20s;
+}
+
+.nav-particles span:nth-child(5) {
+    top: 0;
+    right: -40px;
+    animation-duration: 13s;
+}
+
+@keyframes floatParticle {
+
+    0% {
+        transform: translateX(-40px);
+    }
+
+    50% {
+        transform: translateX(40px)
+                   translateY(-10px);
+    }
+
+    100% {
+        transform: translateX(-40px);
+    }
+
+}
     </style>
 </head>
 <body>
@@ -671,7 +810,7 @@ transform: translateZ(0);
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
             Top Up Wallet
         </a>
-        <a href="http://t.me/pr1me_logs_support_bot" class="nav-item" target="_blank">
+        <a href="https://t.me/pr1me_logs_support_bot" class="nav-item" target="_blank">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
             Support
         </a>
@@ -741,6 +880,13 @@ transform: translateZ(0);
     <div class="section-title reveal">Marketplace Categories</div>
 
     <div class="category-nav-container reveal">
+        <div class="nav-particles">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+        </div>
         <div class="category-navbar" id="categoryNavbar">
             <button class="nav-category-btn active" onclick="filterCategory('All', this)">All Products</button>
             <button class="nav-category-btn" onclick="filterCategory('Logs', this)">Logs</button>
