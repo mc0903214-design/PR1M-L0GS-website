@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ | Secure Authentication</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PR1MΞ | Login</title>
+
     <style>
-        :root { 
-            --neon-cyan: #00f3ff; 
-            --neon-purple: #bc13fe; 
-            --dark-bg: #060608; 
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --stock-red: #ff4b4b;
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --dark-bg: #060608;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --error-red: #ff4b4b;
         }
 
         * {
@@ -21,208 +22,316 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
-        body { 
-            background: var(--dark-bg); 
-            color: #f1f1f3; 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+        body {
+            background: var(--dark-bg);
+            color: #f1f1f3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 16px;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(0, 243, 255, 0.07) 0%, transparent 40%),
+
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(188, 19, 254, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
+
             background-attachment: fixed;
             -webkit-font-smoothing: antialiased;
         }
 
         .auth-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 32px 24px;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
             width: 100%;
             max-width: 360px;
+
+            padding: 32px 24px;
+
+            border-radius: 24px;
+
+            background: var(--glass-bg);
+
+            border: 1px solid var(--glass-border);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        h2 { 
-            text-align: center; 
-            font-size: 1.8rem;
+        h2 {
+            text-align: center;
+            font-size: 1.9rem;
             font-weight: 800;
-            margin-bottom: 6px; 
-            color: #fff; 
-            letter-spacing: 3px; 
-            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: #fff;
+            letter-spacing: 1px;
         }
 
         .subtitle {
             text-align: center;
-            font-size: 0.8rem;
-            color: #718096;
-            margin-bottom: 24px;
-            letter-spacing: 0.5px;
+            color: #8a8f98;
+            font-size: 0.9rem;
+            margin-bottom: 26px;
         }
 
-        /* --- INPUT MATRIX TRACKS --- */
-        .input-group { 
-            position: relative; 
-            margin-bottom: 16px; 
+        .input-group {
+            position: relative;
+            margin-bottom: 18px;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #a0aec0;
-            margin-bottom: 6px;
-            padding-left: 2px;
+            margin-bottom: 7px;
+            font-size: 0.82rem;
+            color: #c5c8ce;
+            font-weight: 600;
         }
-        
+
         input {
             width: 100%;
             padding: 14px 16px;
-            background: rgba(0, 0, 0, 0.25);
+            padding-right: 50px;
+
+            border-radius: 12px;
             border: 1px solid var(--glass-border);
+
+            background: rgba(0, 0, 0, 0.25);
+
             color: white;
             font-size: 0.95rem;
-            border-radius: 12px;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        input:focus { 
-            border-color: var(--neon-cyan); 
-            background: rgba(0, 0, 0, 0.4);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.05);
-        }
-        input::placeholder { color: #4a5568; }
 
-        /* Modern Vector Toggle Alignment */
+            outline: none;
+
+            transition: 0.25s ease;
+        }
+
+        input:focus {
+            border-color: var(--neon-cyan);
+
+            background: rgba(0, 0, 0, 0.4);
+
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.08);
+        }
+
+        input::placeholder {
+            color: #68707b;
+        }
+
         .eye-container {
             position: absolute;
             right: 14px;
-            bottom: 13px;
-            cursor: pointer;
-            color: #718096;
+            top: 40px;
+
+            width: 22px;
+            height: 22px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: color 0.2s;
-            width: 20px;
-            height: 20px;
-        }
-        .eye-container:hover { color: var(--neon-cyan); }
-        .eye-container svg { width: 100%; height: 100%; }
 
-        /* --- MESSAGING MATRIX --- */
+            cursor: pointer;
+
+            color: #7d8590;
+
+            transition: 0.2s ease;
+        }
+
+        .eye-container:hover {
+            color: var(--neon-cyan);
+        }
+
+        .eye-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
         #status-msg {
-            font-size: 0.8rem;
-            margin-bottom: 16px;
-            text-align: center;
-            min-height: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-        .error { color: var(--stock-red); }
-        .info { color: var(--neon-cyan); }
+            min-height: 20px;
+            margin-bottom: 14px;
 
-        /* --- SUBMIT ACTIONS --- */
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .error {
+            color: var(--error-red);
+        }
+
+        .success {
+            color: var(--neon-cyan);
+        }
+
         .submit-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%);
+
             border: none;
+            border-radius: 14px;
+
+            background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%);
+
             color: white;
+
             font-size: 0.95rem;
             font-weight: 700;
-            border-radius: 14px;
-            margin-top: 8px;
+
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             gap: 10px;
+
+            transition: 0.2s ease;
+
             box-shadow: 0 4px 20px rgba(188, 19, 254, 0.25);
-            transition: transform 0.2s, opacity 0.2s;
         }
-        .submit-btn:active { transform: scale(0.98); opacity: 0.95; }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
         .spinner {
             width: 18px;
             height: 18px;
-            border: 2px solid rgba(255,255,255,0.15);
-            border-top: 2px solid white;
+
             border-radius: 50%;
+
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top: 2px solid white;
+
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .redirect-link { 
-            text-align: center; 
-            font-size: 0.8rem; 
-            margin-top: 20px; 
-            color: #718096; 
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
+
+        .redirect-link {
+            margin-top: 22px;
+
+            text-align: center;
+            font-size: 0.85rem;
+
+            color: #8a8f98;
+        }
+
         .redirect-link a {
             color: var(--neon-cyan);
             text-decoration: none;
-            font-weight: 700;
-            margin-left: 4px;
+            font-weight: 600;
         }
-        .redirect-link a:hover { text-decoration: underline; }
-        
-        .hidden { display: none !important; }
+
+        .redirect-link a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
     <div class="auth-card">
-        <h2>Login</h2>
-        <div class="subtitle">Access your digital asset profile</div>
-        
-        <div id="status-msg"></div>
-        
-        <div class="input-group">
-            <label for="email">Email Terminal</label>
-            <input type="email" id="email" placeholder="name@domain.com" autocomplete="email">
+
+        <h2>Welcome Back</h2>
+
+        <div class="subtitle">
+            Sign in to continue to your account
         </div>
-        
+
+        <div id="status-msg"></div>
+
         <div class="input-group">
-            <label for="password">Security Key</label>
-            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-            <div class="eye-container" id="eye-toggle" onclick="togglePassVisibility()">
-                <!-- Eye On (Visible Default State) -->
-                <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <label for="email">Email Address</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+            />
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+            />
+
+            <div class="eye-container" id="eye-toggle">
+
+                <!-- OPEN EYE -->
+                <svg id="eye-open" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+
                     <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-                <!-- Eye Off (Hidden State) -->
-                <svg id="eye-closed" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+
+                <!-- CLOSED EYE -->
+                <svg id="eye-closed" class="hidden"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+
                     <line x1="1" y1="1" x2="23" y2="23"></line>
                 </svg>
+
             </div>
         </div>
-        
+
         <button class="submit-btn" id="auth-submit">
-            <span id="btn-text">Authenticate</span>
+
+            <span id="btn-text">Sign In</span>
+
             <div id="btn-loader" class="spinner hidden"></div>
+
         </button>
-        
-        <p class="redirect-link">New pipeline user?<a href="register.html">Create Account</a></p>
+
+        <p class="redirect-link">
+            Don’t have an account?
+            <a href="register.html">Create Account</a>
+        </p>
+
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            setPersistence,
+            browserLocalPersistence
+        }
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -234,79 +343,133 @@
         };
 
         const app = initializeApp(firebaseConfig);
+
         const auth = getAuth(app);
 
-        // Core Cached Elements
-        const statusDiv = document.getElementById('status-msg');
-        const btnLoader = document.getElementById('btn-loader');
-        const btnText = document.getElementById('btn-text');
-        const submitBtn = document.getElementById('auth-submit');
-        const passInput = document.getElementById('password');
-        const emailInput = document.getElementById('email');
-        const eyeOpenIcon = document.getElementById('eye-open');
-        const eyeClosedIcon = document.getElementById('eye-closed');
 
-        function parseAuthError(error) {
-            if (!navigator.onLine || error.code === 'auth/network-request-failed') {
-                return "Network interface offline.";
-            }
-            switch (error.code) {
-                case 'auth/invalid-credential':
-                case 'auth/wrong-password':
-                case 'auth/user-not-found':
-                    return "Invalid core access credentials.";
-                case 'auth/invalid-email':
-                    return "Invalid email syntax structure.";
-                case 'auth/user-disabled':
-                    return "This security node has been suspended.";
-                default:
-                    return "Authentication failure. Try again.";
-            }
-        }
+        const statusDiv = document.getElementById("status-msg");
 
-        window.togglePassVisibility = function() {
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeOpenIcon.classList.add('hidden');
-                eyeClosedIcon.classList.remove('hidden');
-            } else {
-                passInput.type = 'password';
-                eyeClosedIcon.classList.add('hidden');
-                eyeOpenIcon.classList.remove('hidden');
-            }
-        };
+        const btnLoader = document.getElementById("btn-loader");
 
-        function displayMessage(msg, isError = true) {
-            statusDiv.className = isError ? "error" : "info";
-            statusDiv.innerText = msg;
-            btnLoader.classList.add('hidden');
-            btnText.innerText = "Authenticate";
+        const btnText = document.getElementById("btn-text");
+
+        const submitBtn = document.getElementById("auth-submit");
+
+        const passInput = document.getElementById("password");
+
+        const emailInput = document.getElementById("email");
+
+        const eyeToggle = document.getElementById("eye-toggle");
+
+        const eyeOpenIcon = document.getElementById("eye-open");
+
+        const eyeClosedIcon = document.getElementById("eye-closed");
+
+
+        function showMessage(message, isError = true) {
+
+            statusDiv.className = isError ? "error" : "success";
+
+            statusDiv.innerText = message;
+
+            btnLoader.classList.add("hidden");
+
+            btnText.innerText = "Sign In";
+
             submitBtn.disabled = false;
         }
 
-        submitBtn.addEventListener('click', async () => {
-            const email = emailInput.value.trim();
-            const password = passInput.value;
 
-            if (!email || !password) {
-                return displayMessage("Please fill out all operational fields.");
+        function getErrorMessage(error) {
+
+            if (
+                !navigator.onLine ||
+                error.code === "auth/network-request-failed"
+            ) {
+                return "No internet connection.";
             }
 
-            submitBtn.disabled = true;
-            btnLoader.classList.remove('hidden');
-            btnText.innerText = "Verifying...";
-            statusDiv.innerText = "";
+            switch (error.code) {
 
-            try {
-                // Configure persistent local token validation across sessions
-                await setPersistence(auth, browserLocalPersistence);
-                await signInWithEmailAndPassword(auth, email, password);
-                
-                window.location.href = "shop.html";
-            } catch (error) {
-                displayMessage(parseAuthError(error));
+                case "auth/invalid-credential":
+                case "auth/wrong-password":
+                case "auth/user-not-found":
+                    return "Incorrect email or password.";
+
+                case "auth/invalid-email":
+                    return "Please enter a valid email address.";
+
+                case "auth/user-disabled":
+                    return "This account has been disabled.";
+
+                default:
+                    return "Unable to sign in right now.";
+            }
+        }
+
+
+        eyeToggle.addEventListener("click", () => {
+
+            if (passInput.type === "password") {
+
+                passInput.type = "text";
+
+                eyeOpenIcon.classList.add("hidden");
+
+                eyeClosedIcon.classList.remove("hidden");
+
+            } else {
+
+                passInput.type = "password";
+
+                eyeClosedIcon.classList.add("hidden");
+
+                eyeOpenIcon.classList.remove("hidden");
             }
         });
+
+
+        submitBtn.addEventListener("click", async () => {
+
+            const email = emailInput.value.trim();
+
+            const password = passInput.value;
+
+
+            if (!email || !password) {
+                return showMessage("Please fill in all fields.");
+            }
+
+
+            submitBtn.disabled = true;
+
+            btnLoader.classList.remove("hidden");
+
+            btnText.innerText = "Signing In...";
+
+            statusDiv.innerText = "";
+
+
+            try {
+
+                await setPersistence(auth, browserLocalPersistence);
+
+                await signInWithEmailAndPassword(auth, email, password);
+
+                showMessage("Login successful!", false);
+
+                setTimeout(() => {
+                    window.location.href = "shop.html";
+                }, 800);
+
+            } catch (error) {
+
+                showMessage(getErrorMessage(error));
+            }
+
+        });
+
     </script>
+
 </body>
 </html>
