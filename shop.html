@@ -306,6 +306,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
+
+            position: relative;
+overflow: hidden;
+transform: translateZ(0);
         }
         .nav-category-btn:hover, .nav-category-btn.active {
             background: rgba(0, 243, 255, 0.08);
@@ -475,12 +479,29 @@
         }
         }
         .fade-slide-entry {
-            animation: listPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes listPop {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    animation: ultraFastPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
+}
+        @keyframes ultraFastPop {
+
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.96);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(-1px) scale(1.01);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
 
         /* --- SIDE NAV --- */
         .side-nav {
@@ -868,7 +889,7 @@
             productsArray.forEach((product, index) => {
                 const row = document.createElement('div');
                 row.className = 'product-list-row fade-slide-entry';
-                row.style.animationDelay = `${index * 0.05}s`;
+                row.style.animationDelay = `${index * 0.018}s`;
                 
                 const isSingleSecret = product.mode === 'SINGLE';
                 const stockCount = Array.isArray(product.stock) ? product.stock.length : Number(product.stockCount || 0);
