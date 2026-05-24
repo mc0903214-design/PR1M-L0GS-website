@@ -703,85 +703,6 @@ box-shadow:
     height: 28px;
     fill: white;
 }
-
-        .nav-particles {
-    position: absolute;
-    inset: 0;
-
-    overflow: hidden;
-
-    pointer-events: none;
-
-    z-index: 0;
-}
-
-.nav-particles span {
-    position: absolute;
-
-    width: 120px;
-    height: 120px;
-
-    border-radius: 50%;
-
-    background: radial-gradient(
-        circle,
-        rgba(255,255,255,0.16),
-        transparent 70%
-    );
-
-    filter: blur(20px);
-
-    animation: floatParticle linear infinite;
-}
-
-/* Different positions */
-
-.nav-particles span:nth-child(1) {
-    top: -20px;
-    left: -40px;
-    animation-duration: 14s;
-}
-
-.nav-particles span:nth-child(2) {
-    top: 10px;
-    left: 30%;
-    animation-duration: 18s;
-}
-
-.nav-particles span:nth-child(3) {
-    top: -10px;
-    right: 20%;
-    animation-duration: 16s;
-}
-
-.nav-particles span:nth-child(4) {
-    bottom: -30px;
-    left: 50%;
-    animation-duration: 20s;
-}
-
-.nav-particles span:nth-child(5) {
-    top: 0;
-    right: -40px;
-    animation-duration: 13s;
-}
-
-@keyframes floatParticle {
-
-    0% {
-        transform: translateX(-40px);
-    }
-
-    50% {
-        transform: translateX(40px)
-                   translateY(-10px);
-    }
-
-    100% {
-        transform: translateX(-40px);
-    }
-
-}
     </style>
 </head>
 <body>
@@ -880,13 +801,6 @@ box-shadow:
     <div class="section-title reveal">Marketplace Categories</div>
 
     <div class="category-nav-container reveal">
-        <div class="nav-particles">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-        </div>
         <div class="category-navbar" id="categoryNavbar">
             <button class="nav-category-btn active" onclick="filterCategory('All', this)">All Products</button>
             <button class="nav-category-btn" onclick="filterCategory('Logs', this)">Logs</button>
