@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PR1MΞ SMS - Under Construction</title>
+
     <style>
         :root {
             --neon-cyan: #00f3ff;
@@ -11,6 +12,7 @@
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --dark-bg: #060608;
+            --whatsapp: #25D366;
         }
 
         * {
@@ -23,7 +25,7 @@
         body {
             background-color: var(--dark-bg);
             color: #f1f1f3;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
@@ -46,7 +48,7 @@
             border: 1px solid rgba(0, 243, 255, 0.25);
             border-radius: 24px;
             padding: 40px 24px;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             position: relative;
@@ -70,12 +72,19 @@
         }
 
         @keyframes pulseGlow {
-            0% { box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); transform: scale(1); }
-            100% { box-shadow: 0 0 25px rgba(0, 243, 255, 0.5); transform: scale(1.03); }
+            0% {
+                box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+                transform: scale(1);
+            }
+
+            100% {
+                box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
+                transform: scale(1.03);
+            }
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
             letter-spacing: 2px;
             margin-bottom: 12px;
@@ -85,8 +94,35 @@
         p {
             color: #a0aec0;
             font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 32px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        /* --- INFO BOX --- */
+        .info-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 24px;
+        }
+
+        .info-box h2 {
+            font-size: 1rem;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        /* --- BUTTON GROUP --- */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
         /* --- BACK BUTTON --- */
@@ -94,43 +130,141 @@
             background: linear-gradient(90deg, var(--neon-purple) 0%, #9d4edd 100%);
             color: white;
             border: none;
-            padding: 12px 28px;
+            padding: 13px 28px;
             border-radius: 14px;
             font-weight: 600;
             text-decoration: none;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 15px rgba(188, 19, 254, 0.3);
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             cursor: pointer;
         }
 
-        .back-btn:hover { 
-            transform: translateY(-1px);
+        .back-btn:hover {
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(188, 19, 254, 0.45);
-            opacity: 0.95;
+            opacity: 0.96;
+        }
+
+        /* --- WHATSAPP BUTTON --- */
+        .whatsapp-btn {
+            background: linear-gradient(90deg, #1ebe5d 0%, var(--whatsapp) 100%);
+            color: white;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.92rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 18px rgba(37, 211, 102, 0.25);
+            transition: all 0.25s ease;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(37, 211, 102, 0.4);
+        }
+
+        /* --- FOOTER --- */
+        .footer-text {
+            margin-top: 22px;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        @media(max-width: 500px) {
+            .maintenance-card {
+                padding: 32px 20px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="maintenance-card">
+
         <div class="icon-wrapper">
             <!-- Gear/Production SVG Icon -->
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06
+                a2 2 0 1 1-2.83 2.83l-.06-.06
+                a1.65 1.65 0 0 0-1.82-.33
+                1.65 1.65 0 0 0-1 1.51V21
+                a2 2 0 0 1-4 0v-.09
+                A1.65 1.65 0 0 0 9 19.4
+                a1.65 1.65 0 0 0-1.82.33l-.06.06
+                a2 2 0 1 1-2.83-2.83l.06-.06
+                a1.65 1.65 0 0 0 .33-1.82
+                1.65 1.65 0 0 0-1.51-1H3
+                a2 2 0 0 1 0-4h.09
+                A1.65 1.65 0 0 0 4.6 9
+                a1.65 1.65 0 0 0-.33-1.82l-.06-.06
+                a2 2 0 1 1 2.83-2.83l.06.06
+                a1.65 1.65 0 0 0 1.82.33H9
+                a1.65 1.65 0 0 0 1-1.51V3
+                a2 2 0 0 1 4 0v.09
+                a1.65 1.65 0 0 0 1 1.51
+                a1.65 1.65 0 0 0 1.82-.33l.06-.06
+                a2 2 0 1 1 2.83 2.83l-.06.06
+                a1.65 1.65 0 0 0-.33 1.82V9
+                a1.65 1.65 0 0 0 1.51 1H21
+                a2 2 0 0 1 0 4h-.09
+                a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+
             </svg>
         </div>
-        
+
         <h1>PR1MΞ SMS</h1>
-        <p>This section is currently in production and it will be live soon. Stay tuned for temporary VoIP activation modules.</p>
-        
-        <a href="shop.html" class="back-btn">
-            ← Return to Market
-        </a>
+
+        <p>
+            This section is currently in production and will be available soon.
+            Stay tuned for premium temporary VoIP activation modules and advanced SMS solutions.
+        </p>
+
+        <!-- NEW PROFESSIONAL DIRECT PURCHASE SECTION -->
+        <div class="info-box">
+            <h2>Need Access Faster?</h2>
+
+            <p>
+                While this module is still under development, sms numbers can still he bought directly from us a cheap rates.
+            </p>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="btn-group">
+
+            <a href="https://wa.me/2349032140540?text=Hello%20PR1MΞ%20SMS%2C%20I%20want%20to%20buy%20sms%20country%20activation%20number."
+                class="whatsapp-btn"
+                target="_blank">
+
+                💬 Contact on WhatsApp
+            </a>
+
+            <a href="shop.html" class="back-btn">
+                ← Return to Market
+            </a>
+
+        </div>
+
+        <div class="footer-text">
+            © 2026 PR1MΞ SMS • Secure Digital Solutions
+        </div>
+
     </div>
 
 </body>
