@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR1MΞ LOGS Rules</title>
+<style>
+:root{
+    --neon-cyan:#00f3ff;
+    --neon-purple:#bc13fe;
+    --dark-bg:#060608;
+    --glass-bg:rgba(255,255,255,0.03);
+    --glass-border:rgba(255,255,255,0.08);
+    --warning:#ff4b4b;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:
+    radial-gradient(circle at 10% 20%, rgba(188,19,254,.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0,243,255,.08) 0%, transparent 40%),
+    #060608;
+
+    color:#fff;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding-top: 80px; /* Space for the sticky topbar */
+}
+
+/* Updated Topbar Styles */
+.topbar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 1000;
+    
+    max-width: 900px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the logo */
+
+    padding: 14px 18px;
+    
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 22px;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: white;
+    text-shadow: 0 0 12px rgba(0, 243, 255, 0.6);
+    text-align: center;
+}
+
+.back-btn {
+    position: absolute;
+    left: 14px; /* Positioned inside the box */
+    
+    text-decoration: none;
+    color: white;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.3s;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:2rem;
+    letter-spacing:2px;
+    color:white;
+    text-shadow:0 0 15px rgba(0,243,255,.4);
+}
+
+.header p{
+    color:#9ca3af;
+    margin-top:10px;
+}
+
+.box{
+    background:rgba(255,255,255,.03);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:22px;
+    margin-bottom:18px;
+}
+
+.intro-box{
+    border:1px solid rgba(0,243,255,.25);
+    box-shadow:0 0 20px rgba(0,243,255,.08);
+}
+
+.rule-card{
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+}
+
+.number{
+    min-width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:var(--neon-cyan);
+
+    font-weight:700;
+    font-size:15px;
+}
+
+.rule-text{
+    color:#d1d5db;
+    line-height:1.7;
+}
+
+.section-title{
+    margin:35px 0 18px;
+    text-transform:uppercase;
+    font-size:.85rem;
+    letter-spacing:2px;
+    color:#94a3b8;
+}
+
+.recommend-box{
+    border:1px solid rgba(188,19,254,.25);
+}
+
+.warning{
+    background:rgba(255,75,75,.08);
+    border:1px solid rgba(255,75,75,.4);
+    box-shadow:0 0 20px rgba(255,75,75,.08);
+}
+
+.warning-title{
+    color:#ff7a7a;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+ul{
+    margin-top:12px;
+    padding-left:20px;
+}
+
+li{
+    margin-bottom:8px;
+    color:#d1d5db;
+}
+
+.solution{
+    color:#9ef7d3;
+    font-weight:600;
+}
+
+.reveal{
+    opacity:0;
+    transform:translateY(20px);
+
+    transition:
+        opacity .6s ease,
+        transform .6s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="javascript:history.back()" class="back-btn">
+        ←
+    </a>
+    <div class="logo">PR1MΞ L0GS</div>
+</div>
+
+<div class="container">
+    <div class="box intro-box reveal">
+        <p>
+            These rules will help to establish clear guidelines and conditions for customers of accounts in our store.
+            It is important that customers are aware of all the terms and conditions before making a purchase to avoid misunderstandings and conflicts in the future.
+        </p>
+    <br>
+
+    <p>
+        When buying a product on the ACTIVE STORE website, you automatically agree to the following rules:
+    </p>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">1</div>
+    <div class="rule-text">
+    The warranty on the product is 30 minutes from the date of its purchase, subject to compliance with all the rules and conditions of working with accounts.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">2</div>
+    <div class="rule-text">
+    The purchased valid item cannot be returned or replaced. Carefully read the product description before making any purchase.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">3</div>
+    <div class="rule-text">
+    If the accounts cannot be replaced, the store will give you the opportunity to receive a refund.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">4</div>
+    <div class="rule-text">
+    If you plan to use purchased accounts for a long period, regularly change passwords and maintain account security yourself.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">5</div>
+    <div class="rule-text">
+    Before buying, carefully read the product description and verify all characteristics to ensure the product meets your requirements.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">6</div>
+    <div class="rule-text">
+    If you have any problems with your order, contact the store's technical support as soon as possible.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">7</div>
+    <div class="rule-text">
+    Technical support responds to requests within 24 hours after contact.
+    </div>
+    </div>
+    </div>
+    <div class="box reveal">
+    <div class="rule-card">
+    <div class="number">8</div>
+    <div class="rule-text">
+    The store does not provide training or advice regarding account usage. We are responsible only for account delivery and operation.
+    </div>
+    </div>
+    </div>
+    <div class="section-title">
+    Recommendations
+    </div>
+    <div class="box recommend-box reveal">
+    Follow the recommendations for working with accounts to ensure security and efficiency.
+    </div>
+    <div class="box reveal">
+    <h3>Use high-quality proxy servers.</h3>
+    <br>
+    <p class="problem">Problem:</p>
+    <p>
+    If you log in to multiple accounts from the same IP address, all your accounts can be blocked.
+    </p>
+    <br>
+    <p class="solution">Solution:</p>
+    <p>
+    Use quality proxy servers, such as individual IPv4 proxies or Resident proxies.
+    Avoid package proxies and browser extensions such as Hola, FreeVPN, etc.
+    IPv6 proxies are also not recommended.
+    </p>
+    </div>
+    <div class="box reveal">
+    <h3>Use different devices to log in to different accounts.</h3>
+    <br>
+    <p class="problem">Problem:</p>
+    <p>
+    If you log in to multiple accounts from one device, all accounts can be blocked.
+    </p>
+    <br>
+    <p class="solution">Solution:</p>
+    <p>
+    Use different devices or specialized software for each account.
+    Incognito mode, clearing cookies, or opening another browser tab does not count as a different device.
+    </p>
+    <ul>
+    <li>Computer / second computer</li>
+    <li>Phone / second phone</li>
+    <li>Profile browser software</li>
+    <li>UserAgent changes</li>
+    <li>Anti-detect browsers</li>
+    </ul>
+    </div>
+    <div class="box reveal">
+    <h3>Observe limits and conduct human-like activities.</h3>
+    <br>
+    <p class="problem">Problem:</p>
+    <p>
+    Mass actions such as likes, follows, messaging or automation can quickly trigger account restrictions.
+    </p>
+    <br>
+    <p class="solution">Solution:</p>
+    <p>
+    Behave like a normal user first.
+    </p>
+    <ul>
+    <li>Complete profile information</li>
+    <li>Follow several users</li>
+    <li>Leave a few likes</li>
+    <li>Upload photos</li>
+    <li>Create comments</li>
+    <li>Make reposts</li>
+    </ul>
+    </div>
+    <div class="box warning reveal">
+    <div class="warning-title">
+    ⚠ IMPORTANT NOTICE
+    </div>
+    <p>
+    We are not responsible for developers of programs, services, browsers, software or proxy providers.
+    </p>
+    <br>
+    <p>
+    All accounts registered by us or our partners are created using private software, private programs and proxy servers that are not publicly available.
+    </p>
+    </div>
+</div>
+
+<script>
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add('active');
+        }
+    });
+});
+
+document.querySelectorAll('.reveal')
+.forEach(el=>{
+    observer.observe(el);
+});
+</script>
+</body>
+</html>
