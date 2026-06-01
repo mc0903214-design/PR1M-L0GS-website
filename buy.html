@@ -425,6 +425,7 @@
         let runningTotal = 0;
         let availableStockCount = 0;
         let userDataCache = null;
+        let authInitialized = false;
 
         const urlParams = new URLSearchParams(window.location.search);
         productID = urlParams.get('id');
@@ -441,7 +442,8 @@
             setTimeout(() => { toast.classList.remove('active'); }, 3500);
         }
 
-        async function initCheckout() {
+        // 1. Immediately fetch product info regardless of auth status
+        async function fetchProductOnly() {
             if(!productID) {
                 triggerNotification("No valid items requested.");
                 setTimeout(() => location.href = 'shop.html', 2000);
@@ -449,11 +451,6 @@
             }
 
             try {
-                const userDoc = await getDoc(doc(db, "users", userSession.uid));
-                if(userDoc.exists()) {
-                    userDataCache = userDoc.data();
-                }
-
                 const productDoc = await getDoc(doc(db, "products", productID));
                 if (!productDoc.exists()) {
                     triggerNotification("Target product does not exist.");
@@ -463,8 +460,19 @@
                 productDetails = { id: productDoc.id, ...productDoc.data() };
                 setupUI(productDetails);
             } catch(err) {
-                triggerNotification("Failed connection setup. Refreshing.");
+                console.error(err);
+                triggerNotification("Error loading product data.");
             }
+        }
+
+        // 2. Background check for user data if they are logged in
+        async function syncUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if(userDoc.exists()) {
+                    userDataCache = userDoc.data();
+                }
+            } catch(e) { console.error("User sync failed", e); }
         }
 
         function setupUI(prod) {
@@ -534,7 +542,19 @@
         };
 
         window.executePurchase = async function() {
-            if (!userSession || !productDetails) return;
+            // Check if auth is even done yet
+            if (!authInitialized) {
+                triggerNotification("Verifying connection...", "info");
+                return;
+            }
+
+            // If background check found no user, redirect now
+            if (!userSession) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (!productDetails) return;
 
             if(productDetails.category === "Freebies") {
                 const invitesCount = userDataCache ? Number(userDataCache.invites || 0) : 0;
@@ -596,11 +616,9 @@
                         });
                     }
 
-                    // Format human-readable current date string matching historical entries
                     const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
                     const formattedDate = new Date().toLocaleDateString('en-US', dateOptions);
 
-                    // Structure history inventory node object 
                     const historicalItemNode = {
                         name: productDetails.name || "Crypto Asset Item",
                         price: productDetails.price || 0,
@@ -608,11 +626,9 @@
                         date: formattedDate
                     };
 
-                    // Pull current list or default to empty array, then safely add item node
                     const existingPurchases = Array.isArray(userData.myPurchases) ? [...userData.myPurchases] : [];
                     existingPurchases.push(historicalItemNode);
 
-                    // Commit changes to balance and asset listing storage vectors
                     transaction.update(userDocRef, {
                         balance: currentBalance - runningTotal,
                         myPurchases: existingPurchases
@@ -632,7 +648,6 @@
                     });
                 });
 
-                // Display success layout panel view cleanly without blanking page spaces out
                 document.getElementById('purchase-view').classList.add('hidden');
                 document.getElementById('payload-display').innerText = deliveryPayload;
                 
@@ -656,12 +671,17 @@
             triggerNotification("Credentials copied directly!", "info");
         };
 
+        // Execution Start
+        fetchProductOnly();
+
         onAuthStateChanged(auth, (user) => {
+            authInitialized = true;
             if (user) {
                 userSession = user;
-                initCheckout();
+                syncUserData(user);
             } else {
-                window.location.href = 'index.html';
+                userSession = null;
+                // We do NOT redirect here anymore so they can see the product first.
             }
         });
     </script>
