@@ -90,7 +90,7 @@
             color: #a0aec0;
         }
         .input-group label span { color: var(--stock-red); }
-        .input-group input, .input-group select {
+        .input-group input {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
@@ -100,7 +100,7 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .input-group input:focus, .input-group select:focus {
+        .input-group input:focus {
             border-color: var(--neon-cyan);
         }
 
@@ -135,29 +135,6 @@
         }
         .file-status-label { font-size: 0.78rem; color: #718096; pointer-events: none; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .bg-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 6px;
-        }
-        .bg-thumb {
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-            font-size: 0.75rem;
-            cursor: pointer;
-            background: rgba(0,0,0,0.2);
-            font-weight: 600;
-            color: #a0aec0;
-        }
-        .bg-thumb.active {
-            border-color: var(--neon-cyan);
-            color: #fff;
-            background: rgba(0, 243, 255, 0.05);
-        }
-
         .action-submit-btn {
             width: 100%;
             background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
@@ -177,7 +154,7 @@
         }
         .action-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Web Notification Center Styles Instead of Alerts */
+        /* Web Notification Center Styles */
         .notification-banner {
             padding: 14px;
             border-radius: 12px;
@@ -188,9 +165,8 @@
         }
         .banner-error { background: rgba(255, 75, 75, 0.15); border: 1px solid var(--stock-red); color: #ff8888; }
         .banner-success { background: rgba(0, 255, 136, 0.15); border: 1px solid var(--stock-green); color: #88ffcc; }
-        .banner-confirm { background: rgba(255, 183, 3, 0.15); border: 1px solid var(--warning-amber); color: #ffe088; }
 
-        /* --- EXACT IMAGE.PNG CARD ARCHITECTURE --- */
+        /* --- CARD ARCHITECTURE --- */
         .preview-section-title {
             font-size: 0.8rem; color: #718096; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-left: 4px;
         }
@@ -218,11 +194,7 @@
         .canvas-platinum { background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%); color: #0f172a; }
         .canvas-silver { background: linear-gradient(135deg, #f1f5f9 0%, #64748b 100%); color: #0f172a; }
 
-        .canvas-bg-blanket::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.1) 80%); pointer-events: none; }
-        .canvas-bg-marble::before { content: ''; position: absolute; inset: 0; opacity: 0.08; background-image: linear-gradient(45deg, #555 25%, transparent 25%), linear-gradient(-45deg, #555 25%, transparent 25%); background-size: 16px 16px; pointer-events: none; }
-        .canvas-bg-grass { background: linear-gradient(135deg, #22c55e 0%, #166534 100%) !important; color: #fff !important; }
-
-        /* WATERMARK UPDATED TO PRIMELOGS.STORE AND ENHANCED BRIGHTNESS */
+        /* Watermark Layout */
         .watermark-overlay {
             position: absolute;
             inset: -40%;
@@ -243,27 +215,9 @@
         .clean-pass .watermark-overlay { display: none !important; }
         .watermark-item { width: 105px; text-align: center; white-space: nowrap; }
 
-        /* CARD HEADER DESIGNS */
-        .card-core-header {
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            margin-bottom: 4px;
-        }
-        .card-title-main {
-            font-size: 0.82rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .card-title-sub {
-            font-size: 0.4rem;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            opacity: 0.8;
-            margin-top: 1px;
-            color: #ff3b3b;
-        }
+        .card-core-header { text-align: center; position: relative; z-index: 10; margin-bottom: 4px; }
+        .card-title-main { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+        .card-title-sub { font-size: 0.4rem; font-weight: 700; letter-spacing: 0.8px; opacity: 0.8; margin-top: 1px; color: #ff3b3b; }
         .canvas-white .card-title-sub { color: #d91b1b; }
 
         /* BODY LAYOUT REGION - 3 COLUMNS */
@@ -277,160 +231,44 @@
             z-index: 10;
         }
 
-        /* LEFT ARCH: CELEB IMAGE + CHIP */
-        .body-column-left {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: flex-start;
-        }
-        .photo-box-label {
-            font-size: 0.35rem;
-            font-weight: 600;
-            opacity: 0.6;
-            margin-bottom: 2px;
-            text-align: center;
-            width: 100%;
-            text-transform: uppercase;
-        }
-        .card-photo-frame {
-            width: 72px;
-            height: 72px;
-            border-radius: 6px;
-            background: rgba(128,128,128,0.12);
-            border: 1px solid rgba(128,128,128,0.25);
-            object-fit: cover;
-        }
+        .body-column-left { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+        .photo-box-label { font-size: 0.35rem; font-weight: 600; opacity: 0.6; margin-bottom: 2px; text-align: center; width: 100%; text-transform: uppercase; }
+        .card-photo-frame { width: 72px; height: 72px; border-radius: 6px; background: rgba(128,128,128,0.12); border: 1px solid rgba(128,128,128,0.25); object-fit: cover; }
         
-        /* THE GOLD SIM CHIP EMBOSSMENT STYLING */
         .gold-sim-chip {
-            width: 32px;
-            height: 24px;
+            width: 32px; height: 24px;
             background: linear-gradient(135deg, #fce068 0%, #dfb226 30%, #f7dc5f 50%, #b88d14 85%, #ebd154 100%);
-            border-radius: 4px;
-            border: 0.5px solid rgba(0,0,0,0.15);
+            border-radius: 4px; border: 0.5px solid rgba(0,0,0,0.15);
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.12);
-            position: relative;
-            overflow: hidden;
-            margin-top: 4px;
-            margin-left: 2px;
+            position: relative; overflow: hidden; margin-top: 4px; margin-left: 2px;
         }
         .gold-sim-chip::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border: 0.5px solid rgba(0,0,0,0.12);
+            content: ''; position: absolute; inset: 0; border: 0.5px solid rgba(0,0,0,0.12);
             background-image: 
                 linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,0.2) 51%, transparent 52%),
                 linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,0.2) 51%, transparent 52%);
         }
         .gold-sim-chip::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 10px;
-            top: 7px;
-            left: 10px;
-            border: 0.5px solid rgba(0,0,0,0.15);
-            border-radius: 2px;
-            background: rgba(251, 222, 98, 0.4);
+            content: ''; position: absolute; width: 12px; height: 10px; top: 7px; left: 10px;
+            border: 0.5px solid rgba(0,0,0,0.15); border-radius: 2px; background: rgba(251, 222, 98, 0.4);
         }
 
-        /* CENTER ARCH: REWORKED ONE ITEM PER LINE PATTERN */
-        .body-column-center {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5px;
-            padding-top: 2px;
-            max-height: 98px;
-            overflow: hidden;
-        }
-        .ledger-row {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            line-height: 1.1;
-        }
-        .ledger-lbl {
-            font-weight: 800;
-            opacity: 0.6;
-            text-transform: uppercase;
-            font-size: 0.32rem;
-            letter-spacing: 0.2px;
-        }
-        .ledger-val {
-            font-weight: 700;
-            font-size: 0.42rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 100%;
-        }
+        .body-column-center { display: flex; flex-direction: column; gap: 1.5px; padding-top: 2px; max-height: 98px; overflow: hidden; }
+        .ledger-row { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+        .ledger-lbl { font-weight: 800; opacity: 0.6; text-transform: uppercase; font-size: 0.32rem; letter-spacing: 0.2px; }
+        .ledger-val { font-weight: 700; font-size: 0.42rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
-        /* RIGHT ARCH: FAN IMAGE + QR PLACEMENT */
-        .body-column-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            align-items: flex-end;
-        }
-        .qr-wrapper-zone {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            margin-top: auto;
-        }
-        .card-qr-graphics {
-            width: 38px;
-            height: 38px;
-            background: #fff;
-            border-radius: 3px;
-            padding: 1.5px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        }
+        .body-column-right { display: flex; flex-direction: column; justify-content: space-between; height: 100%; align-items: flex-end; }
+        .qr-wrapper-zone { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: auto; }
+        .card-qr-graphics { width: 38px; height: 38px; background: #fff; border-radius: 3px; padding: 1.5px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
         .card-qr-graphics img { width: 100%; height: 100%; object-fit: contain; }
-        .qr-caption-text {
-            font-size: 0.26rem;
-            font-weight: 700;
-            text-align: center;
-            opacity: 0.6;
-            line-height: 1.1;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
+        .qr-caption-text { font-size: 0.26rem; font-weight: 700; text-align: center; opacity: 0.6; line-height: 1.1; text-transform: uppercase; white-space: nowrap; }
 
-        /* FOOTER BRANDING SCHEME */
-        .card-core-footer {
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            margin-top: 6px;
-            border-top: 0.5px solid rgba(128,128,128,0.15);
-            padding-top: 4px;
-        }
-        .legal-notice-paragraph {
-            font-size: 0.35rem;
-            font-weight: 600;
-            opacity: 0.7;
-            max-width: 85%;
-            margin: 0 auto 3px auto;
-            line-height: 1.2;
-        }
-        .footer-stamp-bold {
-            font-size: 0.42rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #ff3b3b;
-        }
+        .card-core-footer { text-align: center; position: relative; z-index: 10; margin-top: 6px; border-top: 0.5px solid rgba(128,128,128,0.15); padding-top: 4px; }
+        .legal-notice-paragraph { font-size: 0.35rem; font-weight: 600; opacity: 0.7; max-width: 85%; margin: 0 auto 3px auto; line-height: 1.2; }
+        .footer-stamp-bold { font-size: 0.42rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #ff3b3b; }
         .canvas-white .footer-stamp-bold { color: #d91b1b; }
-        .footer-stamp-sub {
-            font-size: 0.33rem;
-            font-weight: 600;
-            opacity: 0.6;
-        }
+        .footer-stamp-sub { font-size: 0.33rem; font-weight: 600; opacity: 0.6; }
 
         /* --- SIDE NAV --- */
         .side-nav {
@@ -483,80 +321,44 @@
         </div>
     </div>
 
-    <!-- MAIN GRID FLEX INTERFACE -->
     <div style="display: flex; flex-direction: column; gap: 24px;">
         
-        <!-- CARD OBJECT LIVE PREVIEW PANEL -->
+        <!-- CARD LIVE PREVIEW -->
         <div>
             <div class="preview-section-title">Live Preview</div>
             <div class="fan-card-canvas canvas-white" id="cardCanvas">
-                
-                <!-- Repeated Matrix Watermark Array Matching primelogs.store -->
                 <div class="watermark-overlay" id="watermarkBox"></div>
                 
-                <!-- TOP HEADER SLOTS -->
                 <div class="card-core-header">
                     <div class="card-title-main"><span id="viewHeaderCeleb">CELEBRITY NAME</span> FAN</div>
                     <div class="card-title-sub">AUTHORIZATION PERMIT CARD UPDATED</div>
                 </div>
 
-                <!-- MIDDLE DATA SECTIONS -->
                 <div class="card-core-body">
-                    
-                    <!-- Left Column: Celebrity Picture + Gold Chip Slot -->
                     <div class="body-column-left">
                         <div style="width: 100%;">
                             <div class="photo-box-label">Celebrity Photo</div>
                             <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23888888' opacity='0.15'/></svg>" class="card-photo-frame" id="viewCelebAvatar">
                         </div>
-                        <!-- SIM Card Gold Stuff Entry Slot -->
                         <div class="gold-sim-chip"></div>
                     </div>
 
-                    <!-- Center Column: Data Content Grid (1 Item Per Line Configuration) -->
                     <div class="body-column-center">
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Name</div>
-                            <div class="ledger-val" id="viewFanName">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Country</div>
-                            <div class="ledger-val" id="viewCountry">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Date of Birth</div>
-                            <div class="ledger-val" id="viewDOB">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Level</div>
-                            <div class="ledger-val" id="viewLevel">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Status</div>
-                            <div class="ledger-val" id="viewStatus">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Reg Date</div>
-                            <div class="ledger-val" id="viewRegDate">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">Valid Till</div>
-                            <div class="ledger-val" id="viewValidDate">—</div>
-                        </div>
-                        <div class="ledger-row">
-                            <div class="ledger-lbl">I.D. No</div>
-                            <div class="ledger-val" style="font-family: monospace;" id="viewCardID">—</div>
-                        </div>
+                        <div class="ledger-row"><div class="ledger-lbl">Name</div><div class="ledger-val" id="viewFanName">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">Country</div><div class="ledger-val" id="viewCountry">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">Date of Birth</div><div class="ledger-val" id="viewDOB">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">Level</div><div class="ledger-val" id="viewLevel">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">Status</div><div class="ledger-val" id="viewStatus">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">Reg Date</div><div class="ledger-val" id="viewRegDate">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">Valid Till</div><div class="ledger-val" id="viewValidDate">—</div></div>
+                        <div class="ledger-row"><div class="ledger-lbl">I.D. No</div><div class="ledger-val" style="font-family: monospace;" id="viewCardID">—</div></div>
                     </div>
 
-                    <!-- Right Column: Fan Picture + QR Placement -->
                     <div class="body-column-right">
                         <div style="width: 100%;">
                             <div class="photo-box-label">Fan Photo</div>
                             <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23888888' opacity='0.15'/></svg>" class="card-photo-frame" id="viewAvatar">
                         </div>
-                        
-                        <!-- QR Code Area Positioning -->
                         <div class="qr-wrapper-zone">
                             <div class="card-qr-graphics">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PR1ME-LOGS-VERIFIED" id="viewQR">
@@ -564,24 +366,19 @@
                             <div class="qr-caption-text">Scan the QR code<br>to verify your fan card</div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- FOOTER POLICY AND LEGAL INFO STAMPS -->
                 <div class="card-core-footer">
                     <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the <span id="viewFooterCeleb">[Celebrity Name]</span> fan club and is entitled to all rights, benefits and privileges thereto.</p>
                     <div class="footer-stamp-bold">OFFICIALLY CERTIFIED <span id="viewStampCeleb">CELEBRITY NAME</span> SUPPORTER</div>
                     <div class="footer-stamp-sub">This document validates your status as a registered member.</div>
                 </div>
-
             </div>
         </div>
 
-        <!-- TRANSACTION AND FORM INPUT UTILITY ENGINE -->
+        <!-- UNIFIED TRANSACTIONS AND TYPING FIELDS FORM -->
         <div class="form-container">
             <div class="form-header-title" id="formPanelTitle">Card Custom Details</div>
-            
-            <!-- Web UI Notification Alerts Zone -->
             <div id="webNotice" class="notification-banner"></div>
 
             <form id="cardCustomForm">
@@ -657,16 +454,6 @@
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Select Background Texture <span style="color:#718096;">(Optional)</span></label>
-                    <div class="bg-grid">
-                        <div class="bg-thumb active" data-bg="none">None</div>
-                        <div class="bg-thumb" data-bg="blanket">Blanket</div>
-                        <div class="bg-thumb" data-bg="marble">Marble</div>
-                        <div class="bg-thumb" data-bg="grass">Grass</div>
-                    </div>
-                </div>
-
                 <div id="confirmPromptZone" style="display:none; margin: 12px 0; padding:14px; background:rgba(255,255,255,0.02); border:1px solid var(--glass-border); border-radius:12px; text-align:center;">
                     <p style="font-size:0.9rem; margin-bottom:12px; color:#ffe088;">Are you sure you want to purchase this Fan Card configuration for ₦2,000?</p>
                     <div style="display:flex; gap:10px; justify-content:center;">
@@ -680,7 +467,6 @@
                 </button>
             </form>
         </div>
-
     </div>
 
     <script type="module">
@@ -718,7 +504,6 @@
 
         headerCardTitle.innerText = `${activeStyle.toUpperCase()} FAN CARD`;
         formPanelTitle.innerText = `${activeStyle.toUpperCase()} CARD DETAILS`;
-        
         cardCanvas.className = `fan-card-canvas canvas-${activeStyle}`;
 
         function showNotice(text, type) {
@@ -728,7 +513,6 @@
             window.scrollTo({ top: webNotice.offsetTop - 20, behavior: 'smooth' });
         }
 
-        // Populate Watermark Array explicitly matching "primelogs.store"
         const watermarkBox = document.getElementById('watermarkBox');
         for (let i = 0; i < 30; i++) {
             const block = document.createElement('div');
@@ -737,7 +521,6 @@
             watermarkBox.appendChild(block);
         }
 
-        // Live Binding Real-Time Engines
         const bindings = [
             { input: 'inFan', view: 'viewFanName', fallback: '—' },
             { input: 'inCountry', view: 'viewCountry', fallback: '—' },
@@ -756,7 +539,6 @@
             });
         });
 
-        // Special Context Updates for Celebrity Inputs across multiple labels
         document.getElementById('inCeleb').addEventListener('input', (e) => {
             const val = e.target.value.toUpperCase() || 'CELEBRITY NAME';
             document.getElementById('viewHeaderCeleb').innerText = val;
@@ -769,7 +551,6 @@
             document.getElementById('viewQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(urlVal)}`;
         });
 
-        // FileReader implementation for Fan Photo
         document.getElementById('inImg').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -783,7 +564,6 @@
             }
         });
 
-        // FileReader implementation for Celebrity Photo
         document.getElementById('inCelebImg').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -795,19 +575,6 @@
                 };
                 reader.readAsDataURL(file);
             }
-        });
-
-        // Texture selector mapping
-        document.querySelectorAll('.bg-thumb').forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                document.querySelectorAll('.bg-thumb').forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                cardCanvas.classList.remove('canvas-bg-blanket', 'canvas-bg-marble', 'canvas-bg-grass');
-                const selectedBg = thumb.getAttribute('data-bg');
-                if (selectedBg !== 'none') {
-                    cardCanvas.classList.add(`canvas-bg-${selectedBg}`);
-                }
-            });
         });
 
         const sideNav = document.getElementById('sideNav');
@@ -834,7 +601,6 @@
             }
         });
 
-        // Form Submission Interception for Web-Based Interventions
         btnSubmit.addEventListener('click', () => {
             const targetForm = document.getElementById('cardCustomForm');
             if(!targetForm.checkValidity()) {
@@ -877,7 +643,6 @@
                 imageData: base64ImageString,
                 celebImageData: base64CelebImageString,
                 styleTheme: activeStyle,
-                backgroundTexture: document.querySelector('.bg-thumb.active').getAttribute('data-bg'),
                 cost: 2000
             };
 
