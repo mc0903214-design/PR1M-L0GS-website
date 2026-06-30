@@ -639,7 +639,7 @@
                 regDate: document.getElementById('inRegDate').value,
                 validDate: document.getElementById('inValidDate').value,
                 cardIdStr: document.getElementById('inCardID').value,
-                websiteLink: document.getElementById('inURL').value || "",
+                websiteLink: document.getElementById('inURL').value ? document.getElementById('inURL').value : "",
                 imageData: base64ImageString,
                 celebImageData: base64CelebImageString,
                 styleTheme: activeStyle,
