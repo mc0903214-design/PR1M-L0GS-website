@@ -255,7 +255,6 @@
             const q = query(
                 ordersRef, 
                 where("userId", "==", uid), 
-                where("itemType", "==", "celeb_fan_card"),
                 orderBy("timestamp", "desc")
             );
 
