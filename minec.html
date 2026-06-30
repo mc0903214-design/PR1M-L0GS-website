@@ -53,6 +53,22 @@
         .back-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
         .page-subtitle { font-size: 0.85rem; color: #a0aec0; margin-left: 44px; }
 
+        /* --- DIAGNOSTIC MONITOR WINDOW --- */
+        #diagnosticTerminal {
+            max-width: 480px;
+            margin: 10px auto 20px auto;
+            background: #1a0505;
+            border: 1px dashed #ff4b4b;
+            border-radius: 12px;
+            padding: 14px;
+            color: #ff8888;
+            font-family: monospace;
+            font-size: 0.8rem;
+            display: none;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
         /* --- CARDS CONTAINER GRID --- */
         .cards-grid {
             display: flex;
@@ -210,6 +226,8 @@
         <div class="page-subtitle">Access and download your officially generated assets</div>
     </div>
 
+    <div id="diagnosticTerminal"></div>
+
     <div id="mainContentPortal">
         <div class="state-wrapper">
             <div class="spinner"></div>
@@ -238,6 +256,14 @@
         const mainContentPortal = document.getElementById('mainContentPortal');
         const sideNav = document.getElementById('sideNav');
         const overlay = document.getElementById('overlay');
+        const diagnosticTerminal = document.getElementById('diagnosticTerminal');
+
+        // Global uncaught crash logger
+        window.onerror = function(message, source, lineno, colno, error) {
+            diagnosticTerminal.style.display = 'block';
+            diagnosticTerminal.innerText += `\n[Global Error]: ${message} at line ${lineno}:${colno}`;
+            return false;
+        };
 
         window.toggleMenu = () => { sideNav.classList.toggle('active'); overlay.classList.toggle('active'); };
 
@@ -258,92 +284,103 @@
             );
 
             onSnapshot(q, (snapshot) => {
-                if (snapshot.empty) {
-                    mainContentPortal.innerHTML = `
-                        <div class="state-wrapper">
-                            <div style="font-size: 2.5rem;">📁</div>
-                            <div class="state-text">No digital configuration items found in your vault.</div>
-                            <a href="celeb.html" class="shop-btn">Browse Celebrities</a>
-                        </div>
-                    `;
-                    return;
-                }
+                try {
+                    if (snapshot.empty) {
+                        mainContentPortal.innerHTML = `
+                            <div class="state-wrapper">
+                                <div style="font-size: 2.5rem;">📁</div>
+                                <div class="state-text">No digital configuration items found in your vault.</div>
+                                <a href="celeb.html" class="shop-btn">Browse Celebrities</a>
+                            </div>
+                        `;
+                        return;
+                    }
 
-                let gridHTML = '<div class="cards-grid">';
-                
-                snapshot.forEach((doc) => {
-                    const orderData = doc.data();
-                    const card = orderData.details || {};
-                    const orderId = orderData.orderId || doc.id;
+                    let gridHTML = '<div class="cards-grid">';
                     
-                    const texClass = (card.backgroundTexture && card.backgroundTexture !== 'none') ? `canvas-bg-${card.backgroundTexture}` : '';
-                    const qrSource = card.websiteLink ? `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(card.websiteLink)}` : 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PR1ME-LOGS-VERIFIED';
-
-                    gridHTML += `
-                        <div class="card-wrapper">
-                            <div class="card-meta-top">
-                                <span class="order-id-label">ID: ${orderId.substring(0, 12).toUpperCase()}...</span>
-                                <button class="save-card-btn" onclick="saveCardNotice()">Save Graphic</button>
-                            </div>
+                    snapshot.forEach((doc) => {
+                        try {
+                            const orderData = doc.data();
+                            const card = orderData.details || {};
+                            const orderId = orderData.orderId || doc.id;
                             
-                            <div class="fan-card-canvas canvas-${card.styleTheme || 'white'} ${texClass}">
-                                <div class="card-core-header">
-                                    <div class="card-title-main">${(card.celebName || '').toUpperCase()} FAN</div>
-                                    <div class="card-title-sub">AUTHORIZATION PERMIT CARD UPDATED</div>
-                                </div>
+                            const texClass = (card.backgroundTexture && card.backgroundTexture !== 'none') ? `canvas-bg-${card.backgroundTexture}` : '';
+                            const qrSource = card.websiteLink ? `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(card.websiteLink)}` : 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PR1ME-LOGS-VERIFIED';
 
-                                <div class="card-core-body">
-                                    <div class="body-column-left">
-                                        <div style="width: 100%;">
-                                            <div class="photo-box-label">Celebrity Photo</div>
-                                            <img src="${card.celebImageData || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23888888\' opacity=\'0.15\'/></svg>'}" class="card-photo-frame">
-                                        </div>
-                                        <div class="gold-sim-chip"></div>
+                            gridHTML += `
+                                <div class="card-wrapper">
+                                    <div class="card-meta-top">
+                                        <span class="order-id-label">ID: ${orderId.substring(0, 12).toUpperCase()}...</span>
+                                        <button class="save-card-btn" onclick="saveCardNotice()">Save Graphic</button>
                                     </div>
-
-                                    <div class="body-column-center">
-                                        <div class="ledger-row"><div class="ledger-lbl">Name</div><div class="ledger-val">${(card.fanName || '').toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Country</div><div class="ledger-val">${(card.country || '').toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Date of Birth</div><div class="ledger-val">${card.dob || ''}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Level</div><div class="ledger-val">${(card.level || '').toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Status</div><div class="ledger-val">${(card.status || '').toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Reg Date</div><div class="ledger-val">${card.regDate || ''}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Valid Till</div><div class="ledger-val">${card.validDate || ''}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">I.D. No</div><div class="ledger-val" style="font-family: monospace;">${(card.cardIdStr || '').toUpperCase()}</div></div>
-                                    </div>
-
-                                    <div class="body-column-right">
-                                        <div style="width: 100%;">
-                                            <div class="photo-box-label">Fan Photo</div>
-                                            <img src="${card.imageData || ''}" class="card-photo-frame">
+                                    
+                                    <div class="fan-card-canvas canvas-${card.styleTheme || 'white'} ${texClass}">
+                                        <div class="card-core-header">
+                                            <div class="card-title-main">${(card.celebName || '').toUpperCase()} FAN</div>
+                                            <div class="card-title-sub">AUTHORIZATION PERMIT CARD UPDATED</div>
                                         </div>
-                                        <div class="qr-wrapper-zone">
-                                            <div class="card-qr-graphics"><img src="${qrSource}"></div>
-                                            <div class="qr-caption-text">Scan the QR code<br>to verify your fan card</div>
+
+                                        <div class="card-core-body">
+                                            <div class="body-column-left">
+                                                <div style="width: 100%;">
+                                                    <div class="photo-box-label">Celebrity Photo</div>
+                                                    <img src="${card.celebImageData || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23888888\' opacity=\'0.15\'/></svg>'}" class="card-photo-frame">
+                                                </div>
+                                                <div class="gold-sim-chip"></div>
+                                            </div>
+
+                                            <div class="body-column-center">
+                                                <div class="ledger-row"><div class="ledger-lbl">Name</div><div class="ledger-val">${(card.fanName || '').toUpperCase()}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">Country</div><div class="ledger-val">${(card.country || '').toUpperCase()}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">Date of Birth</div><div class="ledger-val">${card.dob || ''}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">Level</div><div class="ledger-val">${(card.level || '').toUpperCase()}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">Status</div><div class="ledger-val">${(card.status || '').toUpperCase()}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">Reg Date</div><div class="ledger-val">${card.regDate || ''}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">Valid Till</div><div class="ledger-val">${card.validDate || ''}</div></div>
+                                                <div class="ledger-row"><div class="ledger-lbl">I.D. No</div><div class="ledger-val" style="font-family: monospace;">${(card.cardIdStr || '').toUpperCase()}</div></div>
+                                            </div>
+
+                                            <div class="body-column-right">
+                                                <div style="width: 100%;">
+                                                    <div class="photo-box-label">Fan Photo</div>
+                                                    <img src="${card.imageData || ''}" class="card-photo-frame">
+                                                </div>
+                                                <div class="qr-wrapper-zone">
+                                                    <div class="card-qr-graphics"><img src="${qrSource}"></div>
+                                                    <div class="qr-caption-text">Scan the QR code<br>to verify your fan card</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-core-footer">
+                                            <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the ${card.celebName || ''} fan club and is entitled to all rights, benefits and privileges thereto.</p>
+                                            <div class="footer-stamp-bold">OFFICIALLY CERTIFIED ${(card.celebName || '').toUpperCase()} SUPPORTER</div>
+                                            <div class="footer-stamp-sub">This document validates your status as a registered member.</div>
                                         </div>
                                     </div>
                                 </div>
+                            `;
+                        } catch(innerErr) {
+                            diagnosticTerminal.style.display = 'block';
+                            diagnosticTerminal.innerText += `\n[Doc ID Loop Error ${doc.id}]: ${innerErr.message}\nData: ${JSON.stringify(doc.data())}`;
+                        }
+                    });
 
-                                <div class="card-core-footer">
-                                    <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the ${card.celebName || ''} fan club and is entitled to all rights, benefits and privileges thereto.</p>
-                                    <div class="footer-stamp-bold">OFFICIALLY CERTIFIED ${(card.celebName || '').toUpperCase()} SUPPORTER</div>
-                                    <div class="footer-stamp-sub">This document validates your status as a registered member.</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                gridHTML += '</div>';
-                mainContentPortal.innerHTML = gridHTML;
+                    gridHTML += '</div>';
+                    mainContentPortal.innerHTML = gridHTML;
+                } catch(topErr) {
+                    diagnosticTerminal.style.display = 'block';
+                    diagnosticTerminal.innerText += `\n[Snapshot Processing Error]: ${topErr.message}`;
+                }
             }, (error) => {
                 console.error("Error structural fetching layout query: ", error);
+                diagnosticTerminal.style.display = 'block';
+                diagnosticTerminal.innerText += `\n[Firestore Database Error]: ${error.code} - ${error.message}`;
                 mainContentPortal.innerHTML = `<div class="state-wrapper"><div class="state-text" style="color: #ff4b4b;">Failed parsing active cards snapshot database context.</div></div>`;
             });
         }
 
         window.saveCardNotice = () => {
-            // Replaced default runtime alert blockage with modular log feedback logic
             const statusToast = document.createElement('div');
             statusToast.style.cssText = "position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--stock-green); color:#000; padding:12px 24px; border-radius:12px; font-weight:700; font-size:0.85rem; z-index:100000; box-shadow:0 4px 15px rgba(0,255,136,0.3);";
             statusToast.innerText = "Screenshot or hold down card layout profile to save your document asset directly!";
