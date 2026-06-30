@@ -323,7 +323,6 @@
 
     <div style="display: flex; flex-direction: column; gap: 24px;">
         
-        <!-- CARD LIVE PREVIEW -->
         <div>
             <div class="preview-section-title">Live Preview</div>
             <div class="fan-card-canvas canvas-white" id="cardCanvas">
@@ -376,7 +375,6 @@
             </div>
         </div>
 
-        <!-- UNIFIED TRANSACTIONS AND TYPING FIELDS FORM -->
         <div class="form-container">
             <div class="form-header-title" id="formPanelTitle">Card Custom Details</div>
             <div id="webNotice" class="notification-banner"></div>
@@ -640,8 +638,8 @@
                 validDate: document.getElementById('inValidDate').value,
                 cardIdStr: document.getElementById('inCardID').value,
                 websiteLink: document.getElementById('inURL').value ? document.getElementById('inURL').value : "",
-                imageData: base64ImageString,
-                celebImageData: base64CelebImageString,
+                imageData: String(base64ImageString),
+                celebImageData: String(base64CelebImageString),
                 styleTheme: activeStyle,
                 cost: 2000
             };
