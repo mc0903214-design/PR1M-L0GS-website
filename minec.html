@@ -53,20 +53,25 @@
         .back-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
         .page-subtitle { font-size: 0.85rem; color: #a0aec0; margin-left: 44px; }
 
-        /* --- DIAGNOSTIC MONITOR WINDOW --- */
+        /* --- INDEX EXPLICIT LINK TERMINAL --- */
         #diagnosticTerminal {
             max-width: 480px;
             margin: 10px auto 20px auto;
-            background: #1a0505;
-            border: 1px dashed #ff4b4b;
+            background: #111424;
+            border: 1px solid var(--neon-cyan);
             border-radius: 12px;
-            padding: 14px;
-            color: #ff8888;
-            font-family: monospace;
-            font-size: 0.8rem;
+            padding: 16px;
+            color: #fff;
+            font-size: 0.85rem;
             display: none;
-            white-space: pre-wrap;
+        }
+        #diagnosticTerminal a {
+            color: var(--neon-cyan);
+            text-decoration: underline;
+            font-weight: bold;
             word-break: break-all;
+            display: block;
+            margin-top: 8px;
         }
 
         /* --- CARDS CONTAINER GRID --- */
@@ -103,7 +108,7 @@
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+Transition: all 0.2s;
         }
         .save-card-btn:hover { background: var(--neon-cyan); color: #000; }
 
@@ -258,13 +263,6 @@
         const overlay = document.getElementById('overlay');
         const diagnosticTerminal = document.getElementById('diagnosticTerminal');
 
-        // Global uncaught crash logger
-        window.onerror = function(message, source, lineno, colno, error) {
-            diagnosticTerminal.style.display = 'block';
-            diagnosticTerminal.innerText += `\n[Global Error]: ${message} at line ${lineno}:${colno}`;
-            return false;
-        };
-
         window.toggleMenu = () => { sideNav.classList.toggle('active'); overlay.classList.toggle('active'); };
 
         onAuthStateChanged(auth, (user) => {
@@ -361,22 +359,36 @@
                                 </div>
                             `;
                         } catch(innerErr) {
-                            diagnosticTerminal.style.display = 'block';
-                            diagnosticTerminal.innerText += `\n[Doc ID Loop Error ${doc.id}]: ${innerErr.message}\nData: ${JSON.stringify(doc.data())}`;
+                            console.error(innerErr);
                         }
                     });
 
                     gridHTML += '</div>';
                     mainContentPortal.innerHTML = gridHTML;
                 } catch(topErr) {
-                    diagnosticTerminal.style.display = 'block';
-                    diagnosticTerminal.innerText += `\n[Snapshot Processing Error]: ${topErr.message}`;
+                    console.error(topErr);
                 }
             }, (error) => {
                 console.error("Error structural fetching layout query: ", error);
-                diagnosticTerminal.style.display = 'block';
-                diagnosticTerminal.innerText += `\n[Firestore Database Error]: ${error.code} - ${error.message}`;
-                mainContentPortal.innerHTML = `<div class="state-wrapper"><div class="state-text" style="color: #ff4b4b;">Failed parsing active cards snapshot database context.</div></div>`;
+                
+                // If it's an index requirement error, cleanly extract and expose the build URL link
+                if (error.message && error.message.includes('index')) {
+                    const match = error.message.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
+                    const indexUrl = match ? match[0] : null;
+                    
+                    diagnosticTerminal.style.display = 'block';
+                    if (indexUrl) {
+                        diagnosticTerminal.innerHTML = `
+                            <strong>⚠️ Firestore Index Required</strong><br>
+                            This query requires a composite index to display your orders.<br><br>
+                            <a href="${indexUrl}" target="_blank">👉 Click Here to Create Firestore Index 👈</a>
+                        `;
+                    } else {
+                        diagnosticTerminal.innerHTML = `<strong>⚠️ Firestore Index Required</strong><br>Please check your browser Inspect console to find the direct Firebase index creation URL link layout context.`;
+                    }
+                } else {
+                    mainContentPortal.innerHTML = `<div class="state-wrapper"><div class="state-text" style="color: #ff4b4b;">Failed parsing active cards snapshot database context.</div></div>`;
+                }
             });
         }
 
