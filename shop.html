@@ -159,19 +159,19 @@
         }
 
         /* --- Eye Toggle CSS States --- */
-  #eye-open,
-#eye-closed {
-    width: 18px;
-    height: 18px;
-}
+        #eye-open,
+        #eye-closed {
+            width: 18px;
+            height: 18px;
+        }
 
-.hide-bal #eye-open {
-    display: none;
-}
+        .hide-bal #eye-open {
+            display: none;
+        }
 
-.show-bal #eye-closed {
-    display: none;
-}
+        .show-bal #eye-closed {
+            display: none;
+        }
 
         .balance-amount {
             font-size: 2.4rem;
@@ -278,39 +278,31 @@
 
         /* --- HORIZONTAL SCROLLABLE NAV BAR --- */
         .category-nav-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding: 14px 0;
+            margin-bottom: 24px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            -webkit-overflow-scrolling: touch;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 30px;
+            box-shadow:
+                0 8px 32px rgba(0,0,0,0.35),
+                inset 0 1px 1px rgba(255,255,255,0.08);
+        }
 
-    padding: 14px 0;
-    margin-bottom: 24px;
-
-    position: sticky;
-    top: 10px;
-    z-index: 100;
-
-    -webkit-overflow-scrolling: touch;
-
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-
-    background: rgba(255,255,255,0.03);
-
-    border: 1px solid rgba(255,255,255,0.08);
-
-    border-radius: 30px;
-
-    box-shadow:
-        0 8px 32px rgba(0,0,0,0.35),
-        inset 0 1px 1px rgba(255,255,255,0.08);
-}
-
-.category-nav-container::-webkit-scrollbar {
-    display: none;
-}
+        .category-nav-container::-webkit-scrollbar {
+            display: none;
+        }
         .category-nav-container::before {
-    content: none;
+            content: none;
         }
         .category-navbar {
             display: inline-flex;
@@ -330,38 +322,28 @@
             display: flex;
             align-items: center;
             gap: 8px;
-
             position: relative;
-overflow: hidden;
-transform: translateZ(0);
+            overflow: hidden;
+            transform: translateZ(0);
             backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-
-background: rgba(255,255,255,0.04);
-
-border: 1px solid rgba(255,255,255,0.08);
-
-box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.08),
-    0 4px 12px rgba(0,0,0,0.2);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.08),
+                0 4px 12px rgba(0,0,0,0.2);
             z-index: 2;
         }
         .nav-category-btn:hover,
-.nav-category-btn.active {
-
-    background: rgba(255,255,255,0.14);
-
-    border-color: rgba(255,255,255,0.22);
-
-    color: #fff;
-
-    transform: translateY(-2px) scale(1.02);
-
-    box-shadow:
-        0 0 20px rgba(0,243,255,0.18),
-        inset 0 1px 1px rgba(255,255,255,0.14);
-
-}
+        .nav-category-btn.active {
+            background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.22);
+            color: #fff;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow:
+                0 0 20px rgba(0,243,255,0.18),
+                inset 0 1px 1px rgba(255,255,255,0.14);
+        }
 
         /* --- LIST PRODUCTS LAYOUT --- */
         .section-title { 
@@ -400,7 +382,6 @@ box-shadow:
             gap: 14px;
             min-height: 90px;
             transition: all 0.2s ease;
-
             will-change: transform;
         }
 
@@ -413,31 +394,28 @@ box-shadow:
         }
         
         .product-media-frame {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(0, 243, 255, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-
-    animation: mediaFloatBox 3s ease-in-out infinite;
-
-    box-shadow:
-        0 0 10px rgba(0, 243, 255, 0.08),
-        0 0 20px rgba(188, 19, 254, 0.04);
-
-    transform-origin: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            animation: mediaFloatBox 3s ease-in-out infinite;
+            box-shadow:
+                0 0 10px rgba(0, 243, 255, 0.08),
+                0 0 20px rgba(188, 19, 254, 0.04);
+            transform-origin: center;
         }
         .product-media-frame img, 
-.product-media-frame video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        .product-media-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .product-text-details {
             display: flex;
@@ -510,45 +488,37 @@ box-shadow:
 
         /* --- ANIMATED LIST TRANSITION STYLING --- */
         @keyframes mediaFloatBox {
-
-    0% {
-        transform: translateY(0px) rotate(-1deg);
-    }
-
-    50% {
-        transform: translateY(-4px) rotate(1deg);
-    }
-            
-    100% {
-        transform: translateY(0px) rotate(-1deg);
-    }
-
+            0% {
+                transform: translateY(0px) rotate(-1deg);
+            }
+            50% {
+                transform: translateY(-4px) rotate(1deg);
+            }
+            100% {
+                transform: translateY(0px) rotate(-1deg);
+            }
         }
         
         .fade-slide-entry {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-    animation: ultraFastPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    will-change: transform, opacity;
-}
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            animation: ultraFastPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
         @keyframes ultraFastPop {
-
-    0% {
-        opacity: 0;
-        transform: translateY(10px) scale(0.96);
-    }
-
-    60% {
-        opacity: 1;
-        transform: translateY(-1px) scale(1.01);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
-}
+            0% {
+                opacity: 0;
+                transform: translateY(10px) scale(0.96);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(-1px) scale(1.01);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
 
         /* --- SIDE NAV --- */
         .side-nav {
@@ -662,101 +632,77 @@ box-shadow:
             border: 1px dashed var(--glass-border);
             border-radius: 16px;
         }
-/* --- TELEGRAM FLOAT BUTTON --- */
-.telegram-float {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
+        /* --- TELEGRAM FLOAT BUTTON --- */
+        .telegram-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow:
+                0 8px 24px rgba(0,0,0,0.35),
+                inset 0 1px 1px rgba(255,255,255,0.08);
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+            z-index: 5000;
+            overflow: hidden;
+        }
 
-    width: 58px;
-    height: 58px;
+        .telegram-float::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,0.14),
+                    rgba(255,255,255,0.02),
+                    rgba(255,255,255,0.08)
+                );
+            opacity: 0.8;
+            pointer-events: none;
+        }
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        .telegram-float:hover {
+            transform:
+                translateY(-4px)
+                scale(1.06);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(0,243,255,0.25);
+            box-shadow:
+                0 0 18px rgba(0,243,255,0.18),
+                0 10px 30px rgba(0,0,0,0.45);
+        }
 
-    border-radius: 50%;
+        .telegram-float:active {
+            transform: scale(0.96);
+        }
 
-    background: rgba(255,255,255,0.06);
+        .telegram-float svg {
+            width: 26px;
+            height: 26px;
+            fill: white;
+            opacity: 0.92;
+            transition:
+                transform 0.25s ease,
+                opacity 0.25s ease;
+        }
 
-    border: 1px solid rgba(255,255,255,0.12);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
-    box-shadow:
-        0 8px 24px rgba(0,0,0,0.35),
-        inset 0 1px 1px rgba(255,255,255,0.08);
-
-    transition:
-        transform 0.25s ease,
-        background 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s ease;
-
-    z-index: 5000;
-
-    overflow: hidden;
-}
-
-.telegram-float::before {
-    content: '';
-
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.14),
-            rgba(255,255,255,0.02),
-            rgba(255,255,255,0.08)
-        );
-
-    opacity: 0.8;
-
-    pointer-events: none;
-}
-
-.telegram-float:hover {
-
-    transform:
-        translateY(-4px)
-        scale(1.06);
-
-    background: rgba(255,255,255,0.1);
-
-    border-color: rgba(0,243,255,0.25);
-
-    box-shadow:
-        0 0 18px rgba(0,243,255,0.18),
-        0 10px 30px rgba(0,0,0,0.45);
-}
-
-.telegram-float:active {
-    transform: scale(0.96);
-}
-
-.telegram-float svg {
-
-    width: 26px;
-    height: 26px;
-
-    fill: white;
-
-    opacity: 0.92;
-
-    transition:
-        transform 0.25s ease,
-        opacity 0.25s ease;
-}
-
-.telegram-float:hover svg {
-
-    transform: scale(1.08);
-
-    opacity: 1;
-    }
+        .telegram-float:hover svg {
+            transform: scale(1.08);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -797,7 +743,7 @@ box-shadow:
 <a href="rules.html" class="nav-item">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5V4.5A2.5 2.5 0 0 1 6.5 2z"></path>
+        <path d="M6.5 20v-20H6.5A2.5 2.5 0 0 1 4 4.5v15A2.5 2.5 0 0 1 6.5 20z"></path>
     </svg>
     Rules
 </a>
@@ -841,18 +787,19 @@ box-shadow:
     </div>
 
     <div class="quick-category-grid reveal">
-        <div class="quick-card blue" onclick="window.location.href='sms.html?category=us'">
+        <div class="quick-card blue disabled-card">
+            <div class="badge-soon">Soon</div>
             <div class="quick-icon-circle">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
-            <span class="quick-label">US<br>Numbers</span>
+            <span class="quick-label">USA<br>Numbers</span>
         </div>
 
-        <div class="quick-card green" onclick="window.location.href='sms.html?category=other'">
+        <div class="quick-card green" onclick="window.location.href='celeb.html?category=other'">
             <div class="quick-icon-circle">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
             </div>
-            <span class="quick-label">Other<br>Countries</span>
+            <span class="quick-label">CELEB<br>FAN CARD</span>
         </div>
 
         <div class="quick-card pink disabled-card">
@@ -964,29 +911,23 @@ box-shadow:
 
         // -- EYE TOGGLE FIX --
         window.toggleShopBalance = function() {
-    isShopBalHidden = !isShopBalHidden;
+            isShopBalHidden = !isShopBalHidden;
 
-    const btn = document.getElementById('bal-toggle');
+            const btn = document.getElementById('bal-toggle');
 
-    if (isShopBalHidden) {
-
-        btn.classList.remove('show-bal');
-        btn.classList.add('hide-bal');
-
-        balanceDisplay.innerText = "****";
-
-    } else {
-
-        btn.classList.remove('hide-bal');
-        btn.classList.add('show-bal');
-
-        balanceDisplay.innerText =
-            shopBalance.toLocaleString(undefined, {
-                minimumFractionDigits: 2
-            });
-
-    }
-};
+            if (isShopBalHidden) {
+                btn.classList.remove('show-bal');
+                btn.classList.add('hide-bal');
+                balanceDisplay.innerText = "****";
+            } else {
+                btn.classList.remove('hide-bal');
+                btn.classList.add('show-bal');
+                balanceDisplay.innerText =
+                    shopBalance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2
+                    });
+            }
+        };
 
         // -- LOGOUT FIX --
         logoutBtn.addEventListener('click', async (e) => {
