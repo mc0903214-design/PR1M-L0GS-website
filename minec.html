@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ Market - My Cards</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark-bg: #060608;
+            --accent-glow: rgba(0, 243, 255, 0.15);
+            --stock-green: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #f1f1f3;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-top: 2px solid var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- HEADER & NAVIGATION --- */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px 16px 8px; }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: 3px; color: #fff; text-shadow: 0 0 12px rgba(0, 243, 255, 0.6); text-decoration: none; }
+        .menu-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: white; border-radius: 12px; cursor: pointer; padding: 10px; }
+        
+        .page-info { padding: 0 8px 20px 8px; }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .back-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        .page-subtitle { font-size: 0.85rem; color: #a0aec0; margin-left: 44px; }
+
+        /* --- CARDS CONTAINER GRID --- */
+        .cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .card-wrapper {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 16px;
+            backdrop-filter: blur(20px);
+        }
+
+        .card-meta-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .order-id-label { font-size: 0.75rem; color: #718096; font-family: monospace; }
+        .save-card-btn {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            color: var(--neon-cyan);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .save-card-btn:hover { background: var(--neon-cyan); color: #000; }
+
+        /* --- PASSPORT ARCHITECTURE REPLICATION --- */
+        .fan-card-canvas {
+            width: 100%;
+            aspect-ratio: 1.54 / 1;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .canvas-white { background: #ffffff; color: #1a202c; border-color: rgba(0,0,0,0.1); }
+        .canvas-black { background: linear-gradient(135deg, #16161a 0%, #0c0c0e 100%); color: #fff; }
+        .canvas-gold { background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%); color: #3b2004; }
+        .canvas-platinum { background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%); color: #0f172a; }
+        .canvas-silver { background: linear-gradient(135deg, #f1f5f9 0%, #64748b 100%); color: #0f172a; }
+
+        .canvas-bg-blanket::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.1) 80%); pointer-events: none; }
+        .canvas-bg-marble::before { content: ''; position: absolute; inset: 0; opacity: 0.08; background-image: linear-gradient(45deg, #555 25%, transparent 25%), linear-gradient(-45deg, #555 25%, transparent 25%); background-size: 16px 16px; pointer-events: none; }
+        .canvas-bg-grass { background: linear-gradient(135deg, #22c55e 0%, #166534 100%) !important; color: #fff !important; }
+
+        .card-core-header { text-align: center; position: relative; z-index: 10; margin-bottom: 4px; }
+        .card-title-main { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+        .card-title-sub { font-size: 0.4rem; font-weight: 700; letter-spacing: 0.8px; opacity: 0.8; margin-top: 1px; color: #ff3b3b; }
+        .canvas-white .card-title-sub { color: #d91b1b; }
+
+        .card-core-body { display: grid; grid-template-columns: 74px 1fr 74px; gap: 10px; align-items: start; flex-grow: 1; position: relative; z-index: 10; }
+        
+        .body-column-left { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+        .photo-box-label { font-size: 0.35rem; font-weight: 600; opacity: 0.6; margin-bottom: 2px; text-align: center; width: 100%; text-transform: uppercase; }
+        .card-photo-frame { width: 72px; height: 72px; border-radius: 6px; background: rgba(128,128,128,0.12); border: 1px solid rgba(128,128,128,0.25); object-fit: cover; }
+        
+        .gold-sim-chip {
+            width: 32px; height: 24px;
+            background: linear-gradient(135deg, #fce068 0%, #dfb226 30%, #f7dc5f 50%, #b88d14 85%, #ebd154 100%);
+            border-radius: 4px; border: 0.5px solid rgba(0,0,0,0.15);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.12);
+            position: relative; overflow: hidden; margin-top: 4px; margin-left: 2px;
+        }
+        .gold-sim-chip::before {
+            content: ''; position: absolute; inset: 0; border: 0.5px solid rgba(0,0,0,0.12);
+            background-image: 
+                linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,0.2) 51%, transparent 52%),
+                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,0.2) 51%, transparent 52%);
+        }
+        .gold-sim-chip::after {
+            content: ''; position: absolute; width: 12px; height: 10px; top: 7px; left: 10px;
+            border: 0.5px solid rgba(0,0,0,0.15); border-radius: 2px; background: rgba(251, 222, 98, 0.4);
+        }
+
+        .body-column-center { display: flex; flex-direction: column; gap: 1.5px; padding-top: 2px; max-height: 98px; overflow: hidden; }
+        .ledger-row { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+        .ledger-lbl { font-weight: 800; opacity: 0.6; text-transform: uppercase; font-size: 0.32rem; letter-spacing: 0.2px; }
+        .ledger-val { font-weight: 700; font-size: 0.42rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+
+        .body-column-right { display: flex; flex-direction: column; justify-content: space-between; height: 100%; align-items: flex-end; }
+        .qr-wrapper-zone { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: auto; }
+        .card-qr-graphics { width: 38px; height: 38px; background: #fff; border-radius: 3px; padding: 1.5px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        .card-qr-graphics img { width: 100%; height: 100%; object-fit: contain; }
+        .qr-caption-text { font-size: 0.26rem; font-weight: 700; text-align: center; opacity: 0.6; line-height: 1.1; text-transform: uppercase; white-space: nowrap; }
+
+        .card-core-footer { text-align: center; position: relative; z-index: 10; margin-top: 6px; border-top: 0.5px solid rgba(128,128,128,0.15); padding-top: 4px; }
+        .legal-notice-paragraph { font-size: 0.35rem; font-weight: 600; opacity: 0.7; max-width: 85%; margin: 0 auto 3px auto; line-height: 1.2; }
+        .footer-stamp-bold { font-size: 0.42rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #ff3b3b; }
+        .canvas-white .footer-stamp-bold { color: #d91b1b; }
+        .footer-stamp-sub { font-size: 0.33rem; font-weight: 600; opacity: 0.6; }
+
+        /* --- STATE STATUS PANELS --- */
+        .state-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; gap: 16px; }
+        .state-text { color: #a0aec0; font-size: 0.95rem; font-weight: 600; }
+        .shop-btn { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; border: none; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(188, 19, 254, 0.3); }
+
+        /* --- SIDE NAV --- */
+        .side-nav {
+            position: fixed; top: 0; right: -100%; width: 290px; height: 100%;
+            background: rgba(8, 8, 12, 0.95); backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border); z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 90px 24px 40px 24px; display: flex; flex-direction: column; gap: 14px;
+        }
+        .side-nav.active { right: 0; }
+        .nav-item { 
+            color: #e2e8f0; text-decoration: none; font-size: 0.95rem; font-weight: 600; padding: 16px; 
+            background: rgba(255, 255, 255, 0.02); border-radius: 14px; border: 1px solid var(--glass-border); 
+            display: flex; align-items: center; gap: 14px; 
+        }
+        .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 999; backdrop-filter: blur(4px); }
+        .nav-overlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="prof.html" class="nav-item">Profile</a>
+        <a href="minec.html" class="nav-item" style="border-color: var(--neon-cyan);">Order History</a>
+        <a href="fund.html" class="nav-item">Top Up Wallet</a>
+        <a href="rules.html" class="nav-item">Rules</a>
+        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff4b4b;">Sign Out</a>
+    </nav>
+
+    <header>
+        <a href="dashboard.html" class="logo">PR1MΞ L0GS</a>
+        <button class="menu-btn" onclick="toggleMenu()">🛡️</button>
+    </header>
+
+    <div class="page-info">
+        <div class="page-title">
+            <a href="celeb.html" class="back-btn">⬅️</a>
+            <span>My Fan Cards</span>
+        </div>
+        <div class="page-subtitle">Access and download your officially generated assets</div>
+    </div>
+
+    <!-- MAIN INTERACTIVE DISPLAY PORT -->
+    <div id="mainContentPortal">
+        <div class="state-wrapper">
+            <div class="spinner"></div>
+            <div class="state-text">Syncing vault inventory records...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const mainContentPortal = document.getElementById('mainContentPortal');
+        const sideNav = document.getElementById('sideNav');
+        const overlay = document.getElementById('overlay');
+
+        window.toggleMenu = () => { sideNav.classList.toggle('active'); overlay.classList.toggle('active'); };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                fetchUserCards(user.uid);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function fetchUserCards(uid) {
+            const ordersRef = collection(db, "orders");
+            const q = query(
+                ordersRef, 
+                where("userId", "==", uid), 
+                where("itemType", "==", "celeb_fan_card"),
+                orderBy("timestamp", "desc")
+            );
+
+            onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    mainContentPortal.innerHTML = `
+                        <div class="state-wrapper">
+                            <div style="font-size: 2.5rem;">📁</div>
+                            <div class="state-text">No digital configuration items found in your vault.</div>
+                            <a href="celeb.html" class="shop-btn">Browse Celebrities</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let gridHTML = '<div class="cards-grid">';
+                
+                snapshot.forEach((doc) => {
+                    const orderData = doc.data();
+                    const card = orderData.details;
+                    const orderId = orderData.orderId || doc.id;
+                    
+                    const texClass = (card.backgroundTexture && card.backgroundTexture !== 'none') ? `canvas-bg-${card.backgroundTexture}` : '';
+                    const qrSource = card.websiteLink ? `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(card.websiteLink)}` : 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PR1ME-LOGS-VERIFIED';
+
+                    gridHTML += `
+                        <div class="card-wrapper">
+                            <div class="card-meta-top">
+                                <span class="order-id-label">ID: ${orderId.substring(0, 12).toUpperCase()}...</span>
+                                <button class="save-card-btn" onclick="saveCardNotice()">Save Graphic</button>
+                            </div>
+                            
+                            <div class="fan-card-canvas canvas-${card.styleTheme} ${texClass}">
+                                <div class="card-core-header">
+                                    <div class="card-title-main">${card.celebName.toUpperCase()} FAN</div>
+                                    <div class="card-title-sub">AUTHORIZATION PERMIT CARD UPDATED</div>
+                                </div>
+
+                                <div class="card-core-body">
+                                    <div class="body-column-left">
+                                        <div style="width: 100%;">
+                                            <div class="photo-box-label">Celebrity Photo</div>
+                                            <img src="${card.celebImageData || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23888888\' opacity=\'0.15\'/></svg>'}" class="card-photo-frame">
+                                        </div>
+                                        <div class="gold-sim-chip"></div>
+                                    </div>
+
+                                    <div class="body-column-center">
+                                        <div class="ledger-row"><div class="ledger-lbl">Name</div><div class="ledger-val">${card.fanName.toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Country</div><div class="ledger-val">${card.country.toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Date of Birth</div><div class="ledger-val">${card.dob}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Level</div><div class="ledger-val">${card.level.toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Status</div><div class="ledger-val">${card.status.toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Reg Date</div><div class="ledger-val">${card.regDate}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Valid Till</div><div class="ledger-val">${card.validDate}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">I.D. No</div><div class="ledger-val" style="font-family: monospace;">${card.cardIdStr.toUpperCase()}</div></div>
+                                    </div>
+
+                                    <div class="body-column-right">
+                                        <div style="width: 100%;">
+                                            <div class="photo-box-label">Fan Photo</div>
+                                            <img src="${card.imageData}" class="card-photo-frame">
+                                        </div>
+                                        <div class="qr-wrapper-zone">
+                                            <div class="card-qr-graphics"><img src="${qrSource}"></div>
+                                            <div class="qr-caption-text">Scan the QR code<br>to verify your fan card</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-core-footer">
+                                    <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the ${card.celebName} fan club and is entitled to all rights, benefits and privileges thereto.</p>
+                                    <div class="footer-stamp-bold">OFFICIALLY CERTIFIED ${card.celebName.toUpperCase()} SUPPORTER</div>
+                                    <div class="footer-stamp-sub">This document validates your status as a registered member.</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                gridHTML += '</div>';
+                mainContentPortal.innerHTML = gridHTML;
+            }, (error) => {
+                console.error("Error structural fetching layout query: ", error);
+                mainContentPortal.innerHTML = `<div class="state-wrapper"><div class="state-text" style="color: #ff4b4b;">Failed parsing active cards snapshot database context.</div></div>`;
+            });
+        }
+
+        window.saveCardNotice = () => {
+            // Replaced default runtime alert blockage with modular log feedback logic
+            const statusToast = document.createElement('div');
+            statusToast.style.cssText = "position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--stock-green); color:#000; padding:12px 24px; border-radius:12px; font-weight:700; font-size:0.85rem; z-index:100000; box-shadow:0 4px 15px rgba(0,255,136,0.3);";
+            statusToast.innerText = "Screenshot or hold down card layout profile to save your document asset directly!";
+            document.body.appendChild(statusToast);
+            setTimeout(() => statusToast.remove(), 4000);
+        };
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
