@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ Market - Customize Fan Card</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark-bg: #060608;
+            --accent-glow: rgba(0, 243, 255, 0.15);
+            --stock-red: #ff4b4b;
+            --stock-green: #00ff88;
+            --warning-amber: #ffb703;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #f1f1f3;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-top: 2px solid var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- HEADER & NAVIGATION --- */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px 16px 8px; }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: 3px; color: #fff; text-shadow: 0 0 12px rgba(0, 243, 255, 0.6); text-decoration: none; }
+        .menu-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: white; border-radius: 12px; cursor: pointer; padding: 10px; }
+        
+        .page-info { padding: 0 8px 12px 8px; }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .back-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        .page-subtitle { font-size: 0.85rem; color: #a0aec0; margin-left: 44px; }
+
+        .utility-row { display: flex; gap: 8px; padding: 0 8px 20px 8px; flex-wrap: wrap; }
+        .util-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); color: #e2e8f0; padding: 8px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+        .hidden { display: none !important; }
+
+        /* --- FORM CONFIGURATION PANEL --- */
+        .form-container {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(20px);
+        }
+        .form-header-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--glass-border);
+            text-transform: capitalize;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .input-group label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #a0aec0;
+        }
+        .input-group label span { color: var(--stock-red); }
+        .input-group input, .input-group select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--neon-cyan);
+        }
+
+        .form-row-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+        }
+        .file-upload-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            pointer-events: none;
+        }
+        .file-status-label { font-size: 0.78rem; color: #718096; pointer-events: none; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .bg-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .bg-thumb {
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            background: rgba(0,0,0,0.2);
+            font-weight: 600;
+            color: #a0aec0;
+        }
+        .bg-thumb.active {
+            border-color: var(--neon-cyan);
+            color: #fff;
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .action-submit-btn {
+            width: 100%;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.3);
+            margin-top: 10px;
+        }
+        .action-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Web Notification Center Styles Instead of Alerts */
+        .notification-banner {
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .banner-error { background: rgba(255, 75, 75, 0.15); border: 1px solid var(--stock-red); color: #ff8888; }
+        .banner-success { background: rgba(0, 255, 136, 0.15); border: 1px solid var(--stock-green); color: #88ffcc; }
+        .banner-confirm { background: rgba(255, 183, 3, 0.15); border: 1px solid var(--warning-amber); color: #ffe088; }
+
+        /* --- EXACT IMAGE.PNG CARD ARCHITECTURE --- */
+        .preview-section-title {
+            font-size: 0.8rem; color: #718096; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-left: 4px;
+        }
+        
+        .fan-card-canvas {
+            width: 100%;
+            max-width: 460px;
+            aspect-ratio: 1.54 / 1;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            padding: 14px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Themes */
+        .canvas-white { background: #ffffff; color: #1a202c; border-color: rgba(0,0,0,0.1); }
+        .canvas-black { background: linear-gradient(135deg, #16161a 0%, #0c0c0e 100%); color: #fff; }
+        .canvas-gold { background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%); color: #3b2004; }
+        .canvas-platinum { background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%); color: #0f172a; }
+        .canvas-silver { background: linear-gradient(135deg, #f1f5f9 0%, #64748b 100%); color: #0f172a; }
+
+        .canvas-bg-blanket::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.1) 80%); pointer-events: none; }
+        .canvas-bg-marble::before { content: ''; position: absolute; inset: 0; opacity: 0.08; background-image: linear-gradient(45deg, #555 25%, transparent 25%), linear-gradient(-45deg, #555 25%, transparent 25%); background-size: 16px 16px; pointer-events: none; }
+        .canvas-bg-grass { background: linear-gradient(135deg, #22c55e 0%, #166534 100%) !important; color: #fff !important; }
+
+        /* WATERMARK UPDATED TO PRIMELOGS.STORE AND ENHANCED BRIGHTNESS */
+        .watermark-overlay {
+            position: absolute;
+            inset: -40%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            transform: rotate(-22deg);
+            justify-content: center;
+            align-content: center;
+            pointer-events: none;
+            opacity: 0.45;
+            z-index: 5;
+            font-size: 0.65rem;
+            font-weight: 900;
+            color: #ff2222;
+            text-shadow: 0px 0px 1px rgba(255,255,255,0.8), 0.5px 0.5px 0px #000;
+        }
+        .clean-pass .watermark-overlay { display: none !important; }
+        .watermark-item { width: 105px; text-align: center; white-space: nowrap; }
+
+        /* CARD HEADER DESIGNS */
+        .card-core-header {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 4px;
+        }
+        .card-title-main {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .card-title-sub {
+            font-size: 0.4rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            opacity: 0.8;
+            margin-top: 1px;
+            color: #ff3b3b;
+        }
+        .canvas-white .card-title-sub { color: #d91b1b; }
+
+        /* BODY LAYOUT REGION - 3 COLUMNS */
+        .card-core-body {
+            display: grid;
+            grid-template-columns: 74px 1fr 74px;
+            gap: 10px;
+            align-items: start;
+            flex-grow: 1;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* LEFT ARCH: CELEB IMAGE + CHIP */
+        .body-column-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .photo-box-label {
+            font-size: 0.35rem;
+            font-weight: 600;
+            opacity: 0.6;
+            margin-bottom: 2px;
+            text-align: center;
+            width: 100%;
+            text-transform: uppercase;
+        }
+        .card-photo-frame {
+            width: 72px;
+            height: 72px;
+            border-radius: 6px;
+            background: rgba(128,128,128,0.12);
+            border: 1px solid rgba(128,128,128,0.25);
+            object-fit: cover;
+        }
+        
+        /* THE GOLD SIM CHIP EMBOSSMENT STYLING */
+        .gold-sim-chip {
+            width: 32px;
+            height: 24px;
+            background: linear-gradient(135deg, #fce068 0%, #dfb226 30%, #f7dc5f 50%, #b88d14 85%, #ebd154 100%);
+            border-radius: 4px;
+            border: 0.5px solid rgba(0,0,0,0.15);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.12);
+            position: relative;
+            overflow: hidden;
+            margin-top: 4px;
+            margin-left: 2px;
+        }
+        .gold-sim-chip::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 0.5px solid rgba(0,0,0,0.12);
+            background-image: 
+                linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,0.2) 51%, transparent 52%),
+                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,0.2) 51%, transparent 52%);
+        }
+        .gold-sim-chip::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 10px;
+            top: 7px;
+            left: 10px;
+            border: 0.5px solid rgba(0,0,0,0.15);
+            border-radius: 2px;
+            background: rgba(251, 222, 98, 0.4);
+        }
+
+        /* CENTER ARCH: REWORKED ONE ITEM PER LINE PATTERN */
+        .body-column-center {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5px;
+            padding-top: 2px;
+            max-height: 98px;
+            overflow: hidden;
+        }
+        .ledger-row {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.1;
+        }
+        .ledger-lbl {
+            font-weight: 800;
+            opacity: 0.6;
+            text-transform: uppercase;
+            font-size: 0.32rem;
+            letter-spacing: 0.2px;
+        }
+        .ledger-val {
+            font-weight: 700;
+            font-size: 0.42rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        /* RIGHT ARCH: FAN IMAGE + QR PLACEMENT */
+        .body-column-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            align-items: flex-end;
+        }
+        .qr-wrapper-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin-top: auto;
+        }
+        .card-qr-graphics {
+            width: 38px;
+            height: 38px;
+            background: #fff;
+            border-radius: 3px;
+            padding: 1.5px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        .card-qr-graphics img { width: 100%; height: 100%; object-fit: contain; }
+        .qr-caption-text {
+            font-size: 0.26rem;
+            font-weight: 700;
+            text-align: center;
+            opacity: 0.6;
+            line-height: 1.1;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* FOOTER BRANDING SCHEME */
+        .card-core-footer {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            margin-top: 6px;
+            border-top: 0.5px solid rgba(128,128,128,0.15);
+            padding-top: 4px;
+        }
+        .legal-notice-paragraph {
+            font-size: 0.35rem;
+            font-weight: 600;
+            opacity: 0.7;
+            max-width: 85%;
+            margin: 0 auto 3px auto;
+            line-height: 1.2;
+        }
+        .footer-stamp-bold {
+            font-size: 0.42rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ff3b3b;
+        }
+        .canvas-white .footer-stamp-bold { color: #d91b1b; }
+        .footer-stamp-sub {
+            font-size: 0.33rem;
+            font-weight: 600;
+            opacity: 0.6;
+        }
+
+        /* --- SIDE NAV --- */
+        .side-nav {
+            position: fixed; top: 0; right: -100%; width: 290px; height: 100%;
+            background: rgba(8, 8, 12, 0.95); backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border); z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 90px 24px 40px 24px; display: flex; flex-direction: column; gap: 14px;
+        }
+        .side-nav.active { right: 0; }
+        .nav-item { 
+            color: #e2e8f0; text-decoration: none; font-size: 0.95rem; font-weight: 600; padding: 16px; 
+            background: rgba(255, 255, 255, 0.02); border-radius: 14px; border: 1px solid var(--glass-border); 
+            display: flex; align-items: center; gap: 14px; 
+        }
+        .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 999; backdrop-filter: blur(4px); }
+        .nav-overlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="prof.html" class="nav-item">Profile</a>
+        <a href="minec.html" class="nav-item">Order History</a>
+        <a href="fund.html" class="nav-item">Top Up Wallet</a>
+        <a href="rules.html" class="nav-item">Rules</a>
+        <a href="#" class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff4b4b;">Sign Out</a>
+    </nav>
+
+    <header>
+        <a href="dashboard.html" class="logo">PR1MΞ L0GS</a>
+        <button class="menu-btn" onclick="toggleMenu()">🛡️</button>
+    </header>
+
+    <div class="page-info">
+        <div class="page-title">
+            <a href="celeb.html" class="back-btn">⬅️</a>
+            <span id="header-card-title">Customize Card</span>
+        </div>
+        <div class="page-subtitle">Configure customized celebrity asset configurations</div>
+    </div>
+
+    <div class="utility-row">
+        <div class="util-btn">
+            <span>Balance:</span>
+            <div id="balance-loader" class="spinner"></div>
+            <span id="balance-text" class="hidden">₦<span id="balance">0.00</span></span>
+        </div>
+    </div>
+
+    <!-- MAIN GRID FLEX INTERFACE -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- CARD OBJECT LIVE PREVIEW PANEL -->
+        <div>
+            <div class="preview-section-title">Live Preview</div>
+            <div class="fan-card-canvas canvas-white" id="cardCanvas">
+                
+                <!-- Repeated Matrix Watermark Array Matching primelogs.store -->
+                <div class="watermark-overlay" id="watermarkBox"></div>
+                
+                <!-- TOP HEADER SLOTS -->
+                <div class="card-core-header">
+                    <div class="card-title-main"><span id="viewHeaderCeleb">CELEBRITY NAME</span> FAN</div>
+                    <div class="card-title-sub">AUTHORIZATION PERMIT CARD UPDATED</div>
+                </div>
+
+                <!-- MIDDLE DATA SECTIONS -->
+                <div class="card-core-body">
+                    
+                    <!-- Left Column: Celebrity Picture + Gold Chip Slot -->
+                    <div class="body-column-left">
+                        <div style="width: 100%;">
+                            <div class="photo-box-label">Celebrity Photo</div>
+                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23888888' opacity='0.15'/></svg>" class="card-photo-frame" id="viewCelebAvatar">
+                        </div>
+                        <!-- SIM Card Gold Stuff Entry Slot -->
+                        <div class="gold-sim-chip"></div>
+                    </div>
+
+                    <!-- Center Column: Data Content Grid (1 Item Per Line Configuration) -->
+                    <div class="body-column-center">
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Name</div>
+                            <div class="ledger-val" id="viewFanName">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Country</div>
+                            <div class="ledger-val" id="viewCountry">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Date of Birth</div>
+                            <div class="ledger-val" id="viewDOB">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Level</div>
+                            <div class="ledger-val" id="viewLevel">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Status</div>
+                            <div class="ledger-val" id="viewStatus">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Reg Date</div>
+                            <div class="ledger-val" id="viewRegDate">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">Valid Till</div>
+                            <div class="ledger-val" id="viewValidDate">—</div>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-lbl">I.D. No</div>
+                            <div class="ledger-val" style="font-family: monospace;" id="viewCardID">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Fan Picture + QR Placement -->
+                    <div class="body-column-right">
+                        <div style="width: 100%;">
+                            <div class="photo-box-label">Fan Photo</div>
+                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23888888' opacity='0.15'/></svg>" class="card-photo-frame" id="viewAvatar">
+                        </div>
+                        
+                        <!-- QR Code Area Positioning -->
+                        <div class="qr-wrapper-zone">
+                            <div class="card-qr-graphics">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PR1ME-LOGS-VERIFIED" id="viewQR">
+                            </div>
+                            <div class="qr-caption-text">Scan the QR code<br>to verify your fan card</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER POLICY AND LEGAL INFO STAMPS -->
+                <div class="card-core-footer">
+                    <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the <span id="viewFooterCeleb">[Celebrity Name]</span> fan club and is entitled to all rights, benefits and privileges thereto.</p>
+                    <div class="footer-stamp-bold">OFFICIALLY CERTIFIED <span id="viewStampCeleb">CELEBRITY NAME</span> SUPPORTER</div>
+                    <div class="footer-stamp-sub">This document validates your status as a registered member.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TRANSACTION AND FORM INPUT UTILITY ENGINE -->
+        <div class="form-container">
+            <div class="form-header-title" id="formPanelTitle">Card Custom Details</div>
+            
+            <!-- Web UI Notification Alerts Zone -->
+            <div id="webNotice" class="notification-banner"></div>
+
+            <form id="cardCustomForm">
+                <div class="input-group">
+                    <label>Celebrity Name <span>*</span></label>
+                    <input type="text" id="inCeleb" placeholder="e.g. Beyoncé, Cristiano Ronaldo" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Fan Name <span>*</span></label>
+                    <input type="text" id="inFan" placeholder="Your Name" required>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="input-group">
+                        <label>Fan Country <span>*</span></label>
+                        <input type="text" id="inCountry" placeholder="e.g. Nigeria, USA" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Date of Birth <span>*</span></label>
+                        <input type="date" id="inDOB" required>
+                    </div>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="input-group">
+                        <label>Membership Level <span>*</span></label>
+                        <input type="text" id="inLevel" placeholder="e.g. Gold, Platinum, Diamond" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Membership Status <span>*</span></label>
+                        <input type="text" id="inStatus" placeholder="e.g. Active, Premium" required>
+                    </div>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="input-group">
+                        <label>Registration Date <span>*</span></label>
+                        <input type="date" id="inRegDate" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Valid Till <span>*</span></label>
+                        <input type="date" id="inValidDate" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Card ID <span>*</span></label>
+                    <input type="text" id="inCardID" placeholder="e.g. FC-2024-001" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Website Link <span style="color:#718096;">(Optional)</span></label>
+                    <input type="url" id="inURL" placeholder="e.g. https://www.TeamBeyonce.com">
+                </div>
+
+                <div class="form-row-split">
+                    <div class="input-group">
+                        <label>Fan Image <span>*</span></label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn">Upload</div>
+                            <div class="file-status-label" id="fileStatus">No file</div>
+                            <input type="file" id="inImg" accept="image/*" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Celebrity Image <span>*</span></label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn">Upload</div>
+                            <div class="file-status-label" id="celebFileStatus">No file</div>
+                            <input type="file" id="inCelebImg" accept="image/*" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Select Background Texture <span style="color:#718096;">(Optional)</span></label>
+                    <div class="bg-grid">
+                        <div class="bg-thumb active" data-bg="none">None</div>
+                        <div class="bg-thumb" data-bg="blanket">Blanket</div>
+                        <div class="bg-thumb" data-bg="marble">Marble</div>
+                        <div class="bg-thumb" data-bg="grass">Grass</div>
+                    </div>
+                </div>
+
+                <div id="confirmPromptZone" style="display:none; margin: 12px 0; padding:14px; background:rgba(255,255,255,0.02); border:1px solid var(--glass-border); border-radius:12px; text-align:center;">
+                    <p style="font-size:0.9rem; margin-bottom:12px; color:#ffe088;">Are you sure you want to purchase this Fan Card configuration for ₦2,000?</p>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <button type="button" id="btnConfirmYes" style="background:var(--stock-green); color:#000; border:none; padding:8px 16px; font-weight:700; border-radius:8px; cursor:pointer;">Yes, Purchase</button>
+                        <button type="button" id="btnConfirmNo" style="background:rgba(255,255,255,0.1); color:#fff; border:none; padding:8px 16px; font-weight:700; border-radius:8px; cursor:pointer;">Cancel</button>
+                    </div>
+                </div>
+
+                <button type="button" class="action-submit-btn" id="btnSubmit">
+                    <span>Generate Final Card (₦2,000)</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, runTransaction, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUid = null;
+        let currentBalance = 0;
+        let base64ImageString = "";
+        let base64CelebImageString = "";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeStyle = urlParams.get('style') || 'white';
+
+        const cardCanvas = document.getElementById('cardCanvas');
+        const headerCardTitle = document.getElementById('header-card-title');
+        const formPanelTitle = document.getElementById('formPanelTitle');
+        const webNotice = document.getElementById('webNotice');
+        const confirmPromptZone = document.getElementById('confirmPromptZone');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        headerCardTitle.innerText = `${activeStyle.toUpperCase()} FAN CARD`;
+        formPanelTitle.innerText = `${activeStyle.toUpperCase()} CARD DETAILS`;
+        
+        cardCanvas.className = `fan-card-canvas canvas-${activeStyle}`;
+
+        function showNotice(text, type) {
+            webNotice.innerText = text;
+            webNotice.className = `notification-banner banner-${type}`;
+            webNotice.style.display = 'block';
+            window.scrollTo({ top: webNotice.offsetTop - 20, behavior: 'smooth' });
+        }
+
+        // Populate Watermark Array explicitly matching "primelogs.store"
+        const watermarkBox = document.getElementById('watermarkBox');
+        for (let i = 0; i < 30; i++) {
+            const block = document.createElement('div');
+            block.className = 'watermark-item';
+            block.innerText = 'primelogs.store';
+            watermarkBox.appendChild(block);
+        }
+
+        // Live Binding Real-Time Engines
+        const bindings = [
+            { input: 'inFan', view: 'viewFanName', fallback: '—' },
+            { input: 'inCountry', view: 'viewCountry', fallback: '—' },
+            { input: 'inDOB', view: 'viewDOB', fallback: '—' },
+            { input: 'inLevel', view: 'viewLevel', fallback: '—' },
+            { input: 'inStatus', view: 'viewStatus', fallback: '—' },
+            { input: 'inRegDate', view: 'viewRegDate', fallback: '—' },
+            { input: 'inValidDate', view: 'viewValidDate', fallback: '—' },
+            { input: 'inCardID', view: 'viewCardID', fallback: '—' }
+        ];
+
+        bindings.forEach(bind => {
+            const element = document.getElementById(bind.input);
+            element.addEventListener('input', () => {
+                document.getElementById(bind.view).innerText = element.value.toUpperCase() || bind.fallback;
+            });
+        });
+
+        // Special Context Updates for Celebrity Inputs across multiple labels
+        document.getElementById('inCeleb').addEventListener('input', (e) => {
+            const val = e.target.value.toUpperCase() || 'CELEBRITY NAME';
+            document.getElementById('viewHeaderCeleb').innerText = val;
+            document.getElementById('viewFooterCeleb').innerText = e.target.value || '[Celebrity Name]';
+            document.getElementById('viewStampCeleb').innerText = val;
+        });
+
+        document.getElementById('inURL').addEventListener('input', (e) => {
+            const urlVal = e.target.value.trim() || "PR1ME-LOGS-VERIFIED";
+            document.getElementById('viewQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(urlVal)}`;
+        });
+
+        // FileReader implementation for Fan Photo
+        document.getElementById('inImg').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileStatus').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    base64ImageString = event.target.result;
+                    document.getElementById('viewAvatar').src = base64ImageString;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // FileReader implementation for Celebrity Photo
+        document.getElementById('inCelebImg').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('celebFileStatus').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    base64CelebImageString = event.target.result;
+                    document.getElementById('viewCelebAvatar').src = base64CelebImageString;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Texture selector mapping
+        document.querySelectorAll('.bg-thumb').forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                document.querySelectorAll('.bg-thumb').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                cardCanvas.classList.remove('canvas-bg-blanket', 'canvas-bg-marble', 'canvas-bg-grass');
+                const selectedBg = thumb.getAttribute('data-bg');
+                if (selectedBg !== 'none') {
+                    cardCanvas.classList.add(`canvas-bg-${selectedBg}`);
+                }
+            });
+        });
+
+        const sideNav = document.getElementById('sideNav');
+        const overlay = document.getElementById('overlay');
+        window.toggleMenu = () => { sideNav.classList.toggle('active'); overlay.classList.toggle('active'); };
+
+        const balanceLoader = document.getElementById('balance-loader');
+        const balanceText = document.getElementById('balance-text');
+        const balanceDisplay = document.getElementById('balance');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUid = user.uid;
+                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        currentBalance = docSnap.data().balance || 0;
+                        balanceLoader.classList.add('hidden');
+                        balanceText.classList.remove('hidden');
+                        balanceDisplay.innerText = currentBalance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    }
+                });
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Form Submission Interception for Web-Based Interventions
+        btnSubmit.addEventListener('click', () => {
+            const targetForm = document.getElementById('cardCustomForm');
+            if(!targetForm.checkValidity()) {
+                targetForm.reportValidity();
+                return;
+            }
+            if (!currentUid) return showNotice("User session expired. Refresh page.", "error");
+            if (currentBalance < 2000) return showNotice("Insufficient wallet balance to perform generation.", "error");
+
+            webNotice.style.display = 'none';
+            confirmPromptZone.style.display = 'block';
+            btnSubmit.style.display = 'none';
+        });
+
+        document.getElementById('btnConfirmNo').addEventListener('click', () => {
+            confirmPromptZone.style.display = 'none';
+            btnSubmit.style.display = 'flex';
+        });
+
+        document.getElementById('btnConfirmYes').addEventListener('click', async () => {
+            confirmPromptZone.style.display = 'none';
+            btnSubmit.style.display = 'flex';
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<div class="spinner"></div> Generating...`;
+
+            const userRef = doc(db, "users", currentUid);
+            const orderRef = doc(collection(db, "orders"));
+
+            const payload = {
+                celebName: document.getElementById('inCeleb').value,
+                fanName: document.getElementById('inFan').value,
+                country: document.getElementById('inCountry').value,
+                dob: document.getElementById('inDOB').value,
+                level: document.getElementById('inLevel').value,
+                status: document.getElementById('inStatus').value,
+                regDate: document.getElementById('inRegDate').value,
+                validDate: document.getElementById('inValidDate').value,
+                cardIdStr: document.getElementById('inCardID').value,
+                websiteLink: document.getElementById('inURL').value || "",
+                imageData: base64ImageString,
+                celebImageData: base64CelebImageString,
+                styleTheme: activeStyle,
+                backgroundTexture: document.querySelector('.bg-thumb.active').getAttribute('data-bg'),
+                cost: 2000
+            };
+
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const userSnap = await transaction.get(userRef);
+                    if (!userSnap.exists()) throw "User record missing.";
+
+                    const freshBalance = userSnap.data().balance || 0;
+                    if (freshBalance < 2000) throw "Insufficient funds verified.";
+
+                    transaction.update(userRef, { balance: freshBalance - 2000 });
+                    transaction.set(orderRef, {
+                        userId: currentUid,
+                        orderId: orderRef.id,
+                        itemType: "celeb_fan_card",
+                        details: payload,
+                        amountDeducted: 2000,
+                        timestamp: serverTimestamp()
+                    });
+                });
+
+                cardCanvas.classList.add('clean-pass');
+                showNotice("Card successfully configured and purchased! Redirecting...", "success");
+                
+                setTimeout(() => {
+                    window.location.href = "minec.html";
+                }, 1500);
+
+            } catch (err) {
+                console.error(err);
+                showNotice("Error handling transaction: " + err, "error");
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Generate Final Card (₦2,000)";
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
