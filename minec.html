@@ -210,7 +210,6 @@
         <div class="page-subtitle">Access and download your officially generated assets</div>
     </div>
 
-    <!-- MAIN INTERACTIVE DISPLAY PORT -->
     <div id="mainContentPortal">
         <div class="state-wrapper">
             <div class="spinner"></div>
@@ -274,7 +273,7 @@
                 
                 snapshot.forEach((doc) => {
                     const orderData = doc.data();
-                    const card = orderData.details;
+                    const card = orderData.details || {};
                     const orderId = orderData.orderId || doc.id;
                     
                     const texClass = (card.backgroundTexture && card.backgroundTexture !== 'none') ? `canvas-bg-${card.backgroundTexture}` : '';
@@ -287,9 +286,9 @@
                                 <button class="save-card-btn" onclick="saveCardNotice()">Save Graphic</button>
                             </div>
                             
-                            <div class="fan-card-canvas canvas-${card.styleTheme} ${texClass}">
+                            <div class="fan-card-canvas canvas-${card.styleTheme || 'white'} ${texClass}">
                                 <div class="card-core-header">
-                                    <div class="card-title-main">${card.celebName.toUpperCase()} FAN</div>
+                                    <div class="card-title-main">${(card.celebName || '').toUpperCase()} FAN</div>
                                     <div class="card-title-sub">AUTHORIZATION PERMIT CARD UPDATED</div>
                                 </div>
 
@@ -303,20 +302,20 @@
                                     </div>
 
                                     <div class="body-column-center">
-                                        <div class="ledger-row"><div class="ledger-lbl">Name</div><div class="ledger-val">${card.fanName.toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Country</div><div class="ledger-val">${card.country.toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Date of Birth</div><div class="ledger-val">${card.dob}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Level</div><div class="ledger-val">${card.level.toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Status</div><div class="ledger-val">${card.status.toUpperCase()}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Reg Date</div><div class="ledger-val">${card.regDate}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">Valid Till</div><div class="ledger-val">${card.validDate}</div></div>
-                                        <div class="ledger-row"><div class="ledger-lbl">I.D. No</div><div class="ledger-val" style="font-family: monospace;">${card.cardIdStr.toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Name</div><div class="ledger-val">${(card.fanName || '').toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Country</div><div class="ledger-val">${(card.country || '').toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Date of Birth</div><div class="ledger-val">${card.dob || ''}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Level</div><div class="ledger-val">${(card.level || '').toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Status</div><div class="ledger-val">${(card.status || '').toUpperCase()}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Reg Date</div><div class="ledger-val">${card.regDate || ''}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">Valid Till</div><div class="ledger-val">${card.validDate || ''}</div></div>
+                                        <div class="ledger-row"><div class="ledger-lbl">I.D. No</div><div class="ledger-val" style="font-family: monospace;">${(card.cardIdStr || '').toUpperCase()}</div></div>
                                     </div>
 
                                     <div class="body-column-right">
                                         <div style="width: 100%;">
                                             <div class="photo-box-label">Fan Photo</div>
-                                            <img src="${card.imageData}" class="card-photo-frame">
+                                            <img src="${card.imageData || ''}" class="card-photo-frame">
                                         </div>
                                         <div class="qr-wrapper-zone">
                                             <div class="card-qr-graphics"><img src="${qrSource}"></div>
@@ -326,8 +325,8 @@
                                 </div>
 
                                 <div class="card-core-footer">
-                                    <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the ${card.celebName} fan club and is entitled to all rights, benefits and privileges thereto.</p>
-                                    <div class="footer-stamp-bold">OFFICIALLY CERTIFIED ${card.celebName.toUpperCase()} SUPPORTER</div>
+                                    <p class="legal-notice-paragraph">This is to certify that the above named fan is a registered VIP member in good standing of the ${card.celebName || ''} fan club and is entitled to all rights, benefits and privileges thereto.</p>
+                                    <div class="footer-stamp-bold">OFFICIALLY CERTIFIED ${(card.celebName || '').toUpperCase()} SUPPORTER</div>
                                     <div class="footer-stamp-sub">This document validates your status as a registered member.</div>
                                 </div>
                             </div>
