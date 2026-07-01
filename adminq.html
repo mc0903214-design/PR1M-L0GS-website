@@ -255,6 +255,13 @@
             </select>
         </div>
         <div class="form-group">
+            <label>Post-Purchase Instructions</label>
+            <label class="check-group">
+                <input type="checkbox" id="p-instructions">
+                <span style="font-size: 0.7rem; color: var(--neon-cyan); font-weight: 700; letter-spacing: 0.5px;">INCLUDE INSTRUCTIONS AFTER PURCHASE</span>
+            </label>
+        </div>
+        <div class="form-group">
             <label id="stock-label">Paste Stock Data</label>
             <textarea id="p-stock" rows="5" placeholder="user:pass, user2:pass2..."></textarea>
         </div>
@@ -268,6 +275,11 @@
     <div id="users-list" class="panel">
         <h2>User Database</h2>
         <div class="panel-desc">View completely synchronized accounts, modify credit layers, or restrict node access.</div>
+        
+        <div class="form-group">
+            <input type="text" id="user-search" placeholder="🔍 Search accounts by email address..." style="margin-bottom: 8px;">
+        </div>
+
         <div class="table-wrapper">
             <table class="grid-table">
                 <thead>
@@ -328,6 +340,19 @@
         // Enter key listener explicitly tied to password gate element
         document.getElementById('sys-pass').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') checkPass();
+        });
+
+        // Dynamic client-side live structural table search filtering
+        document.getElementById('user-search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('#user-rows tr');
+            rows.forEach(row => {
+                const emailCell = row.querySelector('.user-email');
+                if (emailCell) {
+                    const emailText = emailCell.innerText.toLowerCase();
+                    row.style.display = emailText.includes(term) ? "" : "none";
+                }
+            });
         });
 
         function showNotification(msg, isError = false) {
@@ -404,6 +429,7 @@
             const price = isFree ? 0 : document.getElementById('p-price').value;
             const img = document.getElementById('p-img').value;
             const mode = document.getElementById('p-mode').value;
+            const showInstructions = document.getElementById('p-instructions').checked;
             const rawStock = document.getElementById('p-stock').value;
 
             if(!name || !desc || (!isFree && !price) || !rawStock) {
@@ -422,6 +448,7 @@
                     price: parseFloat(price), 
                     image: img || 'https://via.placeholder.com/150',
                     mode, 
+                    showInstructions,
                     stock: stockArray, 
                     stockCount: stockArray.length,
                     updatedAt: serverTimestamp()
@@ -458,6 +485,7 @@
                 document.getElementById('p-is-free').checked = p.price === 0;
                 document.getElementById('p-img').value = p.image;
                 document.getElementById('p-mode').value = p.mode;
+                document.getElementById('p-instructions').checked = p.showInstructions || false;
                 document.getElementById('p-stock').value = p.mode === 'MULTIPLE' ? p.stock.join(', ') : p.stock[0];
                 toggleFreePrice(); toggleStockLabel();
                 document.getElementById('form-title').innerText = "Edit Asset Matrix";
@@ -479,6 +507,7 @@
             document.getElementById('p-img').value = "";
             document.getElementById('p-stock').value = "";
             document.getElementById('p-is-free').checked = false;
+            document.getElementById('p-instructions').checked = false;
             toggleFreePrice();
             document.getElementById('form-title').innerText = "Deploy New Asset";
             document.getElementById('editing-indicator').style.display = "none";
@@ -540,6 +569,15 @@
                         if (existingRow) existingRow.remove();
                     }
                 });
+
+                // Re-apply current search query to rows updated live
+                const currentSearch = document.getElementById('user-search').value.toLowerCase().trim();
+                if (currentSearch) {
+                    document.querySelectorAll('#user-rows tr').forEach(row => {
+                        const emailText = row.querySelector('.user-email').innerText.toLowerCase();
+                        row.style.display = emailText.includes(currentSearch) ? "" : "none";
+                    });
+                }
             });
         }
 
