@@ -247,6 +247,61 @@
             border: 1px solid rgba(255,255,255,0.03);
         }
 
+        /* --- STEPS CONTAINER FOR TELEGRAM METHOD --- */
+        .instruction-steps {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .step-block {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .step-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .step-body {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        .tg-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #24A1DE;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(36, 161, 222, 0.3);
+        }
+        .copy-sub-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
         /* --- CUSTOM NOTIFICATION TOAST --- */
         .notification-toast {
             position: fixed;
@@ -363,22 +418,49 @@
         </div>
     </div>
 
+    <!-- SUCCESS CONTAINER -->
     <div id="success-view" class="info-card reveal hidden" style="margin-top: 10px;">
         <div class="success-panel">
             <div class="status-badge-circle">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
             <div class="success-heading">Order Delivered</div>
-            <div class="success-subline">Your items have been extracted from inventory.</div>
+            <div class="success-subline" id="success-message-sub">Your items have been extracted from inventory.</div>
 
-            <div class="output-data-container">
+            <!-- NORMAL OUTPUT VIEW (TOGGLE WAS OFF) -->
+            <div class="output-data-container" id="normal-output-wrapper">
                 <div class="output-label">Credentials / Secrets Attached:</div>
                 <div class="output-box" id="payload-display">...</div>
+                <button class="btn-action-submit" style="background: var(--neon-cyan); color: #000; box-shadow: 0 4px 15px rgba(0, 243, 255, 0.2); margin-top: 16px;" onclick="copyPayload()">
+                    Copy Credentials
+                </button>
             </div>
 
-            <button class="btn-action-submit" style="background: var(--neon-cyan); color: #000; box-shadow: 0 4px 15px rgba(0, 243, 255, 0.2);" onclick="copyPayload()">
-                Copy Credentials
-            </button>
+            <!-- TELEGRAM STEP VIEW (TOGGLE WAS ON) -->
+            <div class="instruction-steps hidden" id="telegram-output-wrapper">
+                <div class="step-block">
+                    <div class="step-title">STEP 1: COPY THIS CODE</div>
+                    <div class="output-box" id="tg-code-display" style="max-height: 100px;">...</div>
+                    <button class="copy-sub-btn" onclick="copyTelegramCode()">Copy Code</button>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title">STEP 2: CLICK LINK TO GO TO OUR TELEGRAM BOT</div>
+                    <a href="https://t.me/my_product_delivery_bot" target="_blank" class="tg-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        Open Telegram Bot
+                    </a>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title">STEP 3: START THE BOT AND CLICK ON THE /CLAIM COMMAND</div>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title">STEP 4: PASTE THE CODE YOU COPIED IN STEP 1 AND WAIT FOR YOUR PURCHASE TO BE DELIVERED, THIS MAY TAKE A WHILE</div>
+                </div>
+            </div>
+
             <a href="shop.html" class="back-btn" style="justify-content: center; margin-top: 14px; border-radius: 14px; padding: 14px;">Return to Marketplace</a>
         </div>
     </div>
@@ -442,7 +524,6 @@
             setTimeout(() => { toast.classList.remove('active'); }, 3500);
         }
 
-        // 1. Immediately fetch product info regardless of auth status
         async function fetchProductOnly() {
             if(!productID) {
                 triggerNotification("No valid items requested.");
@@ -465,7 +546,6 @@
             }
         }
 
-        // 2. Background check for user data if they are logged in
         async function syncUserData(user) {
             try {
                 const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -542,13 +622,11 @@
         };
 
         window.executePurchase = async function() {
-            // Check if auth is even done yet
             if (!authInitialized) {
                 triggerNotification("Verifying connection...", "info");
                 return;
             }
 
-            // If background check found no user, redirect now
             if (!userSession) {
                 window.location.href = 'index.html';
                 return;
@@ -648,9 +726,25 @@
                     });
                 });
 
+                // Check toggle configuration setting from the product database object
+                // Checks for field variations matching showProduct / telegramToggle / formatMethod toggle setup
+                const isTelegramMethod = (productDetails.showProduct === true || productDetails.telegramToggle === true);
+
+                if (isTelegramMethod) {
+                    document.getElementById('success-message-sub').innerText = "Follow the instructions below to complete claim via Telegram Bot.";
+                    document.getElementById('normal-output-wrapper').classList.add('hidden');
+                    
+                    document.getElementById('tg-code-display').innerText = deliveryPayload;
+                    document.getElementById('telegram-output-wrapper').classList.remove('hidden');
+                } else {
+                    document.getElementById('success-message-sub').innerText = "Your items have been extracted from inventory.";
+                    document.getElementById('telegram-output-wrapper').classList.add('hidden');
+                    
+                    document.getElementById('payload-display').innerText = deliveryPayload;
+                    document.getElementById('normal-output-wrapper').classList.remove('hidden');
+                }
+
                 document.getElementById('purchase-view').classList.add('hidden');
-                document.getElementById('payload-display').innerText = deliveryPayload;
-                
                 const successPanel = document.getElementById('success-view');
                 successPanel.classList.remove('hidden');
                 successPanel.classList.add('active');
@@ -671,6 +765,12 @@
             triggerNotification("Credentials copied directly!", "info");
         };
 
+        window.copyTelegramCode = function() {
+            const codeStr = document.getElementById('tg-code-display').innerText;
+            navigator.clipboard.writeText(codeStr);
+            triggerNotification("Code copied! Go to Telegram now.", "info");
+        };
+
         // Execution Start
         fetchProductOnly();
 
@@ -681,7 +781,6 @@
                 syncUserData(user);
             } else {
                 userSession = null;
-                // We do NOT redirect here anymore so they can see the product first.
             }
         });
     </script>
