@@ -728,8 +728,7 @@
 
                 // Check toggle configuration setting from the product database object
                 // Checks for field variations matching showProduct / telegramToggle / formatMethod toggle setup
-                const isTelegramMethod = (productDetails.showProduct === true || productDetails.telegramToggle === true);
-
+                const isTelegramMethod = productDetails.showInstructions === true;
                 if (isTelegramMethod) {
                     document.getElementById('success-message-sub').innerText = "Follow the instructions below to complete claim via Telegram Bot.";
                     document.getElementById('normal-output-wrapper').classList.add('hidden');
