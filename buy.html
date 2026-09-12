@@ -564,7 +564,7 @@
             const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
             
             mediaBlock.innerHTML = isVideo 
-                ? `<video src="${url}" autoplay muted loop playsinline></video>`
+                ? `<video src="${url}" controls playsinline></video>`
                 : `<img src="${url}" onerror="this.src='https://i.postimg.cc/m2pGVsSV/images.jpg'">`;
 
             document.getElementById('p-title').innerText = prod.name || "Unnamed Asset";
