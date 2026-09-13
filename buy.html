@@ -634,18 +634,6 @@
 
             if (!productDetails) return;
 
-            if(productDetails.category === "Freebies") {
-                const invitesCount = userDataCache ? Number(userDataCache.invites || 0) : 0;
-                if(invitesCount < 4) {
-                    const username = userDataCache?.username || "User";
-                    const baseUrl = window.location.origin;
-                    document.getElementById('modal-progress-text').innerText = `${invitesCount}/4`;
-                    document.getElementById('modal-ref-link').innerText = `${baseUrl}/register.html?ref=${username}`;
-                    document.getElementById('refModal').classList.add('active');
-                    return;
-                }
-            }
-
             const btn = document.getElementById('buy-now-btn');
             const txt = document.getElementById('btn-text');
             btn.disabled = true;
