@@ -151,32 +151,6 @@
         }
         .topup-btn:active { opacity: 0.8; }
 
-        /* --- REFERRAL SECTION --- */
-        .referral-card {
-            background: linear-gradient(135deg, rgba(188, 19, 254, 0.1) 0%, rgba(30, 60, 114, 0.1) 100%);
-            border: 1px solid rgba(188, 19, 254, 0.3);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .ref-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .ref-title { font-size: 0.8rem; font-weight: 700; color: var(--neon-purple); text-transform: uppercase; letter-spacing: 1px; }
-        .ref-stats { font-size: 0.8rem; font-weight: 600; color: #fff; }
-
-        .ref-link-container {
-            display: flex;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 12px;
-            align-items: center;
-            margin-top: 15px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .ref-url { font-size: 0.75rem; color: #a0aec0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-        .copy-btn { background: var(--neon-cyan); color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
-
         /* --- TOAST --- */
         .toast {
             position: fixed;
@@ -250,18 +224,6 @@
         </a>
     </div>
 
-    <div class="referral-card reveal">
-        <div class="ref-header">
-            <div class="ref-title">Referral Link</div>
-            <div class="ref-stats" id="invites-text">0/4 referrals</div>
-        </div>
-        <div class="item-sub" style="margin-bottom: 10px;">Invite up to four members to unlock free section</div>
-        <div class="ref-link-container">
-            <div class="ref-url" id="ref-link">...</div>
-            <button class="copy-btn" onclick="copyRef()">COPY</button>
-        </div>
-    </div>
-
     <div id="toast" class="toast">Link Copied!</div>
 
     <script type="module">
@@ -292,11 +254,6 @@
                         document.getElementById('user-username').innerText = username;
                         document.getElementById('user-email').innerText = user.email;
                         document.getElementById('user-balance').innerText = `NGN ${Number(data.balance || 0).toLocaleString()}`;
-                        document.getElementById('invites-text').innerText = `${data.invites || 0}/4 referrals`;
-                        
-                        // Referral logic using Username instead of UID
-                        const baseUrl = window.location.origin;
-                        document.getElementById('ref-link').innerText = `${baseUrl}/register.html?ref=${username}`;
                     }
                 });
 
@@ -311,14 +268,6 @@
                 window.location.href = 'index.html';
             }
         });
-
-        window.copyRef = () => {
-            const link = document.getElementById('ref-link').innerText;
-            navigator.clipboard.writeText(link);
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
-        };
 
         document.getElementById('logout-btn').onclick = () => {
             signOut(auth).then(() => window.location.href = 'index.html');
