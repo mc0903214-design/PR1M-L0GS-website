@@ -361,7 +361,7 @@
                     transaction.set(doc(db, "users", user.uid), {
                         username: username,
                         email: email,
-                        balance: 500.00, // Added 500 starting balance
+                        balance: 0.00,
                         role: "user",
                         referredBy: refCode || null,
                         referredByUID: validatedReferrerUID,
