@@ -784,7 +784,7 @@
         <h3 style="color: #fff; font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">Redirecting to Telegram</h3>
         <p style="color:#cbd5e0; margin-bottom: 28px; font-size: 0.9rem; line-height: 1.6;">You are about to leave the secure dashboard and open the official Telegram bot to proceed with your automated action. Click Confirm to continue.</p>
         <div style="display: flex; gap: 12px;">
-            <button onclick="confirmTelegramRedirect()" class="fund-btn-new" style="flex: 1; justify-content: center; background: linear-gradient(90deg, var(--neon-cyan) 0%, #00a8ff; color: #060608; box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3);">CONFIRM</button>
+            <button onclick="confirmTelegramRedirect()" class="fund-btn-new" style="flex: 1; justify-content: center; background: linear-gradient(90deg, var(--neon-cyan) 0%, #00a8ff); color: #060608; box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3);">CONFIRM</button>
             <button onclick="closeTgConfirmModal()" class="menu-btn" style="flex: 1; justify-content: center; background: rgba(255, 255, 255, 0.05);">CANCEL</button>
         </div>
     </div>
@@ -887,7 +887,12 @@
     <div class="category-nav-container reveal">
         <div class="category-navbar" id="categoryNavbar">
             <button class="nav-category-btn active" onclick="filterCategory('All', this)">All Products</button>
-            <button class="nav-category-btn" onclick="filterCategory('Logs', this)">Logs</button>
+            <button class="nav-category-btn" onclick="filterCategory('TikTok Logs', this)">TikTok Logs</button>
+            <button class="nav-category-btn" onclick="filterCategory('X/Twitter Logs', this)">X/Twitter Logs</button>
+            <button class="nav-category-btn" onclick="filterCategory('FB Logs', this)">FB Logs</button>
+            <button class="nav-category-btn" onclick="filterCategory('IG Logs', this)">IG Logs</button>
+            <button class="nav-category-btn" onclick="filterCategory('OTHER Logs', this)">OTHER Logs</button>
+            <button class="nav-category-btn" onclick="filterCategory('Texting Apps', this)">Texting Apps</button>
             <button class="nav-category-btn" onclick="filterCategory('Working Pics', this)">Working Pics</button>
 <button class="nav-category-btn" onclick="filterCategory('Modded Apps', this)">📱 Modded Apps</button>
             <button class="nav-category-btn" onclick="filterCategory('Websites', this)">Websites</button>
