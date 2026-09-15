@@ -1,298 +1,1404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PR1MΞ LOGS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PR1MΞ LOGS — Premium Digital Marketplace</title>
+    <style>
+        :root {
+            --bg: #07070b;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-card: rgba(18, 18, 28, 0.5);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-bright: rgba(0, 243, 255, 0.3);
+            --cyan: #00f3ff;
+            --purple: #bc13fe;
+            --muted: #9aa0aa;
+            --text: #eaeaf0;
+            --white: #ffffff;
+            --glow: rgba(0, 243, 255, 0.15);
+            --glow-purple: rgba(188, 19, 254, 0.15);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-<style>
-:root{
-    --bg:#07070b;
-    --glass:rgba(255,255,255,0.03);
-    --border:rgba(255,255,255,0.08);
-    --cyan:#00f3ff;
-    --purple:#bc13fe;
-    --muted:#9aa0aa;
-    --text:#eaeaf0;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI, sans-serif;
-}
+        html {
+            scroll-behavior: smooth;
+        }
 
-body{
-    background:
-        radial-gradient(circle at top, rgba(188,19,254,0.15), transparent 40%),
-        radial-gradient(circle at bottom, rgba(0,243,255,0.10), transparent 40%),
-        var(--bg);
-    color:var(--text);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    padding:24px;
-}
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 15% 15%, var(--glow-purple), transparent 45%),
+                radial-gradient(circle at 85% 60%, var(--glow), transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(188, 19, 254, 0.08), transparent 50%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-/* CONTAINER */
-.container{
-    width:100%;
-    max-width:520px;
-}
+        /* UTILITY CLASSES & REVEAL ANIMATIONS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
 
-/* FADE SCROLL */
-.reveal{
-    opacity:0;
-    transform:translateY(25px);
-    transition:0.8s ease;
-}
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-.reveal.active{
-    opacity:1;
-    transform:translateY(0);
-}
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
 
-/* HERO */
-.hero{
-    background:var(--glass);
-    border:1px solid var(--border);
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    backdrop-filter:blur(14px);
-}
+        .container {
+            width: 100%;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-.hero h1{
-    font-size:2.6rem;
-    letter-spacing:4px;
-    margin-bottom:10px;
-    background:linear-gradient(90deg,#fff,var(--cyan));
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
+        /* HEADER / NAVBAR */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(7, 7, 11, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
 
-.hero p{
-    color:var(--muted);
-    font-size:14px;
-    line-height:1.6;
-}
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 76px;
+        }
 
-.btn{
-    margin-top:18px;
-    display:block;
-    width:100%;
-    padding:14px;
-    border-radius:14px;
-    background:linear-gradient(90deg,var(--purple),var(--cyan));
-    color:white;
-    text-decoration:none;
-    font-weight:700;
-    letter-spacing:2px;
-}
+        .brand-logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-decoration: none;
+            background: linear-gradient(90deg, #fff 0%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-/* STATS */
-.stats{
-    display:flex;
-    gap:10px;
-    margin-top:18px;
-}
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
 
-.stat{
-    flex:1;
-    background:var(--glass);
-    border:1px solid var(--border);
-    padding:12px;
-    border-radius:14px;
-    text-align:center;
-}
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
 
-.stat b{
-    display:block;
-    font-size:14px;
-}
+        .nav-link:hover {
+            color: var(--cyan);
+        }
 
-.stat span{
-    font-size:10px;
-    color:var(--muted);
-}
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-/* SECTIONS */
-.section-title{
-    margin:30px 0 10px;
-    font-size:12px;
-    letter-spacing:3px;
-    color:var(--muted);
-    text-transform:uppercase;
-}
+        .btn-nav {
+            padding: 10px 22px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
 
-/* FEATURES */
-.card{
-    background:var(--glass);
-    border:1px solid var(--border);
-    padding:14px;
-    border-radius:16px;
-    display:flex;
-    gap:12px;
-    margin-bottom:10px;
-}
+        .btn-nav-primary {
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            color: var(--white);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
 
-.icon{
-    min-width:36px;
-    height:36px;
-    border-radius:10px;
-    background:rgba(255,255,255,0.04);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--cyan);
-}
+        .btn-nav-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+        }
 
-.card h3{
-    font-size:14px;
-}
+        /* HERO SECTION */
+        .hero-section {
+            padding: 90px 0 60px;
+            text-align: center;
+            position: relative;
+        }
 
-.card p{
-    font-size:12px;
-    color:var(--muted);
-}
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
 
-/* PRODUCTS LIST */
-.products{
-    display:grid;
-    gap:10px;
-}
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            font-weight: 900;
+            letter-spacing: 2px;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            background: linear-gradient(180deg, #ffffff 0%, #a5a5c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.product{
-    background:var(--glass);
-    border:1px solid var(--border);
-    padding:14px;
-    border-radius:16px;
-    font-size:13px;
-    color:var(--muted);
-}
+        .hero-title span {
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.product span{
-    color:var(--text);
-    font-weight:600;
-}
-</style>
+        .hero-subtitle {
+            max-width: 720px;
+            margin: 0 auto 36px;
+            color: var(--muted);
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.6;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-main {
+            padding: 16px 36px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.3);
+        }
+
+        .btn-hero-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 45px rgba(0, 243, 255, 0.5);
+        }
+
+        .btn-hero-secondary {
+            padding: 16px 36px;
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--cyan);
+            color: var(--white);
+        }
+
+        /* TRUST / STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 60px;
+        }
+
+        .stat-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            padding: 24px 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-bright);
+            transform: translateY(-4px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 4px;
+            background: linear-gradient(90deg, #fff, var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* SECTION HEADINGS */
+        .section-header {
+            text-align: center;
+            margin: 80px 0 40px;
+        }
+
+        .section-tag {
+            color: var(--cyan);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .section-title-main {
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: 1px;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 8px auto 0;
+        }
+
+        /* FEATURES / WHY PR1ME */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            background: rgba(0, 243, 255, 0.08);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* HOW IT WORKS */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .step-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-num {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .step-card h3 {
+            font-size: 1.1rem;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        /* CATEGORY SHOWCASE CHIPS/CARDS */
+        .category-scroll-wrapper {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--cyan) transparent;
+        }
+
+        .category-chip {
+            white-space: nowrap;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-chip:hover, .category-chip.active {
+            background: linear-gradient(90deg, rgba(188, 19, 254, 0.2), rgba(0, 243, 255, 0.2));
+            border-color: var(--cyan);
+            color: var(--white);
+        }
+
+        /* SEARCH BAR */
+        .search-box-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--white);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        /* PRODUCT GRID & CARDS */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        .product-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .product-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .product-media-container {
+            width: 100%;
+            height: 140px;
+            background: rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .product-media-container {
+                height: 110px;
+            }
+        }
+
+        .product-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-media {
+            transform: scale(1.05);
+        }
+
+        .product-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 480px) {
+            .product-body {
+                padding: 10px;
+            }
+        }
+
+        .product-category-tag {
+            font-size: 0.7rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .product-title {
+                font-size: 0.85rem;
+            }
+        }
+
+        .product-meta {
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .product-stock {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--white);
+        }
+
+        @media (max-width: 480px) {
+            .product-price {
+                font-size: 0.95rem;
+            }
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            color: var(--white);
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            display: block;
+        }
+
+        .btn-buy:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        /* SKELETON LOADING */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-card {
+            height: 280px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        /* CATEGORY GROUP SECTIONS */
+        .category-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-group-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* REVIEWS / FEEDBACK */
+        .review-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .review-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+
+        .user-info h4 {
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+
+        .user-info span {
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .review-text {
+            color: var(--text);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* FAQ ACCORDION */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .faq-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .faq-header:hover {
+            color: var(--cyan);
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-item.open .faq-content {
+            max-height: 200px;
+            padding: 0 20px 20px;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+            color: var(--cyan);
+        }
+
+        /* BIG CTA SECTION */
+        .cta-section {
+            margin: 100px 0 60px;
+            background: linear-gradient(135deg, rgba(188, 19, 254, 0.15), rgba(0, 243, 255, 0.15));
+            border: 1px solid var(--border-bright);
+            border-radius: 28px;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        /* FOOTER */
+        .footer {
+            border-top: 1px solid var(--border);
+            background: rgba(4, 4, 7, 0.95);
+            padding: 60px 0 30px;
+            margin-top: 80px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-top: 12px;
+        }
+
+        .footer-title {
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--cyan);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 24px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <!-- STICKY NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="brand-logo">PR1MΞ LOGS</a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
+            </ul>
 
-    <!-- HERO -->
-    <div class="hero reveal">
-        <h1>PR1MΞ LOGS</h1>
-        <p>Sharp updated working boys tools, social logs, automation resources and bots built for speed.</p>
-
-        <a class="btn" href="login.html">ENTER MARKET</a>
-
-        <div class="stats">
-            <div class="stat">
-                <b>99.9%</b>
-                <span>Uptime</span>
-            </div>
-            <div class="stat">
-                <b>2.4M</b>
-                <span>Orders</span>
-            </div>
-            <div class="stat">
-                <b id="customers">0</b>
-                <span>Customers</span>
+            <div class="nav-actions">
+                <a href="login.html" class="btn-nav btn-nav-primary">ENTER MARKET</a>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- WHAT WE SELL -->
-    <div class="section-title reveal">What We Sell</div>
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="reveal">
+                <div class="hero-badge">⚡ Next-Gen Marketplace</div>
+                <h1 class="hero-title">Premium Digital social logs, tools and more hustlers pro methods for winners.<br><span>Built for Speed.</span></h1>
+                <p class="hero-subtitle">Explore a constantly updated marketplace of digital resources, tools, accounts, subscriptions, web resources and more — organized in one fast, simple marketplace.</p>
+                
+                <div class="hero-cta-group">
+                    <a href="login.html" class="btn-hero-main">ENTER MARKET</a>
+                    <a href="#products" class="btn-hero-secondary">EXPLORE PRODUCTS</a>
+                </div>
+            </div>
 
-    <div class="products reveal">
-        <div class="product"><span>• Social Media Logs</span> - verified account access </div>
-        <div class="product"><span>• VPN / Proxy Access</span> - private browsing solutions</div>
-        <div class="product"><span>• Working boys Tools</span> - sharp & latest cashout methods</div>
-        <div class="product"><span>• Premium Accounts</span> - subscription-based services eg. netflix, spotify etc.</div>
-        <div class="product"><span>• Web Resources</span> - developer tools & APIs</div>
-    </div>
-
-    <!-- FEATURES -->
-    <div class="section-title reveal">Features</div>
-
-    <div class="card reveal">
-        <div class="icon">⚡</div>
-        <div>
-            <h3>Instant Delivery</h3>
-            <p>Everything delivered immediately after purchase.</p>
+            <!-- TRUST / STATS AREA -->
+            <div class="stats-grid reveal">
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Automated Delivery</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Secure Platform</div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="card reveal">
-        <div class="icon">🔒</div>
-        <div>
-            <h3>Secure Access</h3>
-            <p>all your orders are secured and encrypted.</p>
+    <!-- WHAT IS PR1ME LOGS Section -->
+    <section class="container" id="about">
+        <div class="section-header reveal">
+            <span class="section-tag">Marketplace Overview</span>
+            <h2 class="section-title-main">What is PR1MΞ LOGS?</h2>
+            <p class="section-subtitle">A central, streamlined hub engineered for seamlessly browsing dynamic inventory across specialized categories.</p>
         </div>
-    </div>
 
-    <div class="card reveal">
-        <div class="icon">💳</div>
-        <div>
-            <h3>Fast Payments</h3>
-            <p>Quick processing with smooth checkout flow powered by paystack.</p>
+        <div class="grid-3">
+            <div class="feature-card reveal">
+                <div class="feature-icon">🌐</div>
+                <h3>Everything in One Place</h3>
+                <p>Browse multiple categories from a single marketplace instead of jumping between different platforms.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon">🔄</div>
+                <h3>Updated Marketplace</h3>
+                <p>Product availability can change quickly, so the marketplace is designed around fresh product listings.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon">⚡</div>
+                <h3>Simple Checkout</h3>
+                <p>Find a product, review the details and continue through the purchase flow with minimal steps.</p>
+            </div>
         </div>
-    </div>
+    </section>
 
-</div>
+    <!-- WHY CHOOSE US -->
+    <section class="container">
+        <div class="section-header reveal">
+            <span class="section-tag">Core Advantages</span>
+            <h2 class="section-title-main">Why Choose PR1MΞ</h2>
+        </div>
 
-<script>
-/* FADE SCROLL */
-const observer = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-        if(e.isIntersecting){
-            e.target.classList.add("active");
+        <div class="grid-3">
+            <div class="feature-card reveal">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile Friendly</h3>
+                <p>Designed to work smoothly on phones, tablets and desktop devices with zero compromises.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure Account</h3>
+                <p>Your account and marketplace activity are tied securely to your authenticated account environment.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon">🛠️</div>
+                <h3>Dedicated Support</h3>
+                <p>Need help with an order or account issue? Contact support directly through our available support channels.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="container">
+        <div class="section-header reveal">
+            <span class="section-tag">User Journey</span>
+            <h2 class="section-title-main">How It Works</h2>
+            <p class="section-subtitle">Get started in four easy steps.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card reveal">
+                <span class="step-num">01</span>
+                <h3>Create Your Account</h3>
+                <p>Sign in or create your account to access the complete marketplace capabilities.</p>
+            </div>
+            <div class="step-card reveal">
+                <span class="step-num">02</span>
+                <h3>Explore</h3>
+                <p>Browse live categories and discover available products updated in real-time.</p>
+            </div>
+            <div class="step-card reveal">
+                <span class="step-num">03</span>
+                <h3>Choose</h3>
+                <p>Open a product, review the verified specifications, and select what fits your needs.</p>
+            </div>
+            <div class="step-card reveal">
+                <span class="step-num">04</span>
+                <h3>Receive</h3>
+                <p>Complete the checkout process and access your purchase according to the delivery method.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORY SHOWCASE & SEARCH & FEATURED PRODUCTS -->
+    <section class="container" id="products">
+        <div class="section-header reveal">
+            <span class="section-tag">Browse Catalog</span>
+            <h2 class="section-title-main">Explore Products</h2>
+            <p class="section-subtitle">Filter through our live inventory fetched directly from our catalog.</p>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <div class="search-box-container reveal">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search products by title or category..." />
+        </div>
+
+        <!-- CATEGORY PILLS -->
+        <div class="category-scroll-wrapper reveal" id="categoryFilterContainer">
+            <button class="category-chip active" data-category="ALL">All Categories</button>
+            <!-- Dynamically populated chips -->
+        </div>
+
+        <!-- FEATURED PRODUCTS SECTION -->
+        <div id="featuredSection" class="reveal" style="display: none; margin-bottom: 50px;">
+            <div class="category-group-header">
+                <div class="category-group-title">🔥 Featured Products</div>
+            </div>
+            <div class="product-grid" id="featuredGrid"></div>
+        </div>
+
+        <!-- PRODUCTS GROUPED BY CATEGORY OR SEARCH RESULTS -->
+        <div id="productsMainContainer">
+            <!-- Skeleton Loader -->
+            <div id="skeletonLoader" class="product-grid">
+                <div class="skeleton-card skeleton"></div>
+                <div class="skeleton-card skeleton"></div>
+                <div class="skeleton-card skeleton"></div>
+                <div class="skeleton-card skeleton"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY FEEDBACK -->
+    <section class="container">
+        <div class="section-header reveal">
+            <span class="section-tag">Community Feedback</span>
+            <h2 class="section-title-main">What Members Say</h2>
+            <p class="section-subtitle">Real experiences shared by community members using the PR1MΞ platform.</p>
+        </div>
+
+        <div class="grid-3">
+            <div class="review-card reveal">
+                <div class="review-user">
+                    <div class="avatar">M</div>
+                    <div class="user-info">
+                        <h4>Michael</h4>
+                        <span>Community Member</span>
+                    </div>
+                </div>
+                <p class="review-text">"Really clean marketplace and easy to navigate. Finding what I needed was straightforward."</p>
+            </div>
+
+            <div class="review-card reveal">
+                <div class="review-user">
+                    <div class="avatar">D</div>
+                    <div class="user-info">
+                        <h4>Daniel</h4>
+                        <span>Community Member</span>
+                    </div>
+                </div>
+                <p class="review-text">"Nice interface and the categories make it easy to find products without searching everywhere."</p>
+            </div>
+
+            <div class="review-card reveal">
+                <div class="review-user">
+                    <div class="avatar">C</div>
+                    <div class="user-info">
+                        <h4>Chris</h4>
+                        <span>Community Member</span>
+                    </div>
+                </div>
+                <p class="review-text">"The checkout flow is simple and the marketplace looks great on mobile."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="container" id="faq">
+        <div class="section-header reveal">
+            <span class="section-tag">Questions & Answers</span>
+            <h2 class="section-title-main">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list reveal">
+            <div class="faq-item">
+                <div class="faq-header">
+                    What is PR1MΞ LOGS?
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-content">
+                    PR1MΞ LOGS is a digital marketplace where users can browse available digital products, accounts, and resources across multiple specialized categories.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">
+                    How do I purchase a product?
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-content">
+                    Open the marketplace, click on your selected product to review its details, and click "BUY NOW" to continue through the purchase flow.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">
+                    Do I need an account?
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-content">
+                    Yes, an authenticated user account is required to perform transactions, store orders, and manage digital items securely.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">
+                    How do I get support?
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-content">
+                    You can contact our official support bot or community channel directly via Telegram through the links in the page footer.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BIG CTA -->
+    <section class="container">
+        <div class="cta-section reveal">
+            <h2 class="cta-title">Ready to explore PR1MΞ?</h2>
+            <p style="color: var(--muted); margin-bottom: 28px;">Enter the marketplace and discover what’s currently available in stock.</p>
+            <div class="hero-cta-group">
+                <a href="login.html" class="btn-hero-main">ENTER MARKET</a>
+                <a href="#products" class="btn-hero-secondary">EXPLORE PRODUCTS</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="brand-logo">PR1MΞ LOGS</a>
+                    <p>Premium digital marketplace built for speed, security, and seamless navigation.</p>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Marketplace</h4>
+                    <ul class="footer-links">
+                        <li><a href="login.html">Login Portal</a></li>
+                        <li><a href="#products">Product Catalog</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Support & Community</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://t.me/pr1me_logs_support_bot" target="_blank" rel="noopener">Support Bot</a></li>
+                        <li><a href="https://chat.whatsapp.com/C1vMoJBhZ2MEoW8yjekEnT" target="_blank" rel="noopener">WhatsApp giveaway community</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                &copy; 2026 PR1MΞ LOGS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- FIREBASE SDK MODULAR IMPORTS & APP LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+            authDomain: "primelogs-web.firebaseapp.com",
+            projectId: "primelogs-web",
+            storageBucket: "primelogs-web.firebasestorage.app",
+            messagingSenderId: "732956069251",
+            appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Local state store
+        let allProducts = [];
+        let categoriesSet = new Set();
+        let selectedCategory = "ALL";
+        let searchQuery = "";
+
+        const FALLBACK_IMAGE = "https://i.postimg.cc/m2pGVsSV/images.jpg";
+
+        // DOM References
+        const skeletonLoader = document.getElementById("skeletonLoader");
+        const productsMainContainer = document.getElementById("productsMainContainer");
+        const categoryFilterContainer = document.getElementById("categoryFilterContainer");
+        const searchInput = document.getElementById("searchInput");
+        const featuredSection = document.getElementById("featuredSection");
+        const featuredGrid = document.getElementById("featuredGrid");
+
+        // Format Price to NGN
+        function formatPrice(val) {
+            const num = Number(val);
+            if (isNaN(num) || num <= 0) return "Price unavailable";
+            return new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(num);
         }
-    });
-},{threshold:0.1});
 
-document.querySelectorAll(".reveal").forEach(el=>{
-    observer.observe(el);
-});
-
-/* ANIMATE CUSTOMER COUNT ONLY WHEN VISIBLE */
-const counter = document.getElementById("customers");
-let started = false;
-
-function animateCount(){
-    let start = 0;
-    let end = 86000;
-    let duration = 1500;
-    let step = end / (duration / 16);
-
-    function update(){
-        start += step;
-        if(start < end){
-            counter.textContent = Math.floor(start).toLocaleString();
-            requestAnimationFrame(update);
-        }else{
-            counter.textContent = "86k+";
+        // Get Stock Label
+        function getStockLabel(product) {
+            if (product.mode === "SINGLE") return "Single Item";
+            if (Array.isArray(product.stock)) return `${product.stock.length} left`;
+            const count = Number(product.stockCount || 0);
+            return count > 0 ? `${count} left` : "In stock";
         }
-    }
-    update();
-}
 
-const statObserver = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-        if(e.isIntersecting && !started){
-            started = true;
-            animateCount();
+        // Render Media (Image or Video)
+        function renderMediaHTML(product) {
+            const mediaUrl = product.image || product.imageUrl || product.icon || FALLBACK_IMAGE;
+            const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl);
+
+            if (isVideo) {
+                return `<video class="product-media" autoplay loop muted playsinline src="${mediaUrl}"></video>`;
+            }
+            return `<img class="product-media" src="${mediaUrl}" alt="${escapeHTML(product.name || 'Product')}" loading="lazy" onerror="this.src='${FALLBACK_IMAGE}'">`;
         }
-    });
-},{threshold:0.6});
 
-statObserver.observe(counter);
-</script>
+        function escapeHTML(str) {
+            return String(str || "").replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
 
+        // Render Individual Product Card
+        function createProductCardHTML(product) {
+            const priceFormatted = formatPrice(product.price);
+            const stockLabel = getStockLabel(product);
+            const mediaHTML = renderMediaHTML(product);
+            const targetUrl = `buy.html?id=${encodeURIComponent(product.id)}`;
+
+            return `
+                <div class="product-card">
+                    <div class="product-media-container">
+                        ${mediaHTML}
+                    </div>
+                    <div class="product-body">
+                        <div class="product-category-tag">${escapeHTML(product.category || 'General')}</div>
+                        <h4 class="product-title">${escapeHTML(product.name || 'Unnamed Resource')}</h4>
+                        <div class="product-meta">
+                            <span class="product-stock">⚡ ${stockLabel}</span>
+                            <span class="product-price">${priceFormatted}</span>
+                        </div>
+                        <a href="${targetUrl}" class="btn-buy">BUY NOW</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Main Fetch Function
+        async function fetchProducts() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                allProducts = [];
+                categoriesSet.clear();
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const productObj = {
+                        id: doc.id, // REAL Firestore Document ID
+                        ...data
+                    };
+                    
+                    // Exclude products with missing essential names
+                    if (productObj.name) {
+                        allProducts.push(productObj);
+                        if (productObj.category) {
+                            categoriesSet.add(productObj.category);
+                        }
+                    }
+                });
+
+                buildCategoryFilterPills();
+                renderMarketplace();
+            } catch (error) {
+                console.error("Firestore Fetch Error:", error);
+                productsMainContainer.innerHTML = `
+                    <div style="text-align:center; padding: 40px; color: var(--muted);">
+                        <p>Unable to load products right now.</p>
+                        <button onclick="window.location.reload()" class="btn-hero-secondary" style="margin-top: 15px; padding: 10px 20px;">TRY AGAIN</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Dynamically build filter pills
+        function buildCategoryFilterPills() {
+            categoryFilterContainer.innerHTML = `<button class="category-chip ${selectedCategory === 'ALL' ? 'active' : ''}" data-category="ALL">All Categories</button>`;
+            
+            categoriesSet.forEach(cat => {
+                const btn = document.createElement("button");
+                btn.className = `category-chip ${selectedCategory === cat ? 'active' : ''}`;
+                btn.dataset.category = cat;
+                btn.textContent = cat;
+                categoryFilterContainer.appendChild(btn);
+            });
+        }
+
+        // Filter and Render Logic
+        function renderMarketplace() {
+            if (skeletonLoader) skeletonLoader.style.display = "none";
+
+            // Filter products
+            let filtered = allProducts.filter(p => {
+                const matchesCat = (selectedCategory === "ALL" || p.category === selectedCategory);
+                const query = searchQuery.toLowerCase();
+                const matchesSearch = !query || 
+                    (p.name && p.name.toLowerCase().includes(query)) || 
+                    (p.category && p.category.toLowerCase().includes(query));
+                return matchesCat && matchesSearch;
+            });
+
+            // Handle Featured Section (Show only when not searching and ALL selected)
+            if (selectedCategory === "ALL" && !searchQuery) {
+                const featured = allProducts.filter(p => p.price && (p.image || p.imageUrl)).slice(0, 4);
+                if (featured.length > 0) {
+                    featuredSection.style.display = "block";
+                    featuredGrid.innerHTML = featured.map(createProductCardHTML).join("");
+                } else {
+                    featuredSection.style.display = "none";
+                }
+            } else {
+                featuredSection.style.display = "none";
+            }
+
+            if (filtered.length === 0) {
+                productsMainContainer.innerHTML = `
+                    <div style="text-align:center; padding: 60px 20px; color: var(--muted);">
+                        <h3>No products found</h3>
+                        <p>Try searching for a different term or selection.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by category if viewing ALL and no search query
+            if (selectedCategory === "ALL" && !searchQuery) {
+                const grouped = {};
+                filtered.forEach(p => {
+                    const cat = p.category || "OTHER Logs";
+                    if (!grouped[cat]) grouped[cat] = [];
+                    grouped[cat].push(p);
+                });
+
+                let html = "";
+                for (const [catName, items] of Object.entries(grouped)) {
+                    // Rule: Display up to 3 or available real products without duplication
+                    const displayItems = items.slice(0, 3);
+                    html += `
+                        <div class="category-group">
+                            <div class="category-group-header">
+                                <div class="category-group-title">📂 ${escapeHTML(catName)}</div>
+                            </div>
+                            <div class="product-grid">
+                                ${displayItems.map(createProductCardHTML).join("")}
+                            </div>
+                        </div>
+                    `;
+                }
+                productsMainContainer.innerHTML = html;
+            } else {
+                // Display as single unified grid for specific search or category filter
+                productsMainContainer.innerHTML = `
+                    <div class="product-grid">
+                        ${filtered.map(createProductCardHTML).join("")}
+                    </div>
+                `;
+            }
+
+            // Re-trigger reveal observer for dynamically created elements
+            observeNewElements();
+        }
+
+        // UI Event Listeners
+        categoryFilterContainer.addEventListener("click", (e) => {
+            if (e.target.classList.contains("category-chip")) {
+                document.querySelectorAll(".category-chip").forEach(c => c.classList.remove("active"));
+                e.target.classList.add("active");
+                selectedCategory = e.target.dataset.category;
+                renderMarketplace();
+            }
+        });
+
+        searchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value.trim();
+            renderMarketplace();
+        });
+
+        // Initialize Fetch
+        fetchProducts();
+    </script>
+
+    <!-- INTERACTION & SCROLL REVEAL SCRIPT -->
+    <script>
+        // FAQ Accordion Toggle
+        document.querySelectorAll(".faq-header").forEach(header => {
+            header.addEventListener("click", () => {
+                const item = header.parentElement;
+                item.classList.toggle("open");
+            });
+        });
+
+        // Scroll IntersectionObserver Reveal Handler
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                }
+            });
+        }, observerOptions);
+
+        function observeNewElements() {
+            document.querySelectorAll(".reveal, .product-card").forEach(el => {
+                revealObserver.observe(el);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            observeNewElements();
+        });
+    </script>
 </body>
 </html>
