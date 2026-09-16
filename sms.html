@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PR1MΞ SMS</title>
+
+    <style>
+
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-bg: rgba(255,255,255,0.03);
+            --glass-border: rgba(255,255,255,0.08);
+            --dark-bg: #060608;
+            --stock-red: #ff4b4b;
+            --stock-green: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #f1f1f3;
+
+            background-image:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(188,19,254,0.1) 0%,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(0,243,255,0.08) 0%,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 50% 50%,
+                    #0d0d16 0%,
+                    #060608 100%
+                );
+
+            background-attachment: fixed;
+
+            min-height: 100vh;
+
+            padding: 24px 16px;
+
+            overflow-x: hidden;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+
+            border: 2.5px solid rgba(255,255,255,0.15);
+            border-top: 2.5px solid var(--neon-cyan);
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 4px 8px 16px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+
+            color: #fff;
+
+            text-shadow:
+                0 0 12px rgba(0,243,255,0.6);
+        }
+
+        .menu-btn {
+            background: rgba(255,255,255,0.04);
+
+            border: 1px solid var(--glass-border);
+
+            color: white;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            padding: 10px;
+
+            transition: all 0.2s ease;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .welcome-container {
+            padding: 0 8px 16px;
+        }
+
+        .welcome-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #cbd5e0;
+        }
+
+        .welcome-username {
+            color: var(--neon-cyan);
+            font-weight: 700;
+
+            text-shadow:
+                0 0 8px rgba(0,243,255,0.3);
+        }
+
+        .dashboard-card {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(30,60,114,0.4) 0%,
+                    rgba(42,82,152,0.2) 100%
+                );
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            border:
+                1px solid rgba(58,118,240,0.3);
+
+            border-radius: 24px;
+
+            padding: 28px 24px;
+
+            margin-bottom: 24px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 32px rgba(0,0,0,0.3),
+                inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        .dashboard-card::after {
+
+            content: '';
+
+            position: absolute;
+
+            top: -50px;
+            right: -50px;
+
+            width: 150px;
+            height: 150px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0,243,255,0.2) 0%,
+                    transparent 70%
+                );
+
+            border-radius: 50%;
+        }
+
+        .balance-label {
+
+            font-size: 0.85rem;
+
+            color: #a0aec0;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+
+            font-size: 2.4rem;
+
+            font-weight: 700;
+
+            margin-bottom: 20px;
+
+            min-height: 48px;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .fund-btn {
+
+            background: #fff;
+
+            color: #000;
+
+            border: none;
+
+            padding: 12px 24px;
+
+            border-radius: 14px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+            font-size: 0.85rem;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            cursor: pointer;
+        }
+
+        .sms-hero {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,243,255,0.08),
+                    rgba(188,19,254,0.08)
+                );
+
+            border:
+                1px solid rgba(0,243,255,0.12);
+
+            border-radius: 20px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+        }
+
+        .sms-hero h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .sms-hero p {
+            color: #8f98a8;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .search-wrapper {
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+
+            width: 100%;
+
+            background:
+                rgba(255,255,255,0.04);
+
+            border:
+                1px solid var(--glass-border);
+
+            color: white;
+
+            outline: none;
+
+            border-radius: 15px;
+
+            padding: 15px 17px;
+
+            font-size: 0.9rem;
+
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color:
+                rgba(0,243,255,0.5);
+        }
+
+        .country-scroll {
+
+            display: flex;
+
+            gap: 9px;
+
+            overflow-x: auto;
+
+            padding-bottom: 8px;
+
+            margin-bottom: 22px;
+
+            scrollbar-width: none;
+        }
+
+        .country-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .country-btn {
+
+            flex-shrink: 0;
+
+            padding: 9px 15px;
+
+            border-radius: 20px;
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            background:
+                rgba(255,255,255,0.04);
+
+            color: #a0aec0;
+
+            cursor: pointer;
+
+            font-size: 0.78rem;
+
+            font-weight: 600;
+
+            transition: all 0.2s;
+        }
+
+        .country-btn.active {
+
+            color: #fff;
+
+            border-color:
+                rgba(0,243,255,0.35);
+
+            background:
+                rgba(0,243,255,0.1);
+
+            box-shadow:
+                0 0 14px rgba(0,243,255,0.08);
+        }
+
+        .section-title {
+
+            font-size: 0.8rem;
+
+            color: #718096;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 14px;
+        }
+
+        .service-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+            margin-bottom: 50px;
+        }
+
+        .service-row {
+
+            background:
+                rgba(255,255,255,0.025);
+
+            backdrop-filter: blur(12px);
+
+            -webkit-backdrop-filter: blur(12px);
+
+            border:
+                1px solid var(--glass-border);
+
+            border-radius: 17px;
+
+            padding: 17px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 14px;
+
+            min-height: 90px;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .service-row:hover {
+
+            transform:
+                translateY(-1px);
+
+            border-color:
+                rgba(0,243,255,0.2);
+        }
+
+        .service-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            min-width: 0;
+
+            flex: 1;
+        }
+
+        .service-icon {
+
+            width: 47px;
+            height: 47px;
+
+            border-radius: 13px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,243,255,0.13),
+                    rgba(188,19,254,0.13)
+                );
+
+            border:
+                1px solid rgba(0,243,255,0.15);
+
+            color:
+                var(--neon-cyan);
+
+            font-size: 18px;
+
+            font-weight: 800;
+        }
+
+        .service-details {
+            min-width: 0;
+        }
+
+        .service-name {
+
+            color: #e2e8f0;
+
+            font-size: 0.9rem;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            margin-bottom: 5px;
+        }
+
+        .service-country {
+
+            color: #718096;
+
+            font-size: 0.75rem;
+        }
+
+        .service-price {
+
+            color:
+                var(--neon-cyan);
+
+            font-size: 0.9rem;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+
+            text-align: right;
+        }
+
+        .availability {
+
+            font-size: 0.65rem;
+
+            font-weight: 800;
+
+            padding: 4px 7px;
+
+            border-radius: 8px;
+
+            text-transform: uppercase;
+
+            background:
+                rgba(0,255,136,0.08);
+
+            color:
+                var(--stock-green);
+        }
+
+        .availability.unavailable {
+
+            background:
+                rgba(255,75,75,0.08);
+
+            color:
+                var(--stock-red);
+        }
+
+        .buy-btn {
+
+            margin-top: 8px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            border:
+                1px solid var(--glass-border);
+
+            color: white;
+
+            border-radius: 10px;
+
+            padding: 8px 13px;
+
+            font-size: 0.7rem;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: all 0.2s;
+        }
+
+        .buy-btn:hover {
+
+            background:
+                var(--neon-cyan);
+
+            color:
+                #060608;
+
+            border-color:
+                var(--neon-cyan);
+
+            box-shadow:
+                0 0 12px rgba(0,243,255,0.35);
+        }
+
+        .buy-btn:disabled {
+
+            opacity: 0.35;
+
+            cursor: not-allowed;
+        }
+
+        .empty-products {
+
+            padding: 40px 20px;
+
+            text-align: center;
+
+            color: #718096;
+
+            border:
+                1px dashed var(--glass-border);
+
+            border-radius: 16px;
+
+            line-height: 1.7;
+        }
+
+        .retry-btn {
+
+            margin-top: 15px;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            border: 1px solid rgba(0,243,255,0.25);
+
+            background: rgba(0,243,255,0.08);
+
+            color: var(--neon-cyan);
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .side-nav {
+
+            position: fixed;
+
+            top: 0;
+
+            right: -100%;
+
+            width: 290px;
+
+            height: 100%;
+
+            background:
+                rgba(8,8,12,0.95);
+
+            backdrop-filter:
+                blur(30px);
+
+            -webkit-backdrop-filter:
+                blur(30px);
+
+            border-left:
+                1px solid var(--glass-border);
+
+            z-index: 1000;
+
+            transition:
+                right 0.4s cubic-bezier(
+                    0.16,
+                    1,
+                    0.3,
+                    1
+                );
+
+            padding:
+                90px 24px 40px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap: 14px;
+        }
+
+        .side-nav.active {
+            right: 0;
+        }
+
+        .nav-item {
+
+            color: #e2e8f0;
+
+            text-decoration: none;
+
+            font-size: 0.95rem;
+
+            font-weight: 600;
+
+            padding: 16px;
+
+            background:
+                rgba(255,255,255,0.02);
+
+            border:
+                1px solid var(--glass-border);
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+
+            background:
+                rgba(255,255,255,0.06);
+
+            color: white;
+        }
+
+        .nav-icon {
+
+            width: 20px;
+            height: 20px;
+
+            stroke-width: 2;
+
+            color:
+                var(--neon-cyan);
+        }
+
+        .nav-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,0.6);
+
+            display: none;
+
+            z-index: 999;
+
+            backdrop-filter:
+                blur(4px);
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        .telegram-float {
+
+            position: fixed;
+
+            bottom: 24px;
+            right: 24px;
+
+            width: 58px;
+            height: 58px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid rgba(255,255,255,0.12);
+
+            backdrop-filter:
+                blur(18px);
+
+            z-index: 5000;
+
+            cursor: pointer;
+        }
+
+        .telegram-float svg {
+
+            width: 26px;
+            height: 26px;
+
+            fill: white;
+        }
+
+        #tg-confirm-modal {
+
+            position: fixed;
+
+            top: 50%;
+            left: 50%;
+
+            transform:
+                translate(-50%,-50%)
+                scale(0.92);
+
+            width: 90%;
+
+            max-width: 400px;
+
+            background:
+                rgba(10,10,14,0.98);
+
+            backdrop-filter:
+                blur(24px);
+
+            border:
+                1px solid
+                rgba(0,243,255,0.4);
+
+            border-radius: 28px;
+
+            padding: 36px 28px;
+
+            z-index: 6000;
+
+            text-align: center;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition:
+                all 0.3s ease;
+        }
+
+        #tg-confirm-modal.active {
+
+            opacity: 1;
+
+            pointer-events: auto;
+
+            transform:
+                translate(-50%,-50%)
+                scale(1);
+        }
+
+        @media(max-width:600px) {
+
+            body {
+                padding: 20px 14px;
+            }
+
+            .service-row {
+                padding: 14px;
+            }
+
+            .service-icon {
+                width: 42px;
+                height: 42px;
+            }
+
+            .service-price {
+                font-size: 0.82rem;
+            }
+
+            .buy-btn {
+                padding: 7px 10px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div
+    class="nav-overlay"
+    id="overlay"
+    onclick="toggleMenu(); closeTgConfirmModal();"
+></div>
+
+
+<nav class="side-nav" id="sideNav">
+
+    <a href="prof.html" class="nav-item">
+
+        <svg class="nav-icon"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor">
+
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+
+            <circle cx="12" cy="7" r="4"></circle>
+
+        </svg>
+
+        Profile
+
+    </a>
+
+
+    <a href="mine.html" class="nav-item">
+
+        <svg class="nav-icon"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor">
+
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+
+            <path d="M3 6h18"></path>
+
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+
+        </svg>
+
+        Order History
+
+    </a>
+
+
+    <a href="fund.html" class="nav-item">
+
+        <svg class="nav-icon"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor">
+
+            <rect
+                x="2"
+                y="5"
+                width="20"
+                height="14"
+                rx="2"
+            ></rect>
+
+            <line
+                x1="2"
+                y1="10"
+                x2="22"
+                y2="10"
+            ></line>
+
+        </svg>
+
+        Top Up Wallet
+
+    </a>
+
+
+    <a
+        href="https://t.me/pr1me_logs_support_bot"
+        class="nav-item"
+        onclick="
+            event.preventDefault();
+            openTgConfirmModal(
+                'https://t.me/pr1me_logs_support_bot'
+            );
+        "
+    >
+
+        <svg class="nav-icon"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor">
+
+            <path d="M4 12a8 8 0 0 1 16 0"></path>
+
+            <rect
+                x="2"
+                y="12"
+                width="4"
+                height="8"
+                rx="2"
+            ></rect>
+
+            <rect
+                x="18"
+                y="12"
+                width="4"
+                height="8"
+                rx="2"
+            ></rect>
+
+            <path d="M12 20v2"></path>
+
+        </svg>
+
+        Support
+
+    </a>
+
+
+    <a href="rules.html" class="nav-item">
+
+        <svg class="nav-icon"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor">
+
+            <path
+                d="M4 19.5A2.5 2.5 0 0 1
+                   6.5 17H20"
+            ></path>
+
+            <path
+                d="M6.5 20v-20H6.5A2.5
+                   2.5 0 0 1 4 4.5v15
+                   A2.5 2.5 0 0 1 6.5 20z"
+            ></path>
+
+        </svg>
+
+        Rules
+
+    </a>
+
+
+    <a
+        href="#"
+        class="nav-item"
+        id="logout-btn"
+        style="margin-top:auto;color:#ff4b4b;"
+    >
+
+        <svg
+            class="nav-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ff4b4b"
+        >
+
+            <path
+                d="M9 21H5a2 2 0 0 1-2-2V5
+                   a2 2 0 0 1 2-2h4"
+            ></path>
+
+            <polyline
+                points="16 17 21 12 16 7"
+            ></polyline>
+
+            <line
+                x1="21"
+                y1="12"
+                x2="9"
+                y2="12"
+            ></line>
+
+        </svg>
+
+        Sign Out
+
+    </a>
+
+</nav>
+
+
+<header>
+
+    <div class="logo">
+        PR1MΞ SMS
+    </div>
+
+    <button
+        class="menu-btn"
+        onclick="toggleMenu()"
+    >
+
+        <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+
+            <line
+                x1="3"
+                y1="12"
+                x2="21"
+                y2="12"
+            ></line>
+
+            <line
+                x1="3"
+                y1="6"
+                x2="21"
+                y2="6"
+            ></line>
+
+            <line
+                x1="3"
+                y1="18"
+                x2="21"
+                y2="18"
+            ></line>
+
+        </svg>
+
+    </button>
+
+</header>
+
+
+<div class="welcome-container">
+
+    <span class="welcome-text">
+
+        welcome back 👋,
+
+        <span
+            id="username-display"
+            class="welcome-username"
+        >
+            User
+        </span>
+
+    </span>
+
+</div>
+
+
+<div class="dashboard-card">
+
+    <div class="balance-label">
+        Available Balance
+    </div>
+
+    <div class="balance-amount">
+
+        <div
+            id="balance-loader"
+            class="spinner"
+        ></div>
+
+        <span
+            id="balance-text"
+            style="display:none;"
+        >
+
+            ₦<span id="balance">
+                0.00
+            </span>
+
+        </span>
+
+    </div>
+
+
+    <a
+        href="fund.html"
+        class="fund-btn"
+    >
+
+        + Top Up Wallet
+
+    </a>
+
+</div>
+
+
+<section class="sms-hero">
+
+    <h1>
+        SMS Verification
+    </h1>
+
+    <p>
+        Choose a service and country to view
+        available SMS options.
+    </p>
+
+</section>
+
+
+<div class="search-wrapper">
+
+    <input
+        id="search"
+        class="search-input"
+        type="search"
+        placeholder="Search service..."
+        autocomplete="off"
+    >
+
+</div>
+
+
+<div
+    class="country-scroll"
+    id="country-filters"
+>
+
+    <button
+        class="country-btn active"
+        data-country="all"
+    >
+        All Countries
+    </button>
+
+</div>
+
+
+<div class="section-title">
+    Available Services
+</div>
+
+
+<div
+    id="services"
+    class="service-list"
+>
+
+    <div class="empty-products">
+
+        <div class="spinner"></div>
+
+        <br><br>
+
+        Connecting to SMS server...
+
+    </div>
+
+</div>
+
+
+<a
+    onclick="
+        openTgConfirmModal(
+            'https://t.me/pr1me_logs_support_bot'
+        )
+    "
+    class="telegram-float"
+>
+
+    <svg viewBox="0 0 24 24">
+
+        <path
+            d="M9.04 15.47
+               8.67 20.7c.53 0
+               .76-.23 1.04-.5l2.5-2.39
+               5.18 3.79c.95.52
+               1.62.25 1.88-.88l3.4-15.92h0
+               c.31-1.45-.52-2.02-1.45-1.67L1.46
+               10.3c-1.4.55-1.38 1.33-.24
+               1.68l5.14 1.6L18.3 6.1
+               c.56-.34 1.07-.15.65.22"
+        />
+
+    </svg>
+
+</a>
+
+
+<div id="tg-confirm-modal">
+
+    <div
+        style="
+            width:56px;
+            height:56px;
+            border-radius:50%;
+            background:rgba(0,243,255,0.1);
+            border:1px solid rgba(0,243,255,0.3);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:0 auto 20px;
+        "
+    >
+
+        <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="white"
+        >
+
+            <path
+                d="M9.04 15.47
+                   8.67 20.7c.53 0
+                   .76-.23 1.04-.5l2.5-2.39
+                   5.18 3.79c.95.52
+                   1.62.25 1.88-.88l3.4-15.92h0
+                   c.31-1.45-.52-2.02-1.45-1.67L1.46
+                   10.3c-1.4.55-1.38 1.33-.24
+                   1.68l5.14 1.6L18.3 6.1
+                   c.56-.34 1.07-.15.65.22"
+            />
+
+        </svg>
+
+    </div>
+
+
+    <h3
+        style="
+            color:#fff;
+            margin-bottom:10px;
+        "
+    >
+        Redirecting to Telegram
+    </h3>
+
+
+    <p
+        style="
+            color:#cbd5e0;
+            margin-bottom:28px;
+            font-size:.9rem;
+            line-height:1.6;
+        "
+    >
+        You will be redirected to our Telegram
+        support bot.
+    </p>
+
+
+    <div
+        style="
+            display:flex;
+            gap:12px;
+        "
+    >
+
+        <button
+            onclick="confirmTelegramRedirect()"
+            class="fund-btn"
+            style="
+                flex:1;
+                justify-content:center;
+                background:
+                    linear-gradient(
+                        90deg,
+                        var(--neon-cyan),
+                        #00a8ff
+                    );
+            "
+        >
+            CONFIRM
+        </button>
+
+
+        <button
+            onclick="closeTgConfirmModal()"
+            class="menu-btn"
+            style="
+                flex:1;
+                justify-content:center;
+            "
+        >
+            CANCEL
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+    import {
+        initializeApp
+    } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+
+    import {
+        getAuth,
+        onAuthStateChanged,
+        signOut
+    } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+    import {
+        getFirestore,
+        doc,
+        onSnapshot
+    } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+    /*
+     * =========================================================
+     * PR1MΞ SMS BACKEND
+     * =========================================================
+     *
+     * REPLACE THIS WITH YOUR ACTUAL RAILWAY URL.
+     *
+     * Example:
+     *
+     * const API_BASE =
+     *     "https://prime-sms-production.up.railway.app";
+     *
+     * DO NOT put your PSOCIALS_API_KEY here.
+     *
+     * =========================================================
+     */
+
+    const API_BASE =
+        "pr1m-l0gs-sms-bot-sms-bot.up.railway.app";
+
+
+    /*
+     * FIREBASE
+     */
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+
+        authDomain:
+            "primelogs-web.firebaseapp.com",
+
+        projectId:
+            "primelogs-web",
+
+        storageBucket:
+            "primelogs-web.firebasestorage.app",
+
+        messagingSenderId:
+            "732956069251",
+
+        appId:
+            "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+
+    };
+
+
+    const app =
+        initializeApp(firebaseConfig);
+
+
+    const auth =
+        getAuth(app);
+
+
+    const db =
+        getFirestore(app);
+
+
+    /*
+     * ELEMENTS
+     */
+
+    const usernameDisplay =
+        document.getElementById(
+            "username-display"
+        );
+
+
+    const balanceLoader =
+        document.getElementById(
+            "balance-loader"
+        );
+
+
+    const balanceText =
+        document.getElementById(
+            "balance-text"
+        );
+
+
+    const balanceDisplay =
+        document.getElementById(
+            "balance"
+        );
+
+
+    const logoutBtn =
+        document.getElementById(
+            "logout-btn"
+        );
+
+
+    let currentUser = null;
+
+    let smsServices = [];
+
+    let selectedCountry = "all";
+
+
+    /*
+     * =========================================================
+     * AUTH
+     * =========================================================
+     */
+
+    onAuthStateChanged(
+        auth,
+        (user) => {
+
+            if (!user) {
+
+                window.location.href =
+                    "index.html";
+
+                return;
+
+            }
+
+
+            currentUser = user;
+
+
+            /*
+             * USER DOCUMENT
+             *
+             * users/{uid}
+             */
+
+            const userRef =
+                doc(
+                    db,
+                    "users",
+                    user.uid
+                );
+
+
+            onSnapshot(
+                userRef,
+                (snap) => {
+
+                    if (!snap.exists()) {
+                        return;
+                    }
+
+
+                    const data =
+                        snap.data();
+
+
+                    usernameDisplay.textContent =
+                        data.username ||
+                        (
+                            user.email
+                                ? user.email.split("@")[0]
+                                : "User"
+                        );
+
+
+                    const userBalance =
+                        Number(
+                            data.balance || 0
+                        );
+
+
+                    balanceDisplay.textContent =
+                        userBalance.toLocaleString(
+                            undefined,
+                            {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }
+                        );
+
+
+                    balanceLoader.style.display =
+                        "none";
+
+
+                    balanceText.style.display =
+                        "inline";
+
+                },
+
+                (error) => {
+
+                    console.error(
+                        "Wallet listener error:",
+                        error
+                    );
+
+                    balanceLoader.style.display =
+                        "none";
+
+                    balanceText.style.display =
+                        "inline";
+
+                }
+            );
+
+
+            /*
+             * Only load Psocials catalogue
+             * after the user is authenticated.
+             */
+
+            loadSmsCatalogue();
+
+        }
+    );
+
+
+    /*
+     * =========================================================
+     * LOGOUT
+     * =========================================================
+     */
+
+    logoutBtn.addEventListener(
+        "click",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            try {
+
+                logoutBtn.style.opacity =
+                    "0.5";
+
+                logoutBtn.textContent =
+                    "Signing Out...";
+
+
+                await signOut(auth);
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+
+                logoutBtn.style.opacity =
+                    "1";
+
+                logoutBtn.textContent =
+                    "Sign Out";
+
+
+                alert(
+                    "Logout failed. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * =========================================================
+     * LOAD SMS CATALOGUE FROM RAILWAY
+     * =========================================================
+     */
+
+    async function loadSmsCatalogue() {
+
+        const container =
+            document.getElementById(
+                "services"
+            );
+
+
+        /*
+         * Prevent accidental use before
+         * the Railway URL is changed.
+         */
+
+        if (
+            API_BASE.includes(
+                "YOUR-RAILWAY-DOMAIN"
+            )
+        ) {
+
+            container.innerHTML = `
+
+                <div class="empty-products">
+
+                    <strong style="color:#fff;">
+                        Backend URL not configured
+                    </strong>
+
+                    <br><br>
+
+                    Replace
+                    <b>YOUR-RAILWAY-DOMAIN</b>
+                    in sms.html with your
+                    Railway public URL.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML = `
+
+            <div class="empty-products">
+
+                <div class="spinner"></div>
+
+                <br><br>
+
+                Loading SMS services...
+
+            </div>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/psocials/catalog/numbers`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Accept":
+                                "application/json"
+                        },
+
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Backend returned HTTP ${response.status}`
+                );
+
+            }
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                !result ||
+                result.success !== true
+            ) {
+
+                throw new Error(
+                    result?.error ||
+                    "Backend returned an invalid response."
+                );
+
+            }
+
+
+            smsServices =
+                Array.isArray(result.data)
+                    ? result.data
+                    : [];
+
+
+            createCountryFilters();
+
+            renderServices();
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "SMS catalogue error:",
+                error
+            );
+
+
+            container.innerHTML = `
+
+                <div class="empty-products">
+
+                    <strong style="color:#fff;">
+                        Unable to load SMS services
+                    </strong>
+
+                    <br><br>
+
+                    ${escapeHTML(
+                        error.message ||
+                        "Please try again."
+                    )}
+
+                    <br>
+
+                    <button
+                        class="retry-btn"
+                        id="retry-catalogue"
+                    >
+                        TRY AGAIN
+                    </button>
+
+                </div>
+
+            `;
+
+
+            document
+                .getElementById(
+                    "retry-catalogue"
+                )
+                ?.addEventListener(
+                    "click",
+                    loadSmsCatalogue
+                );
+
+        }
+
+    }
+
+
+    /*
+     * =========================================================
+     * COUNTRY FILTERS
+     * =========================================================
+     */
+
+    function createCountryFilters() {
+
+        const filters =
+            document.getElementById(
+                "country-filters"
+            );
+
+
+        filters.innerHTML = "";
+
+
+        const allButton =
+            document.createElement(
+                "button"
+            );
+
+
+        allButton.className =
+            "country-btn active";
+
+
+        allButton.textContent =
+            "All Countries";
+
+
+        allButton.dataset.country =
+            "all";
+
+
+        allButton.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(
+                        ".country-btn"
+                    )
+                    .forEach(
+                        btn =>
+                            btn.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                allButton.classList.add(
+                    "active"
+                );
+
+
+                selectedCountry =
+                    "all";
+
+
+                renderServices();
+
+            }
+        );
+
+
+        filters.appendChild(
+            allButton
+        );
+
+
+        const countries =
+            new Map();
+
+
+        smsServices.forEach(
+            (service) => {
+
+                const id =
+                    service.country_id;
+
+
+                /*
+                 * Different backend versions may
+                 * expose country as:
+                 *
+                 * service.country
+                 *
+                 * or:
+                 *
+                 * service.country_name
+                 */
+
+                const name =
+                    service.country ||
+                    service.country_name ||
+                    `Country ${id ?? ""}`;
+
+
+                if (
+                    id !== undefined &&
+                    id !== null
+                ) {
+
+                    countries.set(
+                        String(id),
+                        name
+                    );
+
+                }
+
+            }
+        );
+
+
+        countries.forEach(
+            (name, id) => {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.className =
+                    "country-btn";
+
+
+                button.textContent =
+                    name;
+
+
+                button.dataset.country =
+                    id;
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        document
+                            .querySelectorAll(
+                                ".country-btn"
+                            )
+                            .forEach(
+                                btn =>
+                                    btn.classList.remove(
+                                        "active"
+                                    )
+                            );
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        selectedCountry =
+                            id;
+
+
+                        renderServices();
+
+                    }
+                );
+
+
+                filters.appendChild(
+                    button
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+     * =========================================================
+     * RENDER SERVICES
+     * =========================================================
+     */
+
+    function renderServices() {
+
+        const container =
+            document.getElementById(
+                "services"
+            );
+
+
+        const search =
+            document
+                .getElementById(
+                    "search"
+                )
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const filtered =
+            smsServices.filter(
+                (service) => {
+
+                    const name =
+                        String(
+                            service.name ||
+                            ""
+                        ).toLowerCase();
+
+
+                    const code =
+                        String(
+                            service.code ||
+                            ""
+                        ).toLowerCase();
+
+
+                    const country =
+                        String(
+                            service.country ||
+                            service.country_name ||
+                            ""
+                        ).toLowerCase();
+
+
+                    const matchesSearch =
+                        !search ||
+                        name.includes(search) ||
+                        code.includes(search) ||
+                        country.includes(search);
+
+
+                    const matchesCountry =
+                        selectedCountry === "all" ||
+                        String(
+                            service.country_id
+                        ) === selectedCountry;
+
+
+                    return (
+                        matchesSearch &&
+                        matchesCountry
+                    );
+
+                }
+            );
+
+
+        if (!filtered.length) {
+
+            container.innerHTML = `
+
+                <div class="empty-products">
+
+                    No SMS services found.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        filtered.forEach(
+            (service) => {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "service-row";
+
+
+                const name =
+                    service.name ||
+                    service.code ||
+                    "SMS Service";
+
+
+                const country =
+                    service.country ||
+                    service.country_name ||
+                    "Unknown country";
+
+
+                /*
+                 * Psocials price:
+                 *
+                 * {
+                 *     amount: 450,
+                 *     currency: "NGN"
+                 * }
+                 */
+
+                const rawPrice =
+                    service.price;
+
+
+                let price = 0;
+
+
+                if (
+                    rawPrice &&
+                    typeof rawPrice === "object"
+                ) {
+
+                    price =
+                        Number(
+                            rawPrice.amount || 0
+                        );
+
+                }
+
+                else {
+
+                    price =
+                        Number(
+                            rawPrice || 0
+                        );
+
+                }
+
+
+                const currency =
+                    (
+                        rawPrice &&
+                        typeof rawPrice === "object" &&
+                        rawPrice.currency
+                    )
+                        ? rawPrice.currency
+                        : "NGN";
+
+
+                /*
+                 * We don't assume a specific
+                 * stock quantity because the
+                 * catalogue endpoint doesn't
+                 * guarantee a stock-count field.
+                 */
+
+                const available =
+                    service.in_stock !== false &&
+                    service.available !== false;
+
+
+                const initial =
+                    String(name)
+                        .trim()
+                        .charAt(0)
+                        .toUpperCase() ||
+                    "S";
+
+
+                row.innerHTML = `
+
+                    <div class="service-left">
+
+                        <div class="service-icon">
+
+                            ${escapeHTML(initial)}
+
+                        </div>
+
+
+                        <div class="service-details">
+
+                            <div class="service-name">
+
+                                ${escapeHTML(name)}
+
+                            </div>
+
+
+                            <div class="service-country">
+
+                                ${escapeHTML(country)}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="service-price">
+
+                            ${
+                                currency === "NGN"
+                                    ? "₦"
+                                    : escapeHTML(currency)
+                            }${price.toLocaleString(
+                                undefined,
+                                {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }
+                            )}
+
+                        </div>
+
+
+                        <div style="text-align:right;">
+
+                            <span
+                                class="
+                                    availability
+                                    ${
+                                        available
+                                            ? ""
+                                            : "unavailable"
+                                    }
+                                "
+                            >
+
+                                ${
+                                    available
+                                        ? "Available"
+                                        : "Unavailable"
+                                }
+
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            class="buy-btn"
+                            ${
+                                available
+                                    ? ""
+                                    : "disabled"
+                            }
+                        >
+
+                            ${
+                                available
+                                    ? "SELECT"
+                                    : "UNAVAILABLE"
+                            }
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                const buyButton =
+                    row.querySelector(
+                        ".buy-btn"
+                    );
+
+
+                if (available) {
+
+                    buyButton.addEventListener(
+                        "click",
+                        () => {
+
+                            selectSmsService(
+                                service
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                fragment.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        container.appendChild(
+            fragment
+        );
+
+    }
+
+
+    /*
+     * =========================================================
+     * SELECT SERVICE
+     * =========================================================
+     *
+     * This currently only selects the service.
+     *
+     * Any actual order/payment operation should
+     * remain server-side.
+     *
+     * =========================================================
+     */
+
+    function selectSmsService(service) {
+
+        const name =
+            service.name ||
+            service.code ||
+            "SMS service";
+
+
+        alert(
+            `${name} selected.`
+        );
+
+
+        console.log(
+            "Selected service:",
+            service
+        );
+
+    }
+
+
+    /*
+     * =========================================================
+     * SEARCH
+     * =========================================================
+     */
+
+    document
+        .getElementById(
+            "search"
+        )
+        .addEventListener(
+            "input",
+            renderServices
+        );
+
+
+    /*
+     * =========================================================
+     * HTML ESCAPE
+     * =========================================================
+     */
+
+    function escapeHTML(value) {
+
+        return String(value)
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /*
+     * =========================================================
+     * DEBUG API
+     * =========================================================
+     */
+
+    window.PRIME_SMS = {
+
+        reload:
+            loadSmsCatalogue,
+
+        services:
+            () => smsServices,
+
+        currentUser:
+            () => currentUser
+
+    };
+
+</script>
+
+
+<script>
+
+    let pendingTelegramUrl = "";
+
+
+    function toggleMenu() {
+
+        const sideNav =
+            document.getElementById(
+                "sideNav"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "overlay"
+            );
+
+
+        sideNav.classList.toggle(
+            "active"
+        );
+
+
+        overlay.classList.toggle(
+            "active"
+        );
+
+    }
+
+
+    function openTgConfirmModal(url) {
+
+        pendingTelegramUrl =
+            url;
+
+
+        document
+            .getElementById(
+                "tg-confirm-modal"
+            )
+            .classList.add(
+                "active"
+            );
+
+
+        document
+            .getElementById(
+                "overlay"
+            )
+            .classList.add(
+                "active"
+            );
+
+    }
+
+
+    function closeTgConfirmModal() {
+
+        document
+            .getElementById(
+                "tg-confirm-modal"
+            )
+            .classList.remove(
+                "active"
+            );
+
+
+        document
+            .getElementById(
+                "overlay"
+            )
+            .classList.remove(
+                "active"
+            );
+
+
+        pendingTelegramUrl =
+            "";
+
+    }
+
+
+    function confirmTelegramRedirect() {
+
+        if (!pendingTelegramUrl) {
+            return;
+        }
+
+
+        const url =
+            pendingTelegramUrl;
+
+
+        closeTgConfirmModal();
+
+
+        window.location.href =
+            url;
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
