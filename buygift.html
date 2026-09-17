@@ -305,7 +305,7 @@
             border: 1px solid rgba(255,255,255,0.09);
             outline: none;
             border-radius: 12px;
-            padding: 13px 13px;
+            padding: 13px;
             background: rgba(0,0,0,0.25);
             color: #fff;
             font-size: 0.86rem;
@@ -617,16 +617,18 @@
     <header class="topbar">
 
         <a href="gift.html" class="back-btn" aria-label="Back">
-            <svg width="19" height="19" viewBox="0 0 24 24"
+
+            <svg width="19" height="19"
+                 viewBox="0 0 24 24"
                  fill="none"
                  stroke="currentColor"
                  stroke-width="2.5">
 
                 <line x1="19" y1="12" x2="5" y2="12"></line>
-
                 <polyline points="12 19 5 12 12 5"></polyline>
 
             </svg>
+
         </a>
 
         <div class="page-title">
@@ -735,8 +737,6 @@
 
         <section class="card">
 
-            <!-- LARGE SWIPEABLE IMAGE GALLERY -->
-
             <div class="gift-gallery" id="gift-gallery">
 
                 <div class="gallery-track" id="gallery-track"></div>
@@ -751,6 +751,7 @@
                     id="gallery-prev"
                     aria-label="Previous image"
                 >
+
                     <svg width="19" height="19"
                          viewBox="0 0 24 24"
                          fill="none"
@@ -760,6 +761,7 @@
                         <polyline points="15 18 9 12 15 6"></polyline>
 
                     </svg>
+
                 </button>
 
                 <button
@@ -768,6 +770,7 @@
                     id="gallery-next"
                     aria-label="Next image"
                 >
+
                     <svg width="19" height="19"
                          viewBox="0 0 24 24"
                          fill="none"
@@ -777,6 +780,7 @@
                         <polyline points="9 18 15 12 9 6"></polyline>
 
                     </svg>
+
                 </button>
 
                 <div class="gallery-dots" id="gallery-dots"></div>
@@ -1076,12 +1080,10 @@
         initializeApp
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-
     import {
         getAuth,
         onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
 
     import {
         getFirestore,
@@ -1126,25 +1128,17 @@
     // ============================================================
 
     let currentUser = null;
-
     let currentGift = null;
-
     let currentBalance = 0;
-
     let authReady = false;
-
     let submitting = false;
 
     let galleryImages = [];
-
     let galleryIndex = 0;
 
     let touchStartX = 0;
-
     let touchStartY = 0;
-
     let touchEndX = 0;
-
     let touchEndY = 0;
 
 
@@ -1263,10 +1257,12 @@
 
     function getValue(id) {
 
-        return document
-            .getElementById(id)
-            .value
-            .trim();
+        const element =
+            document.getElementById(id);
+
+        if (!element) return "";
+
+        return element.value.trim();
 
     }
 
@@ -1278,7 +1274,6 @@
     function renderGallery() {
 
         galleryTrack.innerHTML = "";
-
         galleryDots.innerHTML = "";
 
         if (galleryImages.length === 0) {
@@ -1308,6 +1303,10 @@
                 `${currentGift?.name || "Gift"} image ${index + 1}`;
 
             image.draggable = false;
+
+            image.loading =
+                index === 0 ? "eager" : "lazy";
+
 
             image.onerror = function() {
 
@@ -1358,25 +1357,17 @@
         if (galleryImages.length <= 1) {
 
             galleryPrev.style.display = "none";
-
             galleryNext.style.display = "none";
-
             galleryDots.style.display = "none";
-
             galleryCounter.style.display = "none";
-
             galleryHint.style.display = "none";
 
         } else {
 
             galleryPrev.style.display = "flex";
-
             galleryNext.style.display = "flex";
-
             galleryDots.style.display = "flex";
-
             galleryCounter.style.display = "block";
-
             galleryHint.style.display = "block";
 
         }
@@ -1432,7 +1423,9 @@
         galleryIndex++;
 
         if (galleryIndex >= galleryImages.length) {
+
             galleryIndex = 0;
+
         }
 
         updateGallery();
@@ -1447,7 +1440,10 @@
         galleryIndex--;
 
         if (galleryIndex < 0) {
-            galleryIndex = galleryImages.length - 1;
+
+            galleryIndex =
+                galleryImages.length - 1;
+
         }
 
         updateGallery();
@@ -1521,19 +1517,12 @@
             const deltaY =
                 touchEndY - touchStartY;
 
-
             const minSwipeDistance = 45;
 
 
-            // Only treat it as a swipe when
-            // horizontal movement is greater
-            // than vertical movement.
-
             if (
-                Math.abs(deltaX) >
-                minSwipeDistance &&
-                Math.abs(deltaX) >
-                Math.abs(deltaY)
+                Math.abs(deltaX) > minSwipeDistance &&
+                Math.abs(deltaX) > Math.abs(deltaY)
             ) {
 
                 if (deltaX < 0) {
@@ -1577,7 +1566,9 @@
         for (const id of requiredFields) {
 
             if (!getValue(id)) {
+
                 return false;
+
             }
 
         }
@@ -1785,7 +1776,6 @@
         loadingView.style.display = "none";
 
         checkoutView.style.display = "block";
-
 
         updatePayButton();
 
@@ -1999,6 +1989,10 @@
 
         try {
 
+            // ====================================================
+            // GET ALL FORM VALUES
+            // ====================================================
+
             const recipientName =
                 getValue("recipient-name");
 
@@ -2081,7 +2075,7 @@
                     }
 
 
-                    const currentBalance =
+                    const freshBalance =
                         Number(userData.balance) || 0;
 
 
@@ -2098,7 +2092,7 @@
                     }
 
 
-                    if (currentBalance < freshPrice) {
+                    if (freshBalance < freshPrice) {
 
                         throw new Error(
                             "Insufficient balance."
@@ -2107,13 +2101,25 @@
                     }
 
 
-                    // ------------------------------------------------
+                    // ====================================================
                     // CREATE GIFT ORDER
-                    // ------------------------------------------------
+                    //
+                    // IMPORTANT:
+                    // The information is saved BOTH:
+                    //
+                    // 1. Inside deliveryInfo / senderInfo
+                    // 2. Directly on the order document
+                    //
+                    // This allows the Telegram bot to read either format.
+                    // ====================================================
 
                     transaction.set(
                         orderRef,
                         {
+
+                            // ------------------------------------------------
+                            // BASIC ORDER INFORMATION
+                            // ------------------------------------------------
 
                             userId:
                                 currentUser.uid,
@@ -2133,6 +2139,13 @@
                             totalPaid:
                                 freshPrice,
 
+                            status:
+                                "pending",
+
+
+                            // ------------------------------------------------
+                            // DELIVERY INFORMATION - NESTED
+                            // ------------------------------------------------
 
                             deliveryInfo: {
 
@@ -2163,6 +2176,10 @@
                             },
 
 
+                            // ------------------------------------------------
+                            // SENDER INFORMATION - NESTED
+                            // ------------------------------------------------
+
                             senderInfo: {
 
                                 name:
@@ -2174,9 +2191,44 @@
                             },
 
 
-                            status:
-                                "pending",
+                            // ====================================================
+                            // DIRECT FIELDS FOR BOT COMPATIBILITY
+                            // ====================================================
 
+                            recipientName:
+                                recipientName,
+
+                            recipientPhone:
+                                recipientPhone,
+
+                            streetAddress:
+                                streetAddress,
+
+                            apartment:
+                                apartment,
+
+                            city:
+                                city,
+
+                            state:
+                                state,
+
+                            country:
+                                country,
+
+                            zipCode:
+                                zipCode,
+
+                            senderName:
+                                senderName,
+
+                            senderPhone:
+                                senderPhone,
+
+
+                            // ------------------------------------------------
+                            // TIMESTAMPS
+                            // ------------------------------------------------
 
                             createdAt:
                                 serverTimestamp(),
@@ -2188,16 +2240,16 @@
                     );
 
 
-                    // ------------------------------------------------
+                    // ====================================================
                     // DEDUCT BALANCE
-                    // ------------------------------------------------
+                    // ====================================================
 
                     transaction.update(
                         userRef,
                         {
 
                             balance:
-                                currentBalance - freshPrice
+                                freshBalance - freshPrice
 
                         }
                     );
@@ -2206,9 +2258,9 @@
             );
 
 
-            // --------------------------------------------------------
+            // ====================================================
             // SUCCESS
-            // --------------------------------------------------------
+            // ====================================================
 
             currentBalance -= price;
 
