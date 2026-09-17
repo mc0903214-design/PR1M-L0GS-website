@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Gift Store</title>
+
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass: rgba(255, 255, 255, 0.035);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark: #060608;
+            --stock-green: #00ff88;
+            --stock-red: #ff4b4b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: #f1f1f3;
+            min-height: 100vh;
+            padding: 20px 14px 40px;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(188, 19, 254, 0.10) 0%, transparent 42%),
+                radial-gradient(circle at 90% 10%, rgba(0, 243, 255, 0.07) 0%, transparent 42%),
+                radial-gradient(circle at 50% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 45%);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .brand span {
+            color: var(--neon-cyan);
+        }
+
+        .balance-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .balance-label {
+            font-size: 0.65rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .balance-value {
+            color: var(--neon-cyan);
+            font-weight: 900;
+            font-size: 0.95rem;
+        }
+
+        /* HERO */
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(
+                135deg,
+                rgba(188, 19, 254, 0.10),
+                rgba(0, 243, 255, 0.04)
+            );
+            border-radius: 24px;
+            padding: 30px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.25);
+        }
+
+        .hero::after {
+            content: "🎁";
+            position: absolute;
+            right: 22px;
+            top: 15px;
+            font-size: 5rem;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.7rem, 5vw, 2.7rem);
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 9px;
+        }
+
+        .hero h1 span {
+            color: var(--neon-cyan);
+        }
+
+        .hero p {
+            color: #8b96a8;
+            max-width: 650px;
+            line-height: 1.65;
+            font-size: 0.9rem;
+        }
+
+        /* SECTION */
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 28px 2px 14px;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .gift-count {
+            color: #718096;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        /* GIFT GRID */
+
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+            gap: 16px;
+        }
+
+        .gift-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+        }
+
+        .gift-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 243, 255, 0.25);
+            box-shadow: 0 14px 35px rgba(0, 243, 255, 0.07);
+        }
+
+        /* IMAGE */
+
+        .gift-media {
+            width: 100%;
+            height: 235px;
+            position: relative;
+            background: #0b0b10;
+            overflow: hidden;
+        }
+
+        .gift-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-counter {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: rgba(0,0,0,0.65);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #fff;
+            padding: 6px 9px;
+            border-radius: 9px;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+
+        .media-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+
+        .media-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+        }
+
+        .media-dot.active {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 8px rgba(0,243,255,0.5);
+        }
+
+        /* CONTENT */
+
+        .gift-content {
+            padding: 17px;
+        }
+
+        .gift-name {
+            font-size: 1rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 7px;
+        }
+
+        .gift-description {
+            color: #718096;
+            font-size: 0.78rem;
+            line-height: 1.55;
+            min-height: 38px;
+            margin-bottom: 15px;
+        }
+
+        .gift-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gift-price {
+            color: var(--neon-cyan);
+            font-size: 1.05rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .buy-btn {
+            flex: 1;
+            border: none;
+            border-radius: 11px;
+            padding: 12px 13px;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(
+                90deg,
+                #9d4edd,
+                var(--neon-purple)
+            );
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .buy-btn:hover {
+            box-shadow: 0 7px 20px rgba(188,19,254,0.20);
+        }
+
+        .buy-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* LOADING */
+
+        .loading-box {
+            text-align: center;
+            padding: 70px 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            border-radius: 20px;
+        }
+
+        .loader {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: var(--neon-cyan);
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-box p {
+            color: #718096;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        /* EMPTY */
+
+        .empty-box {
+            display: none;
+            text-align: center;
+            padding: 70px 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            border-radius: 20px;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-box h3 {
+            font-size: 1rem;
+            margin-bottom: 7px;
+        }
+
+        .empty-box p {
+            color: #718096;
+            font-size: 0.8rem;
+        }
+
+        /* LOGIN */
+
+        .login-box {
+            display: none;
+            text-align: center;
+            padding: 70px 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            border-radius: 20px;
+        }
+
+        .login-box h3 {
+            margin-bottom: 8px;
+        }
+
+        .login-box p {
+            color: #718096;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        /* FOOTER */
+
+        footer {
+            margin-top: 45px;
+            padding: 24px 5px 10px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-brand {
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+        }
+
+        .whatsapp-btn {
+            text-decoration: none;
+            color: #fff;
+            background: rgba(0,255,136,0.08);
+            border: 1px solid rgba(0,255,136,0.4);
+            border-radius: 11px;
+            padding: 10px 16px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            transition: 0.2s ease;
+        }
+
+        .whatsapp-btn:hover {
+            background: rgba(0,255,136,0.15);
+            transform: translateY(-1px);
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translate(-50%, 20px);
+            background: rgba(6,6,8,0.96);
+            border: 1px solid var(--neon-cyan);
+            color: #fff;
+            padding: 13px 20px;
+            border-radius: 13px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 10px 30px rgba(0,243,255,0.12);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .toast.error {
+            border-color: var(--stock-red);
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px 11px 30px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .brand {
+                font-size: 1rem;
+            }
+
+            .balance-card {
+                padding: 8px 10px;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 2px;
+            }
+
+            .hero {
+                padding: 25px 19px;
+            }
+
+            .hero::after {
+                font-size: 4rem;
+            }
+
+            .gift-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .gift-media {
+                height: 175px;
+            }
+
+            .gift-content {
+                padding: 12px;
+            }
+
+            .gift-name {
+                font-size: 0.85rem;
+            }
+
+            .gift-description {
+                font-size: 0.7rem;
+                min-height: 34px;
+            }
+
+            .gift-bottom {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 9px;
+            }
+
+            .gift-price {
+                font-size: 0.9rem;
+            }
+
+            .buy-btn {
+                width: 100%;
+            }
+
+            footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .gift-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gift-media {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- HEADER -->
+    <header class="topbar">
+        <div class="brand">
+            PR1MΞ <span>GIFT STORE</span>
+        </div>
+
+        <div class="balance-card">
+            <span class="balance-label">Balance</span>
+            <span class="balance-value" id="balance-value">₦0</span>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1>Send a <span>Gift</span> ❤️</h1>
+        <p>
+            Choose a gift for someone special. Select your favorite item
+            and provide the delivery details on the next page.
+        </p>
+    </section>
+
+    <!-- PRODUCTS -->
+    <div class="section-header">
+        <div class="section-title">Available Gifts</div>
+        <div class="gift-count" id="gift-count">Loading...</div>
+    </div>
+
+    <div id="loading-box" class="loading-box">
+        <div class="loader"></div>
+        <p>Loading available gifts...</p>
+    </div>
+
+    <div id="login-box" class="login-box">
+        <div class="empty-icon">🔐</div>
+        <h3>Login Required</h3>
+        <p>Please log into your PR1MΞ account to view your balance and purchase gifts.</p>
+    </div>
+
+    <div id="empty-box" class="empty-box">
+        <div class="empty-icon">🎁</div>
+        <h3>No Gifts Available</h3>
+        <p>There are currently no gifts available. Please check again later.</p>
+    </div>
+
+    <div id="gift-grid" class="gift-grid"></div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+            PR1MΞ L0GS
+        </div>
+
+        <a
+            class="whatsapp-btn"
+            href="https://wa.me/message/IXDUVSQ5CHUKP1"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            WhatsApp
+        </a>
+    </footer>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+    import {
+        getFirestore,
+        collection,
+        query,
+        where,
+        onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    import {
+        getAuth,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+    /* ============================================================
+       FIREBASE
+    ============================================================ */
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+        authDomain: "primelogs-web.firebaseapp.com",
+        projectId: "primelogs-web",
+        storageBucket: "primelogs-web.firebasestorage.app",
+        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+
+    /* ============================================================
+       DOM
+    ============================================================ */
+
+    const balanceValue = document.getElementById("balance-value");
+    const giftGrid = document.getElementById("gift-grid");
+    const loadingBox = document.getElementById("loading-box");
+    const emptyBox = document.getElementById("empty-box");
+    const loginBox = document.getElementById("login-box");
+    const giftCount = document.getElementById("gift-count");
+    const toast = document.getElementById("toast");
+
+
+    /* ============================================================
+       STATE
+    ============================================================ */
+
+    let currentUser = null;
+    let giftsLoaded = false;
+
+
+    /* ============================================================
+       TOAST
+    ============================================================ */
+
+    function showToast(message, isError = false) {
+
+        toast.innerText = message;
+
+        if (isError) {
+            toast.classList.add("error");
+        } else {
+            toast.classList.remove("error");
+        }
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+
+    /* ============================================================
+       FORMAT MONEY
+    ============================================================ */
+
+    function formatMoney(amount) {
+
+        const number = Number(amount) || 0;
+
+        return "₦" + number.toLocaleString("en-NG", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+    }
+
+
+    /* ============================================================
+       IMAGE URL NORMALIZATION
+    ============================================================ */
+
+    function normalizeImages(gift) {
+
+        if (Array.isArray(gift.imageUrls)) {
+            return gift.imageUrls
+                .map(url => String(url).trim())
+                .filter(url => url !== "");
+        }
+
+        if (gift.image) {
+            return [String(gift.image).trim()];
+        }
+
+        return [];
+    }
+
+
+    /* ============================================================
+       CREATE GIFT CARD
+    ============================================================ */
+
+    function createGiftCard(gift, id) {
+
+        const images = normalizeImages(gift);
+
+        if (images.length === 0) {
+            images.push("https://via.placeholder.com/600x600?text=PR1MΞ+GIFT");
+        }
+
+        const card = document.createElement("article");
+        card.className = "gift-card";
+
+        const media = document.createElement("div");
+        media.className = "gift-media";
+
+        const image = document.createElement("img");
+        image.src = images[0];
+        image.alt = gift.name || "Gift";
+        image.loading = "lazy";
+
+        image.onerror = function() {
+            this.src = "https://via.placeholder.com/600x600?text=PR1MΞ+GIFT";
+        };
+
+        media.appendChild(image);
+
+        if (images.length > 1) {
+
+            const counter = document.createElement("div");
+            counter.className = "image-counter";
+            counter.innerText = `1 / ${images.length}`;
+
+            media.appendChild(counter);
+
+            const dots = document.createElement("div");
+            dots.className = "media-dots";
+
+            images.forEach((url, index) => {
+
+                const dot = document.createElement("div");
+                dot.className = "media-dot";
+
+                if (index === 0) {
+                    dot.classList.add("active");
+                }
+
+                dots.appendChild(dot);
+
+            });
+
+            media.appendChild(dots);
+
+            let imageIndex = 0;
+
+            setInterval(() => {
+
+                imageIndex++;
+
+                if (imageIndex >= images.length) {
+                    imageIndex = 0;
+                }
+
+                image.src = images[imageIndex];
+
+                counter.innerText = `${imageIndex + 1} / ${images.length}`;
+
+                Array.from(dots.children).forEach((dot, index) => {
+                    dot.classList.toggle(
+                        "active",
+                        index === imageIndex
+                    );
+                });
+
+            }, 4000);
+        }
+
+        const content = document.createElement("div");
+        content.className = "gift-content";
+
+        const name = document.createElement("div");
+        name.className = "gift-name";
+        name.innerText = gift.name || "Gift";
+
+        const description = document.createElement("div");
+        description.className = "gift-description";
+        description.innerText =
+            gift.description || "A special gift from PR1MΞ Gift Store.";
+
+        const bottom = document.createElement("div");
+        bottom.className = "gift-bottom";
+
+        const price = document.createElement("div");
+        price.className = "gift-price";
+        price.innerText = formatMoney(gift.price);
+
+        const buyButton = document.createElement("button");
+        buyButton.className = "buy-btn";
+        buyButton.innerText = "SEND THIS GIFT";
+
+        buyButton.addEventListener("click", () => {
+
+            if (!currentUser) {
+                showToast("Please log in first.", true);
+                return;
+            }
+
+            window.location.href =
+                `buygift.html?id=${encodeURIComponent(id)}`;
+        });
+
+        bottom.appendChild(price);
+        bottom.appendChild(buyButton);
+
+        content.appendChild(name);
+        content.appendChild(description);
+        content.appendChild(bottom);
+
+        card.appendChild(media);
+        card.appendChild(content);
+
+        return card;
+    }
+
+
+    /* ============================================================
+       LOAD GIFTS
+    ============================================================ */
+
+    function loadGifts() {
+
+        const giftsQuery = query(
+            collection(db, "gifts"),
+            where("active", "==", true)
+        );
+
+        onSnapshot(
+            giftsQuery,
+            (snapshot) => {
+
+                giftGrid.innerHTML = "";
+
+                loadingBox.style.display = "none";
+                emptyBox.style.display = "none";
+
+                const gifts = [];
+
+                snapshot.forEach((giftDoc) => {
+
+                    gifts.push({
+                        id: giftDoc.id,
+                        ...giftDoc.data()
+                    });
+
+                });
+
+                gifts.sort((a, b) => {
+
+                    const aTime = a.createdAt?.toMillis
+                        ? a.createdAt.toMillis()
+                        : 0;
+
+                    const bTime = b.createdAt?.toMillis
+                        ? b.createdAt.toMillis()
+                        : 0;
+
+                    return bTime - aTime;
+                });
+
+                if (gifts.length === 0) {
+
+                    giftCount.innerText = "0 gifts";
+                    emptyBox.style.display = "block";
+                    giftsLoaded = true;
+
+                    return;
+                }
+
+                giftCount.innerText =
+                    `${gifts.length} ${gifts.length === 1 ? "gift" : "gifts"}`;
+
+                gifts.forEach(gift => {
+
+                    const card = createGiftCard(
+                        gift,
+                        gift.id
+                    );
+
+                    giftGrid.appendChild(card);
+
+                });
+
+                giftsLoaded = true;
+            },
+
+            (error) => {
+
+                console.error("Gift loading error:", error);
+
+                loadingBox.style.display = "none";
+                emptyBox.style.display = "block";
+
+                giftCount.innerText = "Unavailable";
+
+                showToast(
+                    "Could not load the gift store.",
+                    true
+                );
+            }
+        );
+    }
+
+
+    /* ============================================================
+       USER BALANCE
+       
+       IMPORTANT:
+       This reads the authenticated user's Firestore document.
+       The document ID must match the Firebase Authentication UID.
+    ============================================================ */
+
+    function loadUserBalance(user) {
+
+        if (!user) return;
+
+        const userRef = collection(db, "users");
+
+        const userQuery = query(
+            userRef,
+            where("__name__", "==", user.uid)
+        );
+
+        onSnapshot(
+            userQuery,
+            (snapshot) => {
+
+                if (snapshot.empty) {
+                    balanceValue.innerText = "₦0";
+                    return;
+                }
+
+                snapshot.forEach(docSnap => {
+
+                    const data = docSnap.data();
+
+                    const balance = Number(data.balance) || 0;
+
+                    balanceValue.innerText =
+                        formatMoney(balance);
+                });
+            },
+
+            (error) => {
+
+                console.error(
+                    "Balance loading error:",
+                    error
+                );
+
+                balanceValue.innerText = "₦0";
+            }
+        );
+    }
+
+
+    /* ============================================================
+       AUTH STATE
+    ============================================================ */
+
+    onAuthStateChanged(auth, (user) => {
+
+        currentUser = user;
+
+        if (!user) {
+
+            loadingBox.style.display = "none";
+            loginBox.style.display = "block";
+            giftGrid.innerHTML = "";
+            emptyBox.style.display = "none";
+            giftCount.innerText = "Login required";
+
+            balanceValue.innerText = "₦0";
+
+            return;
+        }
+
+        loginBox.style.display = "none";
+        loadingBox.style.display = "block";
+
+        loadUserBalance(user);
+        loadGifts();
+    });
+
+</script>
+
+</body>
+</html>
