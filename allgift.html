@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PR1MΞ | Gift Management</title>
+
+    <style>
+        :root {
+            --cyan: #00f3ff;
+            --purple: #bc13fe;
+            --dark: #060608;
+            --glass: rgba(255,255,255,0.035);
+            --border: rgba(255,255,255,0.08);
+            --muted: #718096;
+            --green: #00ff88;
+            --red: #ff4b4b;
+            --yellow: #ffd166;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--dark);
+            color: #f1f1f3;
+            padding: 20px 14px 45px;
+            background-image:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(188,19,254,0.10),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    circle at 90% 10%,
+                    rgba(0,243,255,0.07),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    circle at 50% 85%,
+                    rgba(188,19,254,0.05),
+                    transparent 45%
+                );
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* ==========================================
+           HEADER
+        ========================================== */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        /* ==========================================
+           TITLE
+        ========================================== */
+
+        .hero {
+            border: 1px solid var(--border);
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(188,19,254,0.10),
+                    rgba(0,243,255,0.04)
+                );
+            border-radius: 23px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.4rem, 4vw, 2.1rem);
+            font-weight: 900;
+            margin-bottom: 7px;
+        }
+
+        .hero h1 span {
+            color: var(--cyan);
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.55;
+        }
+
+        /* ==========================================
+           SEARCH
+        ========================================== */
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            outline: none;
+            background: rgba(0,0,0,0.25);
+            color: #fff;
+            font-size: 0.82rem;
+        }
+
+        .search-box input:focus {
+            border-color: rgba(0,243,255,0.45);
+        }
+
+        .count-box {
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            color: var(--cyan);
+            font-size: 0.72rem;
+            font-weight: 900;
+        }
+
+        /* ==========================================
+           GIFTS GRID
+        ========================================== */
+
+        .gift-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(285px, 1fr));
+            gap: 17px;
+        }
+
+        .gift-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .gift-card.inactive {
+            opacity: 0.62;
+        }
+
+        .gift-images {
+            height: 215px;
+            background: #0b0b10;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-images img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-count {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.68);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 900;
+        }
+
+        .status-badge {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            padding: 6px 9px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            color: var(--green);
+            background: rgba(0,255,136,0.10);
+            border: 1px solid rgba(0,255,136,0.25);
+        }
+
+        .status-inactive {
+            color: var(--red);
+            background: rgba(255,75,75,0.10);
+            border: 1px solid rgba(255,75,75,0.25);
+        }
+
+        .gift-content {
+            padding: 17px;
+        }
+
+        .gift-name {
+            font-size: 1rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .gift-description {
+            color: var(--muted);
+            font-size: 0.74rem;
+            line-height: 1.5;
+            min-height: 34px;
+            margin-bottom: 12px;
+        }
+
+        .gift-price {
+            color: var(--cyan);
+            font-size: 1rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: 900;
+        }
+
+        .edit-btn {
+            padding: 11px;
+            border-radius: 10px;
+            color: #fff;
+            background: linear-gradient(
+                90deg,
+                #9d4edd,
+                var(--purple)
+            );
+        }
+
+        .toggle-btn {
+            padding: 11px;
+            border-radius: 10px;
+            color: #fff;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border);
+        }
+
+        .delete-btn {
+            grid-column: 1 / -1;
+            padding: 11px;
+            border-radius: 10px;
+            color: #fff;
+            background: rgba(255,75,75,0.10);
+            border: 1px solid rgba(255,75,75,0.3);
+        }
+
+        .edit-btn:active,
+        .toggle-btn:active,
+        .delete-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==========================================
+           EMPTY / LOADING
+        ========================================== */
+
+        .loading,
+        .empty {
+            text-align: center;
+            padding: 70px 20px;
+            border-radius: 20px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: var(--cyan);
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading p,
+        .empty p {
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .empty-icon {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* ==========================================
+           MODAL
+        ========================================== */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 15px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 560px;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #0d0d12;
+            border: 1px solid rgba(0,243,255,0.16);
+            border-radius: 22px;
+            padding: 22px;
+            box-shadow: 0 20px 70px rgba(0,0,0,0.55);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 900;
+        }
+
+        .close-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #a0aec0;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.09);
+            outline: none;
+            border-radius: 11px;
+            padding: 12px;
+            background: rgba(0,0,0,0.28);
+            color: #fff;
+            font-size: 0.82rem;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: rgba(0,243,255,0.45);
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-btn {
+            padding: 14px;
+            border-radius: 11px;
+            color: #fff;
+            background: linear-gradient(
+                90deg,
+                #9d4edd,
+                var(--purple)
+            );
+        }
+
+        .cancel-btn {
+            padding: 14px;
+            border-radius: 11px;
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+        }
+
+        /* ==========================================
+           TOAST
+        ========================================== */
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 25px;
+            transform: translate(-50%, 25px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 99999;
+            max-width: calc(100vw - 30px);
+            padding: 12px 18px;
+            border-radius: 12px;
+            background: rgba(6,6,8,0.97);
+            border: 1px solid var(--cyan);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .toast.error {
+            border-color: var(--red);
+        }
+
+        /* ==========================================
+           RESPONSIVE
+        ========================================== */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 14px 11px 35px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .brand {
+                font-size: 1rem;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .count-box {
+                min-height: 42px;
+            }
+
+            .gift-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .gift-images {
+                height: 170px;
+            }
+
+            .gift-content {
+                padding: 12px;
+            }
+
+            .gift-name {
+                font-size: 0.85rem;
+            }
+
+            .gift-description {
+                font-size: 0.68rem;
+            }
+
+            .gift-price {
+                font-size: 0.88rem;
+            }
+
+            .button-row {
+                grid-template-columns: 1fr;
+            }
+
+            .delete-btn {
+                grid-column: auto;
+            }
+
+            .modal-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 350px) {
+
+            .gift-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gift-images {
+                height: 220px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="brand">
+            PR1MΞ <span>GIFT MANAGEMENT</span>
+        </div>
+
+        <a href="adminq.html" class="back-btn">
+            ← Admin
+        </a>
+
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h1>
+            Manage <span>Gifts</span>
+        </h1>
+
+        <p>
+            Edit, activate, deactivate or permanently delete
+            gifts currently stored in the PR1MΞ Gift Store.
+        </p>
+
+    </section>
+
+
+    <!-- SEARCH -->
+
+    <div class="toolbar">
+
+        <div class="search-box">
+
+            <input
+                type="search"
+                id="search-input"
+                placeholder="Search gifts..."
+            >
+
+        </div>
+
+        <div class="count-box" id="gift-count">
+            Loading...
+        </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div id="loading-box" class="loading">
+
+        <div class="spinner"></div>
+
+        <p>
+            Loading gifts...
+        </p>
+
+    </div>
+
+
+    <!-- EMPTY -->
+
+    <div id="empty-box" class="empty" style="display:none;">
+
+        <div class="empty-icon">
+            🎁
+        </div>
+
+        <h3>
+            No Gifts Found
+        </h3>
+
+        <p>
+            No gift products are currently available.
+        </p>
+
+    </div>
+
+
+    <!-- GRID -->
+
+    <div id="gift-grid" class="gift-grid"></div>
+
+</div>
+
+
+<!-- EDIT MODAL -->
+
+<div id="edit-modal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                Edit Gift
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeEditModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Gift Name
+            </label>
+
+            <input
+                id="edit-name"
+                type="text"
+                placeholder="Gift name"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Gift Description
+            </label>
+
+            <textarea
+                id="edit-description"
+                placeholder="Gift description"
+            ></textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Gift Price
+            </label>
+
+            <input
+                id="edit-price"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Gift price"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Image URLs
+            </label>
+
+            <textarea
+                id="edit-images"
+                placeholder="One image URL per line"
+            ></textarea>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="closeEditModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="save-btn"
+                id="save-btn"
+                onclick="saveGift()"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div id="toast" class="toast"></div>
+
+
+<script type="module">
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+
+    import {
+        getFirestore,
+        collection,
+        query,
+        onSnapshot,
+        doc,
+        updateDoc,
+        deleteDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+    // ============================================================
+    // FIREBASE
+    // ============================================================
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+
+        authDomain:
+            "primelogs-web.firebaseapp.com",
+
+        projectId:
+            "primelogs-web",
+
+        storageBucket:
+            "primelogs-web.firebasestorage.app",
+
+        messagingSenderId:
+            "732956069251",
+
+        appId:
+            "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+
+    };
+
+
+    const app =
+        initializeApp(firebaseConfig);
+
+    const db =
+        getFirestore(app);
+
+
+    // ============================================================
+    // STATE
+    // ============================================================
+
+    let allGifts = [];
+
+    let editingGiftId = null;
+
+
+    // ============================================================
+    // DOM
+    // ============================================================
+
+    const giftGrid =
+        document.getElementById("gift-grid");
+
+    const loadingBox =
+        document.getElementById("loading-box");
+
+    const emptyBox =
+        document.getElementById("empty-box");
+
+    const giftCount =
+        document.getElementById("gift-count");
+
+    const searchInput =
+        document.getElementById("search-input");
+
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+
+    function showToast(message, error = false) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.innerText =
+            message;
+
+        toast.classList.toggle(
+            "error",
+            error
+        );
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 3000);
+
+    }
+
+
+    // ============================================================
+    // NORMALIZE IMAGES
+    // ============================================================
+
+    function getImages(gift) {
+
+        if (Array.isArray(gift.imageUrls)) {
+
+            return gift.imageUrls
+                .map(url => String(url).trim())
+                .filter(Boolean);
+
+        }
+
+
+        if (gift.image) {
+
+            return [
+                String(gift.image).trim()
+            ];
+
+        }
+
+
+        return [];
+
+    }
+
+
+    // ============================================================
+    // FORMAT MONEY
+    // ============================================================
+
+    function formatMoney(amount) {
+
+        return "₦" +
+            (Number(amount) || 0)
+                .toLocaleString(
+                    "en-NG",
+                    {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+    }
+
+
+    // ============================================================
+    // RENDER
+    // ============================================================
+
+    function renderGifts() {
+
+        const search =
+            searchInput.value
+                .trim()
+                .toLowerCase();
+
+
+        giftGrid.innerHTML = "";
+
+
+        const filtered =
+            allGifts.filter(gift => {
+
+                const name =
+                    String(gift.name || "")
+                        .toLowerCase();
+
+                const description =
+                    String(gift.description || "")
+                        .toLowerCase();
+
+                return (
+                    name.includes(search) ||
+                    description.includes(search)
+                );
+
+            });
+
+
+        giftCount.innerText =
+            `${filtered.length} ${
+                filtered.length === 1
+                    ? "gift"
+                    : "gifts"
+            }`;
+
+
+        if (filtered.length === 0) {
+
+            emptyBox.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        emptyBox.style.display =
+            "none";
+
+
+        filtered.forEach(gift => {
+
+            giftGrid.appendChild(
+                createGiftCard(gift)
+            );
+
+        });
+
+    }
+
+
+    // ============================================================
+    // CREATE CARD
+    // ============================================================
+
+    function createGiftCard(gift) {
+
+        const card =
+            document.createElement("article");
+
+        card.className =
+            "gift-card";
+
+
+        if (gift.active === false) {
+
+            card.classList.add("inactive");
+
+        }
+
+
+        const images =
+            getImages(gift);
+
+
+        const imageUrl =
+            images[0] ||
+            "https://via.placeholder.com/600x600?text=PR1M%E2%9C%93+GIFT";
+
+
+        // IMAGE AREA
+
+        const imageArea =
+            document.createElement("div");
+
+        imageArea.className =
+            "gift-images";
+
+
+        const image =
+            document.createElement("img");
+
+        image.src =
+            imageUrl;
+
+        image.alt =
+            gift.name || "Gift";
+
+
+        image.onerror =
+            function() {
+
+                this.src =
+                    "https://via.placeholder.com/600x600?text=PR1M%E2%9C%93+GIFT";
+
+            };
+
+
+        imageArea.appendChild(image);
+
+
+        const imageCount =
+            document.createElement("div");
+
+        imageCount.className =
+            "image-count";
+
+        imageCount.innerText =
+            `${images.length} ${
+                images.length === 1
+                    ? "image"
+                    : "images"
+            }`;
+
+
+        imageArea.appendChild(
+            imageCount
+        );
+
+
+        const status =
+            document.createElement("div");
+
+        status.className =
+            "status-badge";
+
+
+        if (gift.active === false) {
+
+            status.classList.add(
+                "status-inactive"
+            );
+
+            status.innerText =
+                "Inactive";
+
+        } else {
+
+            status.classList.add(
+                "status-active"
+            );
+
+            status.innerText =
+                "Active";
+
+        }
+
+
+        imageArea.appendChild(status);
+
+
+        // CONTENT
+
+        const content =
+            document.createElement("div");
+
+        content.className =
+            "gift-content";
+
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "gift-name";
+
+        name.innerText =
+            gift.name || "Unnamed Gift";
+
+
+        const description =
+            document.createElement("div");
+
+        description.className =
+            "gift-description";
+
+        description.innerText =
+            gift.description ||
+            "No description added.";
+
+
+        const price =
+            document.createElement("div");
+
+        price.className =
+            "gift-price";
+
+        price.innerText =
+            formatMoney(gift.price);
+
+
+        // BUTTONS
+
+        const buttons =
+            document.createElement("div");
+
+        buttons.className =
+            "button-row";
+
+
+        const editButton =
+            document.createElement("button");
+
+        editButton.className =
+            "edit-btn";
+
+        editButton.innerText =
+            "EDIT";
+
+        editButton.onclick =
+            () => openEditModal(gift);
+
+
+        const toggleButton =
+            document.createElement("button");
+
+        toggleButton.className =
+            "toggle-btn";
+
+        toggleButton.innerText =
+            gift.active === false
+                ? "ACTIVATE"
+                : "DEACTIVATE";
+
+
+        toggleButton.onclick =
+            () => toggleGift(gift);
+
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.className =
+            "delete-btn";
+
+        deleteButton.innerText =
+            "DELETE GIFT";
+
+
+        deleteButton.onclick =
+            () => deleteGift(gift);
+
+
+        buttons.appendChild(
+            editButton
+        );
+
+        buttons.appendChild(
+            toggleButton
+        );
+
+        buttons.appendChild(
+            deleteButton
+        );
+
+
+        content.appendChild(name);
+
+        content.appendChild(description);
+
+        content.appendChild(price);
+
+        content.appendChild(buttons);
+
+
+        card.appendChild(imageArea);
+
+        card.appendChild(content);
+
+
+        return card;
+
+    }
+
+
+    // ============================================================
+    // LOAD GIFTS
+    // ============================================================
+
+    function loadGifts() {
+
+        const giftsQuery =
+            query(
+                collection(db, "gifts")
+            );
+
+
+        onSnapshot(
+            giftsQuery,
+
+            snapshot => {
+
+                allGifts = [];
+
+
+                snapshot.forEach(
+                    giftDoc => {
+
+                        allGifts.push({
+
+                            id:
+                                giftDoc.id,
+
+                            ...giftDoc.data()
+
+                        });
+
+                    }
+                );
+
+
+                allGifts.sort(
+                    (a, b) => {
+
+                        const aTime =
+                            a.createdAt?.toMillis
+                                ? a.createdAt.toMillis()
+                                : 0;
+
+                        const bTime =
+                            b.createdAt?.toMillis
+                                ? b.createdAt.toMillis()
+                                : 0;
+
+                        return bTime - aTime;
+
+                    }
+                );
+
+
+                loadingBox.style.display =
+                    "none";
+
+
+                renderGifts();
+
+            },
+
+            error => {
+
+                console.error(
+                    "Gift loading error:",
+                    error
+                );
+
+
+                loadingBox.style.display =
+                    "none";
+
+
+                giftCount.innerText =
+                    "Error";
+
+
+                showToast(
+                    "Unable to load gifts.",
+                    true
+                );
+
+            }
+        );
+
+    }
+
+
+    // ============================================================
+    // EDIT MODAL
+    // ============================================================
+
+    window.openEditModal =
+        function(gift) {
+
+            editingGiftId =
+                gift.id;
+
+
+            document.getElementById(
+                "edit-name"
+            ).value =
+                gift.name || "";
+
+
+            document.getElementById(
+                "edit-description"
+            ).value =
+                gift.description || "";
+
+
+            document.getElementById(
+                "edit-price"
+            ).value =
+                gift.price ?? "";
+
+
+            const images =
+                getImages(gift);
+
+
+            document.getElementById(
+                "edit-images"
+            ).value =
+                images.join("\n");
+
+
+            document.getElementById(
+                "edit-modal"
+            ).classList.add("active");
+
+        };
+
+
+    window.closeEditModal =
+        function() {
+
+            editingGiftId =
+                null;
+
+            document.getElementById(
+                "edit-modal"
+            ).classList.remove("active");
+
+        };
+
+
+    // ============================================================
+    // SAVE EDIT
+    // ============================================================
+
+    window.saveGift =
+        async function() {
+
+            if (!editingGiftId) {
+
+                return;
+
+            }
+
+
+            const name =
+                document.getElementById(
+                    "edit-name"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "edit-description"
+                ).value.trim();
+
+
+            const price =
+                Number(
+                    document.getElementById(
+                        "edit-price"
+                    ).value
+                );
+
+
+            const imageUrls =
+                document.getElementById(
+                    "edit-images"
+                ).value
+                .split(/\r?\n/)
+                .map(url => url.trim())
+                .filter(Boolean);
+
+
+            if (!name) {
+
+                showToast(
+                    "Gift name is required.",
+                    true
+                );
+
+                return;
+
+            }
+
+
+            if (!Number.isFinite(price) || price <= 0) {
+
+                showToast(
+                    "Enter a valid gift price.",
+                    true
+                );
+
+                return;
+
+            }
+
+
+            if (imageUrls.length === 0) {
+
+                showToast(
+                    "At least one image URL is required.",
+                    true
+                );
+
+                return;
+
+            }
+
+
+            const saveButton =
+                document.getElementById(
+                    "save-btn"
+                );
+
+
+            saveButton.disabled =
+                true;
+
+            saveButton.innerText =
+                "SAVING...";
+
+
+            try {
+
+                const giftRef =
+                    doc(
+                        db,
+                        "gifts",
+                        editingGiftId
+                    );
+
+
+                await updateDoc(
+                    giftRef,
+                    {
+
+                        name:
+                            name,
+
+                        description:
+                            description,
+
+                        price:
+                            price,
+
+                        imageUrls:
+                            imageUrls,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
+                );
+
+
+                showToast(
+                    "Gift updated successfully.",
+                    false
+                );
+
+
+                closeEditModal();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Gift update error:",
+                    error
+                );
+
+
+                showToast(
+                    "Unable to update gift.",
+                    true
+                );
+
+            }
+
+
+            saveButton.disabled =
+                false;
+
+            saveButton.innerText =
+                "Save Changes";
+
+        };
+
+
+    // ============================================================
+    // ACTIVATE / DEACTIVATE
+    // ============================================================
+
+    window.toggleGift =
+        async function(gift) {
+
+            const newStatus =
+                gift.active === false;
+
+
+            const action =
+                newStatus
+                    ? "activate"
+                    : "deactivate";
+
+
+            const confirmed =
+                confirm(
+                    `Are you sure you want to ${action} "${gift.name}"?`
+                );
+
+
+            if (!confirmed) return;
+
+
+            try {
+
+                await updateDoc(
+
+                    doc(
+                        db,
+                        "gifts",
+                        gift.id
+                    ),
+
+                    {
+
+                        active:
+                            newStatus,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
+
+                );
+
+
+                showToast(
+                    newStatus
+                        ? "Gift activated."
+                        : "Gift deactivated."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Toggle gift error:",
+                    error
+                );
+
+
+                showToast(
+                    "Unable to change gift status.",
+                    true
+                );
+
+            }
+
+        };
+
+
+    // ============================================================
+    // DELETE
+    // ============================================================
+
+    window.deleteGift =
+        async function(gift) {
+
+            const confirmed =
+                confirm(
+                    `DELETE "${gift.name}"?\n\nThis permanently removes the gift from the Gift Store.`
+                );
+
+
+            if (!confirmed) return;
+
+
+            const secondConfirm =
+                confirm(
+                    "This action cannot be undone. Continue?"
+                );
+
+
+            if (!secondConfirm) return;
+
+
+            try {
+
+                await deleteDoc(
+
+                    doc(
+                        db,
+                        "gifts",
+                        gift.id
+                    )
+
+                );
+
+
+                showToast(
+                    "Gift deleted successfully."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Gift delete error:",
+                    error
+                );
+
+
+                showToast(
+                    "Unable to delete gift.",
+                    true
+                );
+
+            }
+
+        };
+
+
+    // ============================================================
+    // SEARCH
+    // ============================================================
+
+    searchInput.addEventListener(
+        "input",
+        renderGifts
+    );
+
+
+    // ============================================================
+    // CLOSE MODAL WHEN CLICKING OUTSIDE
+    // ============================================================
+
+    document
+        .getElementById("edit-modal")
+        .addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target.id ===
+                    "edit-modal"
+                ) {
+
+                    closeEditModal();
+
+                }
+
+            }
+        );
+
+
+    // ============================================================
+    // START
+    // ============================================================
+
+    loadGifts();
+
+</script>
+
+</body>
+</html>
