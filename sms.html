@@ -3,91 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Maintenance</title>
+    <title>PR1MΞ L0GS — Service Maintenance</title>
+
     <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --dark-bg: #060608;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f1f1f3;
+            --text-secondary: #a0aec0;
+            --whatsapp: #25d366;
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+
+            background-image:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(188, 19, 254, 0.10) 0%,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(0, 243, 255, 0.08) 0%,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 50% 50%,
+                    #0d0d16 0%,
+                    #060608 100%
+                );
         }
 
+        /* Ambient Glow */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            top: -120px;
+            left: -100px;
+            background: radial-gradient(
+                circle,
+                rgba(188, 19, 254, 0.12),
+                transparent 70%
+            );
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            bottom: -130px;
+            right: -100px;
+            background: radial-gradient(
+                circle,
+                rgba(0, 243, 255, 0.10),
+                transparent 70%
+            );
+            pointer-events: none;
+        }
+
+        /* Main Card */
         .container {
-            background-color: #1e293b;
-            border-radius: 16px;
-            padding: 40px 30px;
-            max-width: 480px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
             position: relative;
+            width: 100%;
+            max-width: 480px;
+            padding: 42px 28px 30px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.045),
+                    rgba(255, 255, 255, 0.018)
+                );
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 24px;
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.45),
+                inset 0 1px 1px rgba(255, 255, 255, 0.08);
+
+            text-align: center;
+            overflow: hidden;
         }
 
+        /* Top Cyan/Purple Glow */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--neon-cyan),
+                var(--neon-purple),
+                transparent
+            );
+            box-shadow:
+                0 0 15px rgba(0, 243, 255, 0.45),
+                0 0 25px rgba(188, 19, 254, 0.25);
+        }
+
+        /* Decorative Glow */
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            top: -80px;
+            right: -70px;
+            background: radial-gradient(
+                circle,
+                rgba(0, 243, 255, 0.13),
+                transparent 70%
+            );
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Back Button */
         .back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
-            color: #94a3b8;
+
+            color: #718096;
             text-decoration: none;
-            font-size: 0.9rem;
-            display: flex;
+
+            font-size: 0.82rem;
+            font-weight: 600;
+
+            display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: color 0.2s ease;
+
+            transition:
+                color 0.2s ease,
+                transform 0.2s ease;
         }
 
         .back-btn:hover {
-            color: #f8fafc;
+            color: var(--neon-cyan);
+            transform: translateX(-2px);
         }
 
+        /* Maintenance Icon */
         .icon-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            color: #f59e0b;
+            width: 82px;
+            height: 82px;
+            margin: 20px auto 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0, 243, 255, 0.10),
+                    rgba(188, 19, 254, 0.10)
+                );
+
+            border: 1px solid rgba(0, 243, 255, 0.22);
+
+            color: var(--neon-cyan);
+
+            box-shadow:
+                0 0 25px rgba(0, 243, 255, 0.10),
+                inset 0 1px 1px rgba(255, 255, 255, 0.08);
         }
 
+        .icon-container svg {
+            width: 42px;
+            height: 42px;
+
+            filter:
+                drop-shadow(0 0 7px rgba(0, 243, 255, 0.45));
+        }
+
+        /* Heading */
         h1 {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
             color: #ffffff;
+            font-size: 1.55rem;
+            font-weight: 750;
+            letter-spacing: -0.3px;
+            margin-bottom: 12px;
+
+            text-shadow:
+                0 0 14px rgba(0, 243, 255, 0.12);
         }
 
+        /* Description */
         p {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            color: #a0aec0;
+            font-size: 0.91rem;
+            line-height: 1.7;
             margin-bottom: 28px;
         }
 
+        /* Small Highlight */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            margin-bottom: 18px;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: rgba(255, 180, 0, 0.08);
+            border: 1px solid rgba(255, 180, 0, 0.18);
+
+            color: #ffc857;
+
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffc857;
+            box-shadow: 0 0 8px rgba(255, 200, 87, 0.8);
+        }
+
+        /* WhatsApp Button */
         .whatsapp-btn {
+            width: 100%;
+
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            background-color: #25d366;
+
+            padding: 13px 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #25d366 0%,
+                    #128c7e 100%
+                );
+
             color: #ffffff;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 14px 24px;
-            border-radius: 8px;
-            width: 100%;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+
+            font-size: 0.85rem;
+            font-weight: 700;
+
+            box-shadow:
+                0 5px 18px rgba(37, 211, 102, 0.22),
+                inset 0 1px 1px rgba(255, 255, 255, 0.18);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                filter 0.2s ease;
         }
 
         .whatsapp-btn:hover {
-            background-color: #20ba5a;
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 25px rgba(37, 211, 102, 0.30),
+                inset 0 1px 1px rgba(255, 255, 255, 0.18);
+
+            filter: brightness(1.05);
         }
 
         .whatsapp-btn:active {
@@ -95,41 +314,130 @@
         }
 
         .whatsapp-btn svg {
-            width: 22px;
-            height: 22px;
+            width: 21px;
+            height: 21px;
             fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* Footer Brand */
+        .brand-footer {
+            margin-top: 24px;
+            color: #4a5568;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .brand-footer span {
+            color: rgba(0, 243, 255, 0.55);
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 18px 14px;
+            }
+
+            .container {
+                padding: 40px 22px 26px;
+                border-radius: 22px;
+            }
+
+            .icon-container {
+                width: 76px;
+                height: 76px;
+                border-radius: 22px;
+            }
+
+            .icon-container svg {
+                width: 39px;
+                height: 39px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            p {
+                font-size: 0.88rem;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+                animation: none !important;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
+
         <!-- Back Button -->
         <a href="shop.html" class="back-btn">
-            &#8592; Back to Shop
+            <span>&#8592;</span>
+            Back to Shop
         </a>
 
         <!-- Maintenance Icon -->
         <div class="icon-container">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
                 <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
             </svg>
         </div>
 
+        <!-- Status -->
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            Service Maintenance
+        </div>
+
         <!-- Main Content -->
         <h1>Under Maintenance</h1>
+
         <p>
-            SMS verification service is currently under maintenance and we sincerely apologize.<br><br>
+            SMS verification service is currently under maintenance and we sincerely apologize.
+            <br><br>
             For manual purchase please visit the admin directly to purchase your verification number.
         </p>
 
-        <!-- WhatsApp Button with Pre-filled Message -->
-        <a href="https://wa.me/message/IXDUVSQ5CHUKP1?text=hello%20admin%20i%20want%20to%20purchase%20a%20number%20for..." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+        <!-- WhatsApp Button -->
+        <a
+            href="https://wa.me/message/IXDUVSQ5CHUKP1?text=hello%20admin%20i%20want%20to%20purchase%20a%20number%20for..."
+            class="whatsapp-btn"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+            >
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-.768-.967-.941-1.165-.173-.198-.347-.223-.644-.074-.297.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
             </svg>
+
             Contact Admin on WhatsApp
         </a>
+
+        <div class="brand-footer">
+            PR1MΞ <span>L0GS</span>
+        </div>
+
     </div>
 
 </body>
