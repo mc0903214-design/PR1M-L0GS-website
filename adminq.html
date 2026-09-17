@@ -182,6 +182,42 @@
         }
         .toast-notification.active { opacity: 1; transform: translateY(0); }
         .toast-notification.error-toast { border-color: var(--stock-red); box-shadow: 0 12px 40px rgba(255, 77, 77, 0.15); }
+
+        /* --- GIFT IMAGE URL STRUCTURE --- */
+        .gift-url-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .gift-url-row input {
+            flex: 1;
+        }
+
+        .remove-url-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid var(--stock-red);
+            background: rgba(255, 77, 77, 0.08);
+            color: var(--stock-red);
+            cursor: pointer;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .add-url-btn {
+            margin-top: 4px;
+            background: rgba(0, 243, 255, 0.06);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: var(--neon-cyan);
+            padding: 11px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 <body>
@@ -202,6 +238,7 @@
         <button class="tab-btn" onclick="showTab('users-list')">User Directory</button>
         <button class="tab-btn" onclick="showTab('deps-list')">Live Deposits</button>
         <button class="tab-btn" onclick="showTab('all-prods')">Inventory Core</button>
+        <button class="tab-btn" onclick="showTab('add-gift')">🎁 Add Gift</button>
     </div>
 
     <div id="add-prod" class="panel active">
@@ -223,9 +260,9 @@
                 <option value="TikTok Logs">🎵 TikTok Logs</option>
                 <option value="X/Twitter Logs">𝕏 X/Twitter Logs</option>
                 <option value="FB Logs">📘 FB Logs</option>
-<option value="IG Logs">📸 IG Logs</option>
-<option value="MAIL Logs">📧 MAIL Logs</option>
-<option value="OTHER Logs">📦 OTHER Logs</option>
+                <option value="IG Logs">📸 IG Logs</option>
+                <option value="MAIL Logs">📧 MAIL Logs</option>
+                <option value="OTHER Logs">📦 OTHER Logs</option>
                 <option value="Texting Apps">💬 Texting Apps</option>
                 <option value="Working Pics">📂 Working Pics</option>
                 <option value="Modded Apps">📱 Modded Apps</option>
@@ -320,6 +357,53 @@
         </div>
     </div>
 
+    <!-- ==================== ADD GIFT ==================== -->
+    <div id="add-gift" class="panel">
+        <h2>PR1MΞ Gift Store</h2>
+        <div class="panel-desc">Add gifts that customers can purchase and send to loved ones.</div>
+
+        <div class="form-group">
+            <label>Gift Name</label>
+            <input type="text" id="gift-name" placeholder="e.g., Birthday Gift Box">
+        </div>
+
+        <div class="form-group">
+            <label>Gift Description</label>
+            <textarea id="gift-desc" rows="3" placeholder="Describe the gift..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Gift Price</label>
+            <input type="number" id="gift-price" placeholder="Amount in ₦" min="0">
+        </div>
+
+        <div class="form-group">
+            <label>Gift Image URLs</label>
+            <div id="gift-image-urls">
+                <div class="gift-url-row">
+                    <input type="url" class="gift-url" placeholder="https://...">
+                </div>
+                <div class="gift-url-row">
+                    <input type="url" class="gift-url" placeholder="https://...">
+                </div>
+                <div class="gift-url-row">
+                    <input type="url" class="gift-url" placeholder="https://...">
+                </div>
+                <div class="gift-url-row">
+                    <input type="url" class="gift-url" placeholder="https://...">
+                </div>
+            </div>
+
+            <button type="button" class="add-url-btn" onclick="addGiftImageUrl()">
+                + ADD ANOTHER IMAGE URL
+            </button>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;" id="uploadGiftBtn" onclick="uploadGift()">
+            UPLOAD GIFT TO GIFT STORE
+        </button>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDoc, setDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -339,17 +423,14 @@
         const toastContainer = document.getElementById('toast-container');
         let toastTimeout;
 
-        // Auto-focus protection
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('sys-pass').focus();
         });
 
-        // Enter key listener explicitly tied to password gate element
         document.getElementById('sys-pass').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') checkPass();
         });
 
-        // Dynamic client-side live structural table search filtering
         document.getElementById('user-search').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase().trim();
             const rows = document.querySelectorAll('#user-rows tr');
@@ -399,11 +480,9 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             
-            // Highlight the proper active tab element
             if (window.event && window.event.currentTarget) {
                 window.event.currentTarget.classList.add('active');
             } else {
-                // Fallback selector configuration logic
                 const btns = document.querySelectorAll('.tab-btn');
                 if(id === 'add-prod' && btns[0]) btns[0].classList.add('active');
             }
@@ -522,16 +601,98 @@
             document.getElementById('cancelEditBtn').style.display = "none";
         };
 
+        /* ==================== GIFT STORE FUNCTIONS ==================== */
+
+        window.addGiftImageUrl = () => {
+            const container = document.getElementById('gift-image-urls');
+
+            const row = document.createElement('div');
+            row.className = 'gift-url-row';
+
+            row.innerHTML = `
+                <input type="url" class="gift-url" placeholder="https://...">
+                <button type="button" class="remove-url-btn" onclick="this.parentElement.remove()">×</button>
+            `;
+
+            container.appendChild(row);
+        };
+
+        window.uploadGift = async () => {
+            const btn = document.getElementById('uploadGiftBtn');
+
+            const name = document.getElementById('gift-name').value.trim();
+            const description = document.getElementById('gift-desc').value.trim();
+            const priceValue = document.getElementById('gift-price').value;
+
+            const imageUrls = Array.from(document.querySelectorAll('.gift-url'))
+                .map(input => input.value.trim())
+                .filter(url => url !== "");
+
+            if (!name || !description || !priceValue || imageUrls.length === 0) {
+                return showNotification("Please complete all required gift fields.", true);
+            }
+
+            const price = parseFloat(priceValue);
+
+            if (isNaN(price) || price < 0) {
+                return showNotification("Enter a valid gift price.", true);
+            }
+
+            btn.disabled = true;
+            btn.innerText = "UPLOADING GIFT...";
+
+            try {
+                await addDoc(collection(db, "gifts"), {
+                    name,
+                    description,
+                    price,
+                    imageUrls,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                    active: true
+                });
+
+                showNotification("Gift successfully added to PR1MΞ Gift Store!");
+
+                document.getElementById('gift-name').value = "";
+                document.getElementById('gift-desc').value = "";
+                document.getElementById('gift-price').value = "";
+
+                document.getElementById('gift-image-urls').innerHTML = `
+                    <div class="gift-url-row">
+                        <input type="url" class="gift-url" placeholder="https://...">
+                    </div>
+                    <div class="gift-url-row">
+                        <input type="url" class="gift-url" placeholder="https://...">
+                    </div>
+                    <div class="gift-url-row">
+                        <input type="url" class="gift-url" placeholder="https://...">
+                    </div>
+                    <div class="gift-url-row">
+                        <input type="url" class="gift-url" placeholder="https://...">
+                    </div>
+                `;
+
+            } catch (e) {
+                showNotification("Gift upload failed: " + e.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "UPLOAD GIFT TO GIFT STORE";
+            }
+        };
+
         function loadUsers() {
             const tbody = document.getElementById('user-rows');
             onSnapshot(collection(db, "users"), (snap) => {
                 snap.docChanges().forEach(change => {
                     const u = change.doc.data();
                     const userId = change.doc.id;
+
                     if (change.type === "added") {
                         if (!document.getElementById(`user-row-${userId}`)) {
                             const row = document.createElement('tr');
                             row.id = `user-row-${userId}`;
+
                             row.innerHTML = `
                                 <td class="user-email" style="font-weight: 600;">${u.email}</td>
                                 <td class="user-balance" style="color: var(--neon-cyan); font-weight:700;">₦${(u.balance || 0).toLocaleString()}</td>
@@ -541,10 +702,12 @@
                                     <button class="btn btn-danger btn-sm" id="btn-ban-${userId}">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
                                 </td>
                             `;
+
                             tbody.appendChild(row);
                             
                             document.getElementById(`btn-wallet-${userId}`).addEventListener('click', () => {
                                 const amt = prompt(`Enter NEW TOTAL balance for ${u.email}:`);
+
                                 if(amt !== null && !isNaN(amt)) {
                                     updateDoc(doc(db, "users", userId), { balance: parseFloat(amt) })
                                         .then(() => showNotification("Wallet node balance synchronized correctly."))
@@ -554,31 +717,37 @@
                             
                             document.getElementById(`btn-ban-${userId}`).addEventListener('click', () => {
                                 const newStatus = u.status === 'banned' ? 'active' : 'banned';
+
                                 updateDoc(doc(db, "users", userId), { status: newStatus })
                                     .then(() => showNotification("User firewall status revised."))
                                     .catch(() => showNotification("Status modification dropped.", true));
                             });
                         }
                     }
+
                     if (change.type === "modified") {
                         const existingRow = document.getElementById(`user-row-${userId}`);
+
                         if (existingRow) {
                             existingRow.querySelector('.user-balance').innerText = `₦${(u.balance || 0).toLocaleString()}`;
+
                             const statusSpan = existingRow.querySelector('.user-status span');
                             statusSpan.innerText = u.status || 'active';
                             statusSpan.style.color = u.status === 'banned' ? 'var(--stock-red)' : 'var(--stock-green)';
+
                             const banBtn = existingRow.querySelector('.btn-danger');
                             banBtn.innerText = u.status === 'banned' ? 'Unban' : 'Ban';
                         }
                     }
+
                     if (change.type === "removed") {
                         const existingRow = document.getElementById(`user-row-${userId}`);
                         if (existingRow) existingRow.remove();
                     }
                 });
 
-                // Re-apply current search query to rows updated live
                 const currentSearch = document.getElementById('user-search').value.toLowerCase().trim();
+
                 if (currentSearch) {
                     document.querySelectorAll('#user-rows tr').forEach(row => {
                         const emailText = row.querySelector('.user-email').innerText.toLowerCase();
@@ -589,8 +758,8 @@
         }
 
         function loadDeposits() {
-            // Composite-index proof query sorting strategy safely preventing failure modes across newly deployed backend collections
             const q = query(collection(db, "deposits"), where("status", "==", "success"));
+
             onSnapshot(q, (snap) => {
                 const container = document.getElementById('deposit-container');
                 
@@ -599,13 +768,12 @@
                     return;
                 }
 
-                // Process internal arrays natively to guarantee accurate sorting safely even without complex custom indexed composite parameters set up in Firestore
                 const depositsArray = [];
+
                 snap.forEach(docSnap => {
                     depositsArray.push(docSnap.data());
                 });
 
-                // Soft array processing sorting top down
                 depositsArray.sort((x, y) => {
                     const timeX = x.timestamp ? x.timestamp.toMillis() : 0;
                     const timeY = y.timestamp ? y.timestamp.toMillis() : 0;
@@ -613,20 +781,38 @@
                 });
 
                 container.innerHTML = "";
+
                 depositsArray.forEach(d => {
-                    const formattedDate = d.timestamp ? d.timestamp.toDate().toLocaleString('en-US', { hour12: true, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Processing Transaction';
+                    const formattedDate = d.timestamp
+                        ? d.timestamp.toDate().toLocaleString('en-US', {
+                            hour12: true,
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                        : 'Processing Transaction';
+
                     const card = document.createElement('div');
                     card.className = 'deposit-card';
+
                     card.innerHTML = `
                         <div style="width: 100%">
                             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                 <span style="color: var(--stock-green); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px;">₦${parseFloat(d.amount).toLocaleString()}</span>
                                 <span style="color: #718096; font-size: 0.7rem; font-weight:700; text-transform: uppercase;">${formattedDate}</span>
                             </div>
-                            <p style="font-size: 0.85rem; color: #cbd5e0; margin: 0; font-weight: 500;"><strong>User Connection:</strong> ${d.email}</p>
-                            <p style="font-size: 0.7rem; color: #4a5568; margin-top: 4px; font-family: monospace; letter-spacing: 0.3px;"><strong>REF_ID:</strong> ${d.reference || 'SYSTEM_MANUAL'}</p>
+
+                            <p style="font-size: 0.85rem; color: #cbd5e0; margin: 0; font-weight: 500;">
+                                <strong>User Connection:</strong> ${d.email}
+                            </p>
+
+                            <p style="font-size: 0.7rem; color: #4a5568; margin-top: 4px; font-family: monospace; letter-spacing: 0.3px;">
+                                <strong>REF_ID:</strong> ${d.reference || 'SYSTEM_MANUAL'}
+                            </p>
                         </div>
                     `;
+
                     container.appendChild(card);
                 });
             });
