@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ | Gift Checkout</title>
+
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --dark: #060608;
+            --glass: rgba(255,255,255,0.035);
+            --glass-border: rgba(255,255,255,0.08);
+            --muted: #718096;
+            --green: #00ff88;
+            --red: #ff4b4b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: #f1f1f3;
+            min-height: 100vh;
+            padding: 18px 14px 45px;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(188,19,254,0.10), transparent 42%),
+                radial-gradient(circle at 90% 10%, rgba(0,243,255,0.07), transparent 42%),
+                radial-gradient(circle at 50% 85%, rgba(188,19,254,0.05), transparent 45%);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+        }
+
+        .page-title {
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 1.4px;
+            color: var(--neon-cyan);
+        }
+
+        .balance-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 9px 12px;
+            border-radius: 13px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+        }
+
+        .balance-label {
+            font-size: 0.6rem;
+            color: var(--muted);
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .balance-value {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            font-weight: 900;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            padding: 20px;
+            margin-bottom: 17px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.20);
+        }
+
+        .gift-preview {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .gift-image {
+            width: 105px;
+            height: 105px;
+            flex-shrink: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #0b0b10;
+            border: 1px solid var(--glass-border);
+        }
+
+        .gift-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gift-info {
+            min-width: 0;
+        }
+
+        .gift-name {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 7px;
+        }
+
+        .gift-description {
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
+            margin-bottom: 9px;
+        }
+
+        .gift-price {
+            color: var(--neon-cyan);
+            font-size: 1.05rem;
+            font-weight: 900;
+        }
+
+        .section-title {
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            margin-bottom: 17px;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 0.73rem;
+            line-height: 1.5;
+            margin-top: -10px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            color: #a0aec0;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-bottom: 7px;
+            letter-spacing: 0.2px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.09);
+            outline: none;
+            border-radius: 12px;
+            padding: 13px 13px;
+            background: rgba(0,0,0,0.25);
+            color: #fff;
+            font-size: 0.86rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input::placeholder {
+            color: #4f5968;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: rgba(0,243,255,0.45);
+            box-shadow: 0 0 0 3px rgba(0,243,255,0.06);
+        }
+
+        .optional {
+            color: #566170;
+            font-size: 0.62rem;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .summary {
+            border-top: 1px solid rgba(255,255,255,0.07);
+            margin-top: 18px;
+            padding-top: 18px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.82rem;
+        }
+
+        .summary-row span:first-child {
+            color: var(--muted);
+        }
+
+        .summary-row span:last-child {
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            margin-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
+        .summary-total span:last-child {
+            color: var(--neon-cyan);
+        }
+
+        .pay-btn {
+            width: 100%;
+            border: none;
+            border-radius: 15px;
+            padding: 16px;
+            margin-top: 18px;
+            font-size: 0.9rem;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            color: #777;
+            background: #25262b;
+            transition: all 0.2s ease;
+        }
+
+        .pay-btn.ready {
+            color: #fff;
+            background: linear-gradient(
+                90deg,
+                #9d4edd,
+                var(--neon-purple)
+            );
+            box-shadow: 0 7px 25px rgba(188,19,254,0.22);
+        }
+
+        .pay-btn.ready:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 30px rgba(188,19,254,0.28);
+        }
+
+        .pay-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.72;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .spinner {
+            width: 38px;
+            height: 38px;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 17px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading p {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .error-box,
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-icon {
+            color: var(--red);
+            border: 2px solid var(--red);
+            background: rgba(255,75,75,0.08);
+        }
+
+        .success-icon {
+            color: var(--green);
+            border: 2px solid var(--green);
+            background: rgba(0,255,136,0.08);
+        }
+
+        .status-title {
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .status-text {
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .return-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 22px;
+            padding: 13px 20px;
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+
+        footer {
+            margin-top: 35px;
+            padding: 22px 5px 5px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-brand {
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+        }
+
+        .whatsapp-btn {
+            text-decoration: none;
+            color: #fff;
+            background: rgba(0,255,136,0.08);
+            border: 1px solid rgba(0,255,136,0.35);
+            border-radius: 11px;
+            padding: 10px 15px;
+            font-size: 0.68rem;
+            font-weight: 900;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translate(-50%, 25px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 99999;
+            max-width: calc(100vw - 30px);
+            padding: 12px 18px;
+            border-radius: 12px;
+            background: rgba(6,6,8,0.97);
+            border: 1px solid var(--red);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .toast.info {
+            border-color: var(--neon-cyan);
+        }
+
+        @media (max-width: 560px) {
+            body {
+                padding: 14px 11px 35px;
+            }
+
+            .gift-preview {
+                align-items: flex-start;
+            }
+
+            .gift-image {
+                width: 88px;
+                height: 88px;
+            }
+
+            .gift-name {
+                font-size: 1rem;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .card {
+                padding: 17px;
+                border-radius: 19px;
+            }
+
+            footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+
+        <a href="gift.html" class="back-btn" aria-label="Back">
+            <svg width="19" height="19" viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.5">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+
+        <div class="page-title">
+            GIFT CHECKOUT
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-label">Balance</div>
+            <div class="balance-value" id="balance-value">₦0</div>
+        </div>
+
+    </header>
+
+
+    <!-- LOADING -->
+
+    <div id="loading-view" class="card loading">
+
+        <div class="spinner"></div>
+
+        <p>Loading gift...</p>
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div id="error-view" class="card error-box">
+
+        <div class="status-icon error-icon">
+
+            <svg width="30" height="30"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.5">
+
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+
+            </svg>
+
+        </div>
+
+        <div class="status-title">
+            Unable to Load Gift
+        </div>
+
+        <div class="status-text" id="error-message">
+            The requested gift could not be loaded.
+        </div>
+
+        <a href="gift.html" class="return-btn">
+            Return to Gift Store
+        </a>
+
+    </div>
+
+
+    <!-- SUCCESS -->
+
+    <div id="success-view" class="card success-box">
+
+        <div class="status-icon success-icon">
+
+            <svg width="31" height="31"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="3">
+
+                <polyline points="20 6 9 17 4 12"></polyline>
+
+            </svg>
+
+        </div>
+
+        <div class="status-title">
+            Gift Order Confirmed
+        </div>
+
+        <div class="status-text">
+            Your gift is on the way. Your order details have been
+            received and will be processed for delivery.
+        </div>
+
+        <a href="gift.html" class="return-btn">
+            Return to Gift Store
+        </a>
+
+    </div>
+
+
+    <!-- MAIN CHECKOUT -->
+
+    <main id="checkout-view" style="display:none;">
+
+        <!-- GIFT -->
+
+        <section class="card">
+
+            <div class="gift-preview">
+
+                <div class="gift-image">
+                    <img
+                        id="gift-image"
+                        src=""
+                        alt="Selected Gift"
+                    >
+                </div>
+
+                <div class="gift-info">
+
+                    <div class="gift-name" id="gift-name">
+                        Gift
+                    </div>
+
+                    <div class="gift-description" id="gift-description">
+                        Gift description
+                    </div>
+
+                    <div class="gift-price" id="gift-price">
+                        ₦0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DELIVERY INFO -->
+
+        <section class="card">
+
+            <div class="section-title">
+                Delivery Info
+            </div>
+
+            <div class="section-subtitle">
+                Enter the details of the person who should receive the gift.
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="recipient-name">
+                    Recipient's Name
+                </label>
+
+                <input
+                    id="recipient-name"
+                    type="text"
+                    autocomplete="name"
+                    placeholder="Enter recipient's full name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="recipient-phone">
+                    Recipient's Phone
+                </label>
+
+                <input
+                    id="recipient-phone"
+                    type="tel"
+                    autocomplete="tel"
+                    placeholder="Enter recipient's phone number"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="street-address">
+                    Street Address
+                </label>
+
+                <input
+                    id="street-address"
+                    type="text"
+                    autocomplete="street-address"
+                    placeholder="Enter street address"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="apartment">
+                    Apartment, Suite, Unit
+                    <span class="optional">(Optional)</span>
+                </label>
+
+                <input
+                    id="apartment"
+                    type="text"
+                    autocomplete="address-line2"
+                    placeholder="Apartment, suite, unit"
+                >
+
+            </div>
+
+
+            <div class="two-column">
+
+                <div class="form-group">
+
+                    <label for="city">
+                        City
+                    </label>
+
+                    <input
+                        id="city"
+                        type="text"
+                        autocomplete="address-level2"
+                        placeholder="City"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="state">
+                        State
+                    </label>
+
+                    <input
+                        id="state"
+                        type="text"
+                        autocomplete="address-level1"
+                        placeholder="State"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="two-column">
+
+                <div class="form-group">
+
+                    <label for="country">
+                        Country
+                    </label>
+
+                    <input
+                        id="country"
+                        type="text"
+                        autocomplete="country-name"
+                        placeholder="Country"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="zip-code">
+                        Zip Code
+                    </label>
+
+                    <input
+                        id="zip-code"
+                        type="text"
+                        autocomplete="postal-code"
+                        placeholder="Zip code"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SENDER INFO -->
+
+        <section class="card">
+
+            <div class="section-title">
+                Sender Info
+            </div>
+
+            <div class="section-subtitle">
+                Enter your information as the person sending the gift.
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="sender-name">
+                    Your Name
+                </label>
+
+                <input
+                    id="sender-name"
+                    type="text"
+                    autocomplete="name"
+                    placeholder="Enter your name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="sender-phone">
+                    Your Phone
+                </label>
+
+                <input
+                    id="sender-phone"
+                    type="tel"
+                    autocomplete="tel"
+                    placeholder="Enter your phone number"
+                >
+
+            </div>
+
+        </section>
+
+
+        <!-- PAYMENT -->
+
+        <section class="card">
+
+            <div class="section-title">
+                Payment
+            </div>
+
+            <div class="summary">
+
+                <div class="summary-row">
+                    <span>Gift</span>
+                    <span id="summary-gift">—</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Gift Price</span>
+                    <span id="summary-price">₦0</span>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">₦0</span>
+                </div>
+
+            </div>
+
+
+            <button
+                id="pay-btn"
+                class="pay-btn"
+                disabled
+            >
+                Complete Form to Continue
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <div class="footer-brand">
+            PR1MΞ L0GS
+        </div>
+
+        <a
+            class="whatsapp-btn"
+            href="https://wa.me/message/IXDUVSQ5CHUKP1"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            WhatsApp
+        </a>
+
+    </footer>
+
+</div>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script type="module">
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+
+    import {
+        getAuth,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        collection,
+        runTransaction,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+    // ============================================================
+    // FIREBASE
+    // ============================================================
+
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+
+        authDomain: "primelogs-web.firebaseapp.com",
+
+        projectId: "primelogs-web",
+
+        storageBucket: "primelogs-web.firebasestorage.app",
+
+        messagingSenderId: "732956069251",
+
+        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+
+    // ============================================================
+    // STATE
+    // ============================================================
+
+    let currentUser = null;
+
+    let currentGift = null;
+
+    let currentBalance = 0;
+
+    let authReady = false;
+
+    let submitting = false;
+
+
+    // ============================================================
+    // DOM
+    // ============================================================
+
+    const loadingView =
+        document.getElementById("loading-view");
+
+    const errorView =
+        document.getElementById("error-view");
+
+    const checkoutView =
+        document.getElementById("checkout-view");
+
+    const successView =
+        document.getElementById("success-view");
+
+    const errorMessage =
+        document.getElementById("error-message");
+
+    const balanceValue =
+        document.getElementById("balance-value");
+
+    const payButton =
+        document.getElementById("pay-btn");
+
+
+    // ============================================================
+    // URL
+    // ============================================================
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const giftId =
+        params.get("id");
+
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+
+    function formatMoney(amount) {
+
+        const number = Number(amount) || 0;
+
+        return "₦" + number.toLocaleString("en-NG", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+
+    }
+
+
+    function showToast(message, type = "error") {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.innerText = message;
+
+        toast.classList.remove("info");
+
+        if (type === "info") {
+            toast.classList.add("info");
+        }
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 3500);
+
+    }
+
+
+    function showError(message) {
+
+        loadingView.style.display = "none";
+
+        checkoutView.style.display = "none";
+
+        successView.style.display = "none";
+
+        errorMessage.innerText = message;
+
+        errorView.style.display = "block";
+
+    }
+
+
+    function getValue(id) {
+
+        return document
+            .getElementById(id)
+            .value
+            .trim();
+
+    }
+
+
+    // ============================================================
+    // FORM VALIDATION
+    // ============================================================
+
+    function validateForm() {
+
+        const requiredFields = [
+
+            "recipient-name",
+            "recipient-phone",
+            "street-address",
+            "city",
+            "state",
+            "country",
+            "zip-code",
+            "sender-name",
+            "sender-phone"
+
+        ];
+
+
+        for (const id of requiredFields) {
+
+            if (!getValue(id)) {
+                return false;
+            }
+
+        }
+
+
+        return true;
+
+    }
+
+
+    function updatePayButton() {
+
+        if (!currentGift || !currentUser || !authReady) {
+
+            payButton.disabled = true;
+
+            payButton.classList.remove("ready");
+
+            payButton.innerText =
+                "Complete Form to Continue";
+
+            return;
+
+        }
+
+
+        if (!validateForm()) {
+
+            payButton.disabled = true;
+
+            payButton.classList.remove("ready");
+
+            payButton.innerText =
+                "Complete Form to Continue";
+
+            return;
+
+        }
+
+
+        const price =
+            Number(currentGift.price) || 0;
+
+
+        if (currentBalance < price) {
+
+            payButton.disabled = true;
+
+            payButton.classList.remove("ready");
+
+            payButton.innerText =
+                "Insufficient Balance";
+
+            return;
+
+        }
+
+
+        payButton.disabled = false;
+
+        payButton.classList.add("ready");
+
+        payButton.innerText =
+            `Pay ${formatMoney(price)}`;
+
+    }
+
+
+    // ============================================================
+    // LOAD GIFT
+    // ============================================================
+
+    async function loadGift() {
+
+        if (!giftId) {
+
+            showError(
+                "No gift was selected."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const giftRef =
+                doc(db, "gifts", giftId);
+
+            const giftSnap =
+                await getDoc(giftRef);
+
+
+            if (!giftSnap.exists()) {
+
+                showError(
+                    "This gift does not exist."
+                );
+
+                return;
+
+            }
+
+
+            const data =
+                giftSnap.data();
+
+
+            if (data.active === false) {
+
+                showError(
+                    "This gift is currently unavailable."
+                );
+
+                return;
+
+            }
+
+
+            currentGift = {
+
+                id: giftSnap.id,
+
+                ...data
+
+            };
+
+
+            renderGift();
+
+
+        } catch (error) {
+
+            console.error(
+                "Gift loading error:",
+                error
+            );
+
+
+            showError(
+                "Unable to load this gift right now."
+            );
+
+        }
+
+    }
+
+
+    // ============================================================
+    // RENDER GIFT
+    // ============================================================
+
+    function renderGift() {
+
+        const images =
+            Array.isArray(currentGift.imageUrls)
+                ? currentGift.imageUrls
+                    .map(url => String(url).trim())
+                    .filter(Boolean)
+                : [];
+
+
+        let imageUrl =
+            images[0] ||
+            currentGift.image ||
+            "https://via.placeholder.com/600x600?text=PR1M%E2%9C%94+GIFT";
+
+
+        const giftImage =
+            document.getElementById("gift-image");
+
+
+        giftImage.src = imageUrl;
+
+        giftImage.onerror = function() {
+
+            this.src =
+                "https://via.placeholder.com/600x600?text=PR1M%E2%9C%94+GIFT";
+
+        };
+
+
+        document.getElementById("gift-name").innerText =
+            currentGift.name || "Gift";
+
+
+        document.getElementById("gift-description").innerText =
+            currentGift.description ||
+            "A special gift from PR1MΞ Gift Store.";
+
+
+        const price =
+            Number(currentGift.price) || 0;
+
+
+        document.getElementById("gift-price").innerText =
+            formatMoney(price);
+
+
+        document.getElementById("summary-gift").innerText =
+            currentGift.name || "Gift";
+
+
+        document.getElementById("summary-price").innerText =
+            formatMoney(price);
+
+
+        document.getElementById("summary-total").innerText =
+            formatMoney(price);
+
+
+        loadingView.style.display = "none";
+
+        checkoutView.style.display = "block";
+
+
+        updatePayButton();
+
+    }
+
+
+    // ============================================================
+    // LOAD USER BALANCE
+    // ============================================================
+
+    async function loadUserData(user) {
+
+        if (!user) return;
+
+
+        try {
+
+            const userRef =
+                doc(db, "users", user.uid);
+
+            const userSnap =
+                await getDoc(userRef);
+
+
+            if (!userSnap.exists()) {
+
+                currentBalance = 0;
+
+                balanceValue.innerText =
+                    "₦0";
+
+                updatePayButton();
+
+                return;
+
+            }
+
+
+            const data =
+                userSnap.data();
+
+
+            currentBalance =
+                Number(data.balance) || 0;
+
+
+            balanceValue.innerText =
+                formatMoney(currentBalance);
+
+
+            updatePayButton();
+
+
+        } catch (error) {
+
+            console.error(
+                "User data error:",
+                error
+            );
+
+
+            currentBalance = 0;
+
+            balanceValue.innerText =
+                "₦0";
+
+            updatePayButton();
+
+        }
+
+    }
+
+
+    // ============================================================
+    // INPUT LISTENERS
+    // ============================================================
+
+    const formFields = [
+
+        "recipient-name",
+        "recipient-phone",
+        "street-address",
+        "apartment",
+        "city",
+        "state",
+        "country",
+        "zip-code",
+        "sender-name",
+        "sender-phone"
+
+    ];
+
+
+    formFields.forEach(id => {
+
+        document
+            .getElementById(id)
+            .addEventListener("input", () => {
+
+                updatePayButton();
+
+            });
+
+    });
+
+
+    // ============================================================
+    // PURCHASE
+    // ============================================================
+
+    async function completeGiftPurchase() {
+
+        if (submitting) return;
+
+
+        if (!authReady) {
+
+            showToast(
+                "Still verifying your account.",
+                "info"
+            );
+
+            return;
+
+        }
+
+
+        if (!currentUser) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        if (!currentGift) {
+
+            showToast(
+                "Gift information is unavailable."
+            );
+
+            return;
+
+        }
+
+
+        if (!validateForm()) {
+
+            showToast(
+                "Please complete all required fields."
+            );
+
+            updatePayButton();
+
+            return;
+
+        }
+
+
+        const price =
+            Number(currentGift.price) || 0;
+
+
+        if (price <= 0) {
+
+            showToast(
+                "This gift has an invalid price."
+            );
+
+            return;
+
+        }
+
+
+        if (currentBalance < price) {
+
+            showToast(
+                "Insufficient balance."
+            );
+
+            updatePayButton();
+
+            return;
+
+        }
+
+
+        submitting = true;
+
+        payButton.disabled = true;
+
+        payButton.classList.remove("ready");
+
+        payButton.innerText =
+            "Processing Order...";
+
+
+        const userRef =
+            doc(db, "users", currentUser.uid);
+
+
+        const giftRef =
+            doc(db, "gifts", currentGift.id);
+
+
+        const giftOrdersRef =
+            collection(db, "giftOrders");
+
+
+        try {
+
+            const recipientName =
+                getValue("recipient-name");
+
+            const recipientPhone =
+                getValue("recipient-phone");
+
+            const streetAddress =
+                getValue("street-address");
+
+            const apartment =
+                getValue("apartment");
+
+            const city =
+                getValue("city");
+
+            const state =
+                getValue("state");
+
+            const country =
+                getValue("country");
+
+            const zipCode =
+                getValue("zip-code");
+
+            const senderName =
+                getValue("sender-name");
+
+            const senderPhone =
+                getValue("sender-phone");
+
+
+            const orderRef =
+                doc(giftOrdersRef);
+
+
+            await runTransaction(
+                db,
+                async transaction => {
+
+                    const userSnap =
+                        await transaction.get(userRef);
+
+
+                    const giftSnap =
+                        await transaction.get(giftRef);
+
+
+                    if (!userSnap.exists()) {
+
+                        throw new Error(
+                            "Your account could not be found."
+                        );
+
+                    }
+
+
+                    if (!giftSnap.exists()) {
+
+                        throw new Error(
+                            "This gift no longer exists."
+                        );
+
+                    }
+
+
+                    const userData =
+                        userSnap.data();
+
+
+                    const freshGift =
+                        giftSnap.data();
+
+
+                    if (freshGift.active === false) {
+
+                        throw new Error(
+                            "This gift is no longer available."
+                        );
+
+                    }
+
+
+                    const currentBalance =
+                        Number(userData.balance) || 0;
+
+
+                    const freshPrice =
+                        Number(freshGift.price) || 0;
+
+
+                    if (freshPrice <= 0) {
+
+                        throw new Error(
+                            "This gift has an invalid price."
+                        );
+
+                    }
+
+
+                    if (currentBalance < freshPrice) {
+
+                        throw new Error(
+                            "Insufficient balance."
+                        );
+
+                    }
+
+
+                    // ------------------------------------------------
+                    // CREATE GIFT ORDER
+                    // ------------------------------------------------
+
+                    transaction.set(
+                        orderRef,
+                        {
+
+                            userId:
+                                currentUser.uid,
+
+                            buyerEmail:
+                                currentUser.email || "N/A",
+
+                            giftId:
+                                giftSnap.id,
+
+                            giftName:
+                                freshGift.name || "Gift",
+
+                            giftPrice:
+                                freshPrice,
+
+                            totalPaid:
+                                freshPrice,
+
+
+                            deliveryInfo: {
+
+                                recipientName:
+                                    recipientName,
+
+                                recipientPhone:
+                                    recipientPhone,
+
+                                streetAddress:
+                                    streetAddress,
+
+                                apartment:
+                                    apartment,
+
+                                city:
+                                    city,
+
+                                state:
+                                    state,
+
+                                country:
+                                    country,
+
+                                zipCode:
+                                    zipCode
+
+                            },
+
+
+                            senderInfo: {
+
+                                name:
+                                    senderName,
+
+                                phone:
+                                    senderPhone
+
+                            },
+
+
+                            status:
+                                "pending",
+
+
+                            createdAt:
+                                serverTimestamp(),
+
+                            createdAtMs:
+                                Date.now()
+
+                        }
+                    );
+
+
+                    // ------------------------------------------------
+                    // DEDUCT BALANCE
+                    // ------------------------------------------------
+
+                    transaction.update(
+                        userRef,
+                        {
+
+                            balance:
+                                currentBalance - freshPrice
+
+                        }
+                    );
+
+                }
+            );
+
+
+            // --------------------------------------------------------
+            // SUCCESS
+            // --------------------------------------------------------
+
+            currentBalance -= price;
+
+            balanceValue.innerText =
+                formatMoney(currentBalance);
+
+
+            checkoutView.style.display =
+                "none";
+
+            errorView.style.display =
+                "none";
+
+            loadingView.style.display =
+                "none";
+
+            successView.style.display =
+                "block";
+
+
+            showToast(
+                "Gift order confirmed!",
+                "info"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "GIFT PURCHASE ERROR:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "Unable to complete gift order."
+            );
+
+
+            payButton.disabled =
+                false;
+
+            submitting =
+                false;
+
+            updatePayButton();
+
+            return;
+
+        }
+
+
+        submitting = false;
+
+    }
+
+
+    payButton.addEventListener(
+        "click",
+        completeGiftPurchase
+    );
+
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+
+    onAuthStateChanged(
+        auth,
+        async user => {
+
+            authReady = true;
+
+            currentUser = user;
+
+
+            if (!user) {
+
+                loadingView.style.display =
+                    "none";
+
+                checkoutView.style.display =
+                    "none";
+
+                showError(
+                    "Please log into your PR1MΞ account before purchasing a gift."
+                );
+
+                return;
+
+            }
+
+
+            await loadUserData(user);
+
+        }
+    );
+
+
+    // ============================================================
+    // START
+    // ============================================================
+
+    loadGift();
+
+</script>
+
+</body>
+</html>
