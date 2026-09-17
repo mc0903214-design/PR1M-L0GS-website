@@ -60,6 +60,7 @@
             -webkit-overflow-scrolling: touch;
             padding-bottom: 4px;
         }
+
         .tabs::-webkit-scrollbar { display: none; }
         
         .tab-btn {
@@ -76,7 +77,12 @@
             letter-spacing: 1px;
             flex-shrink: 0;
         }
-        .tab-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+        .tab-btn:hover { 
+            color: #fff; 
+            border-color: rgba(255,255,255,0.2); 
+        }
+
         .tab-btn.active { 
             border-color: var(--neon-cyan); 
             color: var(--neon-cyan); 
@@ -95,11 +101,25 @@
             -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
+
         .panel.active { display: block; }
         
         /* --- TABLES & UTILITIES --- */
-        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 16px; border-radius: 14px; border: 1px solid var(--glass-border); }
-        .grid-table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(0,0,0,0.15); }
+        .table-wrapper { 
+            width: 100%; 
+            overflow-x: auto; 
+            margin-top: 16px; 
+            border-radius: 14px; 
+            border: 1px solid var(--glass-border); 
+        }
+
+        .grid-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            text-align: left; 
+            background: rgba(0,0,0,0.15); 
+        }
+
         .grid-table th { 
             color: #a0aec0; 
             font-size: 0.7rem; 
@@ -110,32 +130,128 @@
             border-bottom: 1px solid var(--glass-border); 
             font-weight: 700;
         }
-        .grid-table td { padding: 16px; border-bottom: 1px solid var(--glass-border); font-size: 0.9rem; color: #e2e8f0; vertical-align: middle; }
+
+        .grid-table td { 
+            padding: 16px; 
+            border-bottom: 1px solid var(--glass-border); 
+            font-size: 0.9rem; 
+            color: #e2e8f0; 
+            vertical-align: middle; 
+        }
+
         .grid-table tr:last-child td { border-bottom: none; }
 
         /* --- FORM STRUCTURES --- */
         .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        input, select, textarea {
-            width: 100%; padding: 14px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 12px; outline: none; transition: all 0.2s ease; font-size: 0.95rem;
-        }
-        input:focus, select:focus, textarea:focus { border-color: var(--neon-cyan); background: rgba(0,0,0,0.45); box-shadow: 0 0 10px rgba(0, 243, 255, 0.05); }
 
-        .price-container { display: flex; align-items: center; gap: 16px; }
-        .check-group { display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 120px; user-select: none; }
-        .check-group input { width: 18px; height: 18px; cursor: pointer; margin: 0; }
+        label { 
+            display: block; 
+            font-size: 0.75rem; 
+            color: #a0aec0; 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 700; 
+        }
+
+        input, select, textarea {
+            width: 100%; 
+            padding: 14px 16px; 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid var(--glass-border); 
+            color: white; 
+            border-radius: 12px; 
+            outline: none; 
+            transition: all 0.2s ease; 
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus, textarea:focus { 
+            border-color: var(--neon-cyan); 
+            background: rgba(0,0,0,0.45); 
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.05); 
+        }
+
+        .price-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 16px; 
+        }
+
+        .check-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            cursor: pointer; 
+            min-width: 120px; 
+            user-select: none; 
+        }
+
+        .check-group input { 
+            width: 18px; 
+            height: 18px; 
+            cursor: pointer; 
+            margin: 0; 
+        }
 
         /* --- BUTTON MATRICES --- */
         .btn {
-            padding: 14px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.2s ease; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; justify-content: center;
+            padding: 14px 24px; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            transition: all 0.2s ease; 
+            text-transform: uppercase; 
+            font-size: 0.8rem; 
+            letter-spacing: 0.5px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
         }
+
         .btn:active { transform: scale(0.97); }
-        .btn-primary { background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%); color: white; box-shadow: 0 4px 15px rgba(188, 19, 254, 0.2); }
-        .btn-approve { background: rgba(0, 255, 136, 0.1); border: 1px solid var(--stock-green); color: var(--stock-green); }
-        .btn-approve:hover { background: var(--stock-green); color: #000; }
-        .btn-danger { background: rgba(255, 77, 77, 0.1); border: 1px solid var(--stock-red); color: var(--stock-red); }
-        .btn-danger:hover { background: var(--stock-red); color: #fff; }
-        .btn-sm { padding: 8px 14px; font-size: 0.7rem; border-radius: 8px; font-weight: 700; }
+
+        .btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.2); 
+        }
+
+        .btn-approve { 
+            background: rgba(0, 255, 136, 0.1); 
+            border: 1px solid var(--stock-green); 
+            color: var(--stock-green); 
+        }
+
+        .btn-approve:hover { 
+            background: var(--stock-green); 
+            color: #000; 
+        }
+
+        .btn-danger { 
+            background: rgba(255, 77, 77, 0.1); 
+            border: 1px solid var(--stock-red); 
+            color: var(--stock-red); 
+        }
+
+        .btn-danger:hover { 
+            background: var(--stock-red); 
+            color: #fff; 
+        }
+
+        .btn-sm { 
+            padding: 8px 14px; 
+            font-size: 0.7rem; 
+            border-radius: 8px; 
+            font-weight: 700; 
+        }
 
         /* --- LIVE DEPOSIT RUNNERS --- */
         .deposit-card { 
@@ -150,10 +266,26 @@
             align-items: center; 
             transition: transform 0.2s;
         }
-        .deposit-card:hover { transform: translateX(2px); background: rgba(0, 0, 0, 0.25); }
+
+        .deposit-card:hover { 
+            transform: translateX(2px); 
+            background: rgba(0, 0, 0, 0.25); 
+        }
         
-        h2 { margin-bottom: 6px; font-weight: 800; letter-spacing: 1.5px; color: #fff; font-size: 1.4rem; text-transform: uppercase; }
-        .panel-desc { font-size: 0.8rem; color: #718096; margin-bottom: 24px; }
+        h2 { 
+            margin-bottom: 6px; 
+            font-weight: 800; 
+            letter-spacing: 1.5px; 
+            color: #fff; 
+            font-size: 1.4rem; 
+            text-transform: uppercase; 
+        }
+
+        .panel-desc { 
+            font-size: 0.8rem; 
+            color: #718096; 
+            margin-bottom: 24px; 
+        }
 
         #editing-indicator { 
             display: none; 
@@ -171,17 +303,33 @@
 
         /* --- SYSTEM TOAST NOTIFICATIONS --- */
         .toast-notification {
-            position: fixed; bottom: 24px; right: 24px;
-            background: rgba(6, 6, 8, 0.95); border: 1px solid var(--neon-cyan);
-            padding: 14px 24px; border-radius: 14px; color: #fff;
-            font-size: 0.85rem; font-weight: 600; z-index: 100000;
+            position: fixed; 
+            bottom: 24px; 
+            right: 24px;
+            background: rgba(6, 6, 8, 0.95); 
+            border: 1px solid var(--neon-cyan);
+            padding: 14px 24px; 
+            border-radius: 14px; 
+            color: #fff;
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            z-index: 100000;
             box-shadow: 0 12px 40px rgba(0, 243, 255, 0.15);
-            opacity: 0; pointer-events: none;
+            opacity: 0; 
+            pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
             transform: translateY(20px);
         }
-        .toast-notification.active { opacity: 1; transform: translateY(0); }
-        .toast-notification.error-toast { border-color: var(--stock-red); box-shadow: 0 12px 40px rgba(255, 77, 77, 0.15); }
+
+        .toast-notification.active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
+        .toast-notification.error-toast { 
+            border-color: var(--stock-red); 
+            box-shadow: 0 12px 40px rgba(255, 77, 77, 0.15); 
+        }
 
         /* --- GIFT IMAGE URL STRUCTURE --- */
         .gift-url-row {
@@ -218,6 +366,205 @@
             font-weight: 700;
             font-size: 0.75rem;
         }
+
+        /* ==================== NOTIFICATION CENTER ==================== */
+
+        .notification-compose {
+            max-width: 780px;
+        }
+
+        .notification-info {
+            background: rgba(0, 243, 255, 0.04);
+            border: 1px solid rgba(0, 243, 255, 0.12);
+            border-radius: 14px;
+            padding: 15px 16px;
+            margin-bottom: 24px;
+            color: #a0aec0;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .notification-info strong {
+            color: var(--neon-cyan);
+        }
+
+        #notification-message {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .notification-preview {
+            margin-top: 24px;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.18);
+        }
+
+        .notification-preview-title {
+            color: #718096;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .preview-card {
+            border: 1px solid rgba(0,243,255,0.16);
+            background: rgba(0,243,255,0.035);
+            border-radius: 14px;
+            padding: 15px;
+        }
+
+        .preview-card h3 {
+            color: #fff;
+            font-size: 0.9rem;
+            margin-bottom: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .preview-card p {
+            color: #cbd5e0;
+            font-size: 0.82rem;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .notification-progress {
+            display: none;
+            margin-top: 14px;
+            color: #718096;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .notification-history {
+            margin-top: 34px;
+            padding-top: 28px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .notification-history-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .notification-history-title h3 {
+            color: #fff;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .notification-history-count {
+            color: var(--neon-cyan);
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .notification-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notification-history-card {
+            border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 16px;
+        }
+
+        .notification-history-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notification-history-card h4 {
+            color: #fff;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .notification-history-time {
+            color: #718096;
+            font-size: 0.68rem;
+            white-space: nowrap;
+        }
+
+        .notification-history-card p {
+            color: #a0aec0;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin-top: 8px;
+        }
+
+        .notification-history-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .notification-recipient-count {
+            color: #718096;
+            font-size: 0.68rem;
+        }
+
+        .notification-empty-history {
+            text-align: center;
+            padding: 35px 15px;
+            color: #4a5568;
+            border: 1px dashed var(--glass-border);
+            border-radius: 14px;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 10px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .tab-btn {
+                padding: 12px 16px;
+                font-size: 0.68rem;
+            }
+
+            .notification-top {
+                flex-direction: column;
+            }
+
+            .notification-history-top {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .notification-history-time {
+                white-space: normal;
+            }
+
+            .notification-history-meta {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -239,7 +586,10 @@
         <button class="tab-btn" onclick="showTab('deps-list')">Live Deposits</button>
         <button class="tab-btn" onclick="showTab('all-prods')">Inventory Core</button>
         <button class="tab-btn" onclick="showTab('add-gift')">🎁 Add Gift</button>
+        <button class="tab-btn" onclick="showTab('notifications')">🔔 Notifications</button>
     </div>
+
+    <!-- ==================== DEPLOY ASSET ==================== -->
 
     <div id="add-prod" class="panel active">
         <h2 id="form-title">Deploy New Asset</h2>
@@ -250,10 +600,12 @@
             <label>Product Name (Shows on Marketplace)</label>
             <input type="text" id="p-name" placeholder="e.g., Facebook Aged Logs">
         </div>
+
         <div class="form-group">
             <label>Detailed Description (Shows on View Page)</label>
             <textarea id="p-desc" rows="3" placeholder="Explain what the user is buying..."></textarea>
         </div>
+
         <div class="form-group">
             <label>Category</label>
             <select id="p-cat">
@@ -277,6 +629,7 @@
                 <option value="Freebies">🎁 FREE ZONE</option>
             </select>
         </div>
+
         <div class="form-group">
             <label>Pricing Configuration</label>
             <div class="price-container">
@@ -287,10 +640,12 @@
                 </label>
             </div>
         </div>
+
         <div class="form-group">
             <label>Icon/Image URL (Supports Video Links)</label>
             <input type="text" id="p-img" placeholder="https://...">
         </div>
+
         <div class="form-group">
             <label>Stock Mode</label>
             <select id="p-mode" onchange="toggleStockLabel()">
@@ -298,6 +653,7 @@
                 <option value="MULTIPLE">Multiple Items (Separate by commas)</option>
             </select>
         </div>
+
         <div class="form-group">
             <label>Post-Purchase Instructions</label>
             <label class="check-group">
@@ -305,6 +661,7 @@
                 <span style="font-size: 0.7rem; color: var(--neon-cyan); font-weight: 700; letter-spacing: 0.5px;">INCLUDE INSTRUCTIONS AFTER PURCHASE</span>
             </label>
         </div>
+
         <div class="form-group">
             <label id="stock-label">Paste Stock Data</label>
             <textarea id="p-stock" rows="5" placeholder="user:pass, user2:pass2..."></textarea>
@@ -315,6 +672,8 @@
             <button class="btn btn-danger" style="flex: 1; display: none;" id="cancelEditBtn" onclick="cancelEdit()">CANCEL EDIT</button>
         </div>
     </div>
+
+    <!-- ==================== USERS ==================== -->
 
     <div id="users-list" class="panel">
         <h2>User Database</h2>
@@ -339,11 +698,15 @@
         </div>
     </div>
 
+    <!-- ==================== DEPOSITS ==================== -->
+
     <div id="deps-list" class="panel">
         <h2>Successful Deposits</h2>
         <div class="panel-desc">Real-time incoming fiat transactional confirmations captured through external networks.</div>
         <div id="deposit-container"></div>
     </div>
+
+    <!-- ==================== INVENTORY ==================== -->
 
     <div id="all-prods" class="panel">
         <div style="text-align: center; padding: 40px 20px;">
@@ -351,6 +714,7 @@
             <p style="color: #718096; font-size: 0.9rem; max-width: 420px; margin: 0 auto 24px; line-height: 1.6;">
                 To guarantee lightning-fast performance, real-time sync protection, and prevent browser crashes, the inventory module opens in an isolated management window.
             </p>
+
             <a href="inventory.html" target="_blank" class="btn btn-primary" style="text-decoration: none; padding: 16px 40px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);">
                 OPEN INVENTORY ENGINE ↗
             </a>
@@ -358,6 +722,7 @@
     </div>
 
     <!-- ==================== ADD GIFT ==================== -->
+
     <div id="add-gift" class="panel">
         <h2>PR1MΞ Gift Store</h2>
         <div class="panel-desc">Add gifts that customers can purchase and send to loved ones.</div>
@@ -379,16 +744,20 @@
 
         <div class="form-group">
             <label>Gift Image URLs</label>
+
             <div id="gift-image-urls">
                 <div class="gift-url-row">
                     <input type="url" class="gift-url" placeholder="https://...">
                 </div>
+
                 <div class="gift-url-row">
                     <input type="url" class="gift-url" placeholder="https://...">
                 </div>
+
                 <div class="gift-url-row">
                     <input type="url" class="gift-url" placeholder="https://...">
                 </div>
+
                 <div class="gift-url-row">
                     <input type="url" class="gift-url" placeholder="https://...">
                 </div>
@@ -404,9 +773,139 @@
         </button>
     </div>
 
+    <!-- ==================== NOTIFICATIONS ==================== -->
+
+    <div id="notifications" class="panel">
+        <div class="notification-compose">
+
+            <h2>Notification Center</h2>
+
+            <div class="panel-desc">
+                Send an in-app notification directly to every registered storefront user.
+            </div>
+
+            <div class="notification-info">
+                <strong>🔔 Broadcast System</strong><br>
+                Messages sent here will appear inside the notification bell on the user's marketplace.
+                Each broadcast is linked together so it can later be deleted from every user's notification list at once.
+            </div>
+
+            <div class="form-group">
+                <label>Notification Title</label>
+                <input
+                    type="text"
+                    id="notification-title"
+                    maxlength="100"
+                    placeholder="e.g., New Products Available 🎉"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Notification Message</label>
+                <textarea
+                    id="notification-message"
+                    maxlength="2000"
+                    placeholder="Write the message you want all users to receive..."
+                ></textarea>
+            </div>
+
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button
+                    class="btn btn-primary"
+                    id="send-notification-btn"
+                    onclick="sendNotificationToAll()"
+                    style="flex:2; min-width:220px;"
+                >
+                    🔔 SEND TO ALL USERS
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="clearNotificationComposer()"
+                    style="flex:1; min-width:150px;"
+                >
+                    CLEAR
+                </button>
+            </div>
+
+            <div id="notification-progress" class="notification-progress">
+                Preparing notification broadcast...
+            </div>
+
+            <!-- PREVIEW -->
+
+            <div class="notification-preview">
+                <div class="notification-preview-title">
+                    Live Notification Preview
+                </div>
+
+                <div class="preview-card">
+                    <h3 id="notification-preview-title">
+                        Notification title
+                    </h3>
+
+                    <p id="notification-preview-message">
+                        Your notification message will appear here.
+                    </p>
+                </div>
+            </div>
+
+            <!-- HISTORY -->
+
+            <div class="notification-history">
+
+                <div class="notification-history-title">
+                    <h3>Previous Notifications</h3>
+                    <span
+                        class="notification-history-count"
+                        id="notification-history-count"
+                    >
+                        0 broadcasts
+                    </span>
+                </div>
+
+                <div
+                    id="notification-history-list"
+                    class="notification-history-list"
+                >
+                    <div class="notification-empty-history">
+                        No previous notifications found.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
     <script type="module">
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDoc, setDoc, getDocs, query, where, onSnapshot, doc, updateDoc, deleteDoc, increment, arrayUnion, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDoc,
+            setDoc,
+            getDocs,
+            query,
+            where,
+            onSnapshot,
+            doc,
+            updateDoc,
+            deleteDoc,
+            increment,
+            arrayUnion,
+            serverTimestamp,
+            orderBy,
+            writeBatch
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+        /* ============================================================
+           FIREBASE
+        ============================================================ */
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
@@ -419,195 +918,582 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+
+        /* ============================================================
+           GLOBAL STATE
+        ============================================================ */
+
         let currentEditId = null;
-        const toastContainer = document.getElementById('toast-container');
+
+        const toastContainer =
+            document.getElementById('toast-container');
+
         let toastTimeout;
 
+        let notificationHistoryUnsubscribe = null;
+
+
+        /* ============================================================
+           DOM READY
+        ============================================================ */
+
         window.addEventListener('DOMContentLoaded', () => {
+
             document.getElementById('sys-pass').focus();
+
+            updateNotificationPreview();
+
         });
+
+
+        /* ============================================================
+           LOGIN ENTER KEY
+        ============================================================ */
 
         document.getElementById('sys-pass').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') checkPass();
+
+            if (e.key === 'Enter') {
+                checkPass();
+            }
+
         });
+
+
+        /* ============================================================
+           USER SEARCH
+        ============================================================ */
 
         document.getElementById('user-search').addEventListener('input', (e) => {
+
             const term = e.target.value.toLowerCase().trim();
-            const rows = document.querySelectorAll('#user-rows tr');
+
+            const rows =
+                document.querySelectorAll('#user-rows tr');
+
             rows.forEach(row => {
-                const emailCell = row.querySelector('.user-email');
+
+                const emailCell =
+                    row.querySelector('.user-email');
+
                 if (emailCell) {
-                    const emailText = emailCell.innerText.toLowerCase();
-                    row.style.display = emailText.includes(term) ? "" : "none";
+
+                    const emailText =
+                        emailCell.innerText.toLowerCase();
+
+                    row.style.display =
+                        emailText.includes(term) ? "" : "none";
+
                 }
+
             });
+
         });
 
-        function showNotification(msg, isError = false) {
-            clearTimeout(toastTimeout);
-            toastContainer.innerText = msg;
-            if(isError) toastContainer.classList.add('error-toast');
-            else toastContainer.classList.remove('error-toast');
-            toastContainer.classList.add('active');
-            toastTimeout = setTimeout(() => toastContainer.classList.remove('active'), 3500);
+
+        /* ============================================================
+           NOTIFICATION PREVIEW
+        ============================================================ */
+
+        document.getElementById('notification-title')
+            .addEventListener('input', updateNotificationPreview);
+
+        document.getElementById('notification-message')
+            .addEventListener('input', updateNotificationPreview);
+
+
+        function updateNotificationPreview() {
+
+            const title =
+                document.getElementById('notification-title').value.trim();
+
+            const message =
+                document.getElementById('notification-message').value.trim();
+
+            document.getElementById('notification-preview-title').innerText =
+                title || "Notification title";
+
+            document.getElementById('notification-preview-message').innerText =
+                message || "Your notification message will appear here.";
+
         }
+
+
+        /* ============================================================
+           TOAST
+        ============================================================ */
+
+        function showNotification(msg, isError = false) {
+
+            clearTimeout(toastTimeout);
+
+            toastContainer.innerText = msg;
+
+            if (isError) {
+                toastContainer.classList.add('error-toast');
+            } else {
+                toastContainer.classList.remove('error-toast');
+            }
+
+            toastContainer.classList.add('active');
+
+            toastTimeout = setTimeout(() => {
+
+                toastContainer.classList.remove('active');
+
+            }, 3500);
+
+        }
+
+
+        /* ============================================================
+           AUTH
+        ============================================================ */
 
         window.checkPass = () => {
-            const inputEl = document.getElementById('sys-pass');
-            if(inputEl.value === '1100') {
-                document.getElementById('auth-gate').style.display = 'none';
+
+            const inputEl =
+                document.getElementById('sys-pass');
+
+            if (inputEl.value === '1100') {
+
+                document.getElementById('auth-gate')
+                    .style.display = 'none';
+
                 initDashboard();
+
             } else {
-                showNotification("INVALID TERMINAL ACCESS CODE", true);
+
+                showNotification(
+                    "INVALID TERMINAL ACCESS CODE",
+                    true
+                );
+
                 inputEl.value = '';
+
             }
+
         };
+
+
+        /* ============================================================
+           DASHBOARD INITIALIZATION
+        ============================================================ */
 
         function initDashboard() {
+
             loadUsers();
+
             loadDeposits();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const editId = urlParams.get('editProduct');
+
+            loadNotificationHistory();
+
+            const urlParams =
+                new URLSearchParams(window.location.search);
+
+            const editId =
+                urlParams.get('editProduct');
+
             if (editId) {
+
                 showTab('add-prod');
-                setTimeout(() => { editProductExternal(editId); }, 600);
+
+                setTimeout(() => {
+
+                    editProductExternal(editId);
+
+                }, 600);
+
             }
+
         }
 
+
+        /* ============================================================
+           TABS
+        ============================================================ */
+
         window.showTab = (id) => {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            if (window.event && window.event.currentTarget) {
-                window.event.currentTarget.classList.add('active');
-            } else {
-                const btns = document.querySelectorAll('.tab-btn');
-                if(id === 'add-prod' && btns[0]) btns[0].classList.add('active');
+
+            document
+                .querySelectorAll('.panel')
+                .forEach(p => p.classList.remove('active'));
+
+            document
+                .querySelectorAll('.tab-btn')
+                .forEach(b => b.classList.remove('active'));
+
+            const panel =
+                document.getElementById(id);
+
+            if (panel) {
+                panel.classList.add('active');
             }
+
+            if (
+                window.event &&
+                window.event.currentTarget
+            ) {
+
+                window.event.currentTarget
+                    .classList.add('active');
+
+            } else {
+
+                const btns =
+                    document.querySelectorAll('.tab-btn');
+
+                if (id === 'add-prod' && btns[0]) {
+                    btns[0].classList.add('active');
+                }
+
+            }
+
         };
 
+
+        /* ============================================================
+           FREE PRICE
+        ============================================================ */
+
         window.toggleFreePrice = () => {
-            const isFree = document.getElementById('p-is-free').checked;
-            const priceInput = document.getElementById('p-price');
-            if(isFree) {
+
+            const isFree =
+                document.getElementById('p-is-free').checked;
+
+            const priceInput =
+                document.getElementById('p-price');
+
+            if (isFree) {
+
                 priceInput.value = 0;
                 priceInput.disabled = true;
                 priceInput.style.opacity = "0.3";
+
             } else {
+
                 priceInput.disabled = false;
                 priceInput.style.opacity = "1";
+
             }
+
         };
+
+
+        /* ============================================================
+           STOCK LABEL
+        ============================================================ */
 
         window.toggleStockLabel = () => {
-            const mode = document.getElementById('p-mode').value;
-            document.getElementById('stock-label').innerText = mode === 'SINGLE' ? "Paste Secret Item (Full text is one purchase)" : "Paste Multiple Items (Comma separated)";
+
+            const mode =
+                document.getElementById('p-mode').value;
+
+            document.getElementById('stock-label').innerText =
+                mode === 'SINGLE'
+                    ? "Paste Secret Item (Full text is one purchase)"
+                    : "Paste Multiple Items (Comma separated)";
+
         };
+
+
+        /* ============================================================
+           PRODUCT UPLOAD
+        ============================================================ */
 
         window.uploadProduct = async () => {
-            const btn = document.getElementById('uploadBtn');
-            const name = document.getElementById('p-name').value;
-            const desc = document.getElementById('p-desc').value;
-            const cat = document.getElementById('p-cat').value;
-            const isFree = document.getElementById('p-is-free').checked;
-            const price = isFree ? 0 : document.getElementById('p-price').value;
-            const img = document.getElementById('p-img').value;
-            const mode = document.getElementById('p-mode').value;
-            const showInstructions = document.getElementById('p-instructions').checked;
-            const rawStock = document.getElementById('p-stock').value;
 
-            if(!name || !desc || (!isFree && !price) || !rawStock) {
-                return showNotification("Required structural metrics fields are missing", true);
+            const btn =
+                document.getElementById('uploadBtn');
+
+            const name =
+                document.getElementById('p-name').value;
+
+            const desc =
+                document.getElementById('p-desc').value;
+
+            const cat =
+                document.getElementById('p-cat').value;
+
+            const isFree =
+                document.getElementById('p-is-free').checked;
+
+            const price =
+                isFree
+                    ? 0
+                    : document.getElementById('p-price').value;
+
+            const img =
+                document.getElementById('p-img').value;
+
+            const mode =
+                document.getElementById('p-mode').value;
+
+            const showInstructions =
+                document.getElementById('p-instructions').checked;
+
+            const rawStock =
+                document.getElementById('p-stock').value;
+
+
+            if (
+                !name ||
+                !desc ||
+                (!isFree && !price) ||
+                !rawStock
+            ) {
+
+                return showNotification(
+                    "Required structural metrics fields are missing",
+                    true
+                );
+
             }
-            btn.disabled = true;
-            btn.innerText = currentEditId ? "Saving Changes..." : "Deploying...";
 
-            const stockArray = mode === 'MULTIPLE' ? rawStock.split(',').map(s => s.trim()).filter(s => s !== "") : [rawStock];
+
+            btn.disabled = true;
+
+            btn.innerText =
+                currentEditId
+                    ? "Saving Changes..."
+                    : "Deploying...";
+
+
+            const stockArray =
+                mode === 'MULTIPLE'
+                    ? rawStock
+                        .split(',')
+                        .map(s => s.trim())
+                        .filter(s => s !== "")
+                    : [rawStock];
+
 
             try {
+
                 const productData = {
+
                     name,
+
                     description: desc,
-                    category: cat, 
-                    price: parseFloat(price), 
-                    image: img || 'https://via.placeholder.com/150',
-                    mode, 
+
+                    category: cat,
+
+                    price: parseFloat(price),
+
+                    image:
+                        img ||
+                        'https://via.placeholder.com/150',
+
+                    mode,
+
                     showInstructions,
-                    stock: stockArray, 
+
+                    stock: stockArray,
+
                     stockCount: stockArray.length,
+
                     updatedAt: serverTimestamp()
+
                 };
 
+
                 if (currentEditId) {
-                    await updateDoc(doc(db, "products", currentEditId), productData);
-                    showNotification("Product logs successfully synchronized!");
+
+                    await updateDoc(
+                        doc(db, "products", currentEditId),
+                        productData
+                    );
+
+                    showNotification(
+                        "Product logs successfully synchronized!"
+                    );
+
                     cancelEdit();
+
                 } else {
-                    productData.createdAt = serverTimestamp();
-                    await addDoc(collection(db, "products"), productData);
-                    showNotification("Product deployed storefront live!");
-                    setTimeout(() => { location.reload(); }, 1000);
+
+                    productData.createdAt =
+                        serverTimestamp();
+
+                    await addDoc(
+                        collection(db, "products"),
+                        productData
+                    );
+
+                    showNotification(
+                        "Product deployed storefront live!"
+                    );
+
+                    setTimeout(() => {
+
+                        location.reload();
+
+                    }, 1000);
+
                 }
-            } catch (e) { 
-                showNotification("Operation execution failed: " + e.message, true); 
+
+            } catch (e) {
+
+                showNotification(
+                    "Operation execution failed: " + e.message,
+                    true
+                );
+
             } finally {
+
                 btn.disabled = false;
-                btn.innerText = currentEditId ? "UPDATE ASSET" : "UPLOAD TO STOREFRONT";
+
+                btn.innerText =
+                    currentEditId
+                        ? "UPDATE ASSET"
+                        : "UPLOAD TO STOREFRONT";
+
             }
+
         };
+
+
+        /* ============================================================
+           EDIT PRODUCT
+        ============================================================ */
 
         async function editProductExternal(id) {
+
             try {
-                const prodSnap = await getDoc(doc(db, "products", id));
-                if (!prodSnap.exists()) return showNotification("Asset not found", true);
-                const p = prodSnap.data();
+
+                const prodSnap =
+                    await getDoc(
+                        doc(db, "products", id)
+                    );
+
+                if (!prodSnap.exists()) {
+
+                    return showNotification(
+                        "Asset not found",
+                        true
+                    );
+
+                }
+
+                const p =
+                    prodSnap.data();
+
                 currentEditId = id;
-                document.getElementById('p-name').value = p.name;
-                document.getElementById('p-desc').value = p.description;
-                document.getElementById('p-cat').value = p.category;
-                document.getElementById('p-price').value = p.price;
-                document.getElementById('p-is-free').checked = p.price === 0;
-                document.getElementById('p-img').value = p.image;
-                document.getElementById('p-mode').value = p.mode;
-                document.getElementById('p-instructions').checked = p.showInstructions || false;
-                document.getElementById('p-stock').value = p.mode === 'MULTIPLE' ? p.stock.join(', ') : p.stock[0];
-                toggleFreePrice(); toggleStockLabel();
-                document.getElementById('form-title').innerText = "Edit Asset Matrix";
-                document.getElementById('editing-indicator').style.display = "block";
-                document.getElementById('editing-name').innerText = p.name;
-                document.getElementById('uploadBtn').innerText = "UPDATE ASSET";
-                document.getElementById('cancelEditBtn').style.display = "block";
+
+                document.getElementById('p-name').value =
+                    p.name;
+
+                document.getElementById('p-desc').value =
+                    p.description;
+
+                document.getElementById('p-cat').value =
+                    p.category;
+
+                document.getElementById('p-price').value =
+                    p.price;
+
+                document.getElementById('p-is-free').checked =
+                    p.price === 0;
+
+                document.getElementById('p-img').value =
+                    p.image;
+
+                document.getElementById('p-mode').value =
+                    p.mode;
+
+                document.getElementById('p-instructions').checked =
+                    p.showInstructions || false;
+
+                document.getElementById('p-stock').value =
+                    p.mode === 'MULTIPLE'
+                        ? p.stock.join(', ')
+                        : p.stock[0];
+
+                toggleFreePrice();
+
+                toggleStockLabel();
+
+                document.getElementById('form-title').innerText =
+                    "Edit Asset Matrix";
+
+                document.getElementById('editing-indicator')
+                    .style.display = "block";
+
+                document.getElementById('editing-name').innerText =
+                    p.name;
+
+                document.getElementById('uploadBtn').innerText =
+                    "UPDATE ASSET";
+
+                document.getElementById('cancelEditBtn')
+                    .style.display = "block";
+
                 window.scrollTo(0,0);
+
             } catch (err) {
-                showNotification("Could not retrieve operational production data.", true);
+
+                showNotification(
+                    "Could not retrieve operational production data.",
+                    true
+                );
+
             }
+
         }
 
+
+        /* ============================================================
+           CANCEL EDIT
+        ============================================================ */
+
         window.cancelEdit = () => {
+
             currentEditId = null;
+
             document.getElementById('p-name').value = "";
+
             document.getElementById('p-desc').value = "";
+
             document.getElementById('p-price').value = "";
+
             document.getElementById('p-img').value = "";
+
             document.getElementById('p-stock').value = "";
+
             document.getElementById('p-is-free').checked = false;
+
             document.getElementById('p-instructions').checked = false;
+
             toggleFreePrice();
-            document.getElementById('form-title').innerText = "Deploy New Asset";
-            document.getElementById('editing-indicator').style.display = "none";
-            document.getElementById('uploadBtn').innerText = "UPLOAD TO STOREFRONT";
-            document.getElementById('cancelEditBtn').style.display = "none";
+
+            document.getElementById('form-title').innerText =
+                "Deploy New Asset";
+
+            document.getElementById('editing-indicator')
+                .style.display = "none";
+
+            document.getElementById('uploadBtn').innerText =
+                "UPLOAD TO STOREFRONT";
+
+            document.getElementById('cancelEditBtn')
+                .style.display = "none";
+
         };
 
-        /* ==================== GIFT STORE FUNCTIONS ==================== */
+
+        /* ============================================================
+           GIFT STORE
+        ============================================================ */
 
         window.addGiftImageUrl = () => {
-            const container = document.getElementById('gift-image-urls');
 
-            const row = document.createElement('div');
-            row.className = 'gift-url-row';
+            const container =
+                document.getElementById('gift-image-urls');
+
+            const row =
+                document.createElement('div');
+
+            row.className =
+                'gift-url-row';
 
             row.innerHTML = `
                 <input type="url" class="gift-url" placeholder="https://...">
@@ -615,208 +1501,1413 @@
             `;
 
             container.appendChild(row);
+
         };
 
+
         window.uploadGift = async () => {
-            const btn = document.getElementById('uploadGiftBtn');
 
-            const name = document.getElementById('gift-name').value.trim();
-            const description = document.getElementById('gift-desc').value.trim();
-            const priceValue = document.getElementById('gift-price').value;
+            const btn =
+                document.getElementById('uploadGiftBtn');
 
-            const imageUrls = Array.from(document.querySelectorAll('.gift-url'))
+            const name =
+                document.getElementById('gift-name')
+                    .value
+                    .trim();
+
+            const description =
+                document.getElementById('gift-desc')
+                    .value
+                    .trim();
+
+            const priceValue =
+                document.getElementById('gift-price')
+                    .value;
+
+            const imageUrls =
+                Array.from(
+                    document.querySelectorAll('.gift-url')
+                )
                 .map(input => input.value.trim())
                 .filter(url => url !== "");
 
-            if (!name || !description || !priceValue || imageUrls.length === 0) {
-                return showNotification("Please complete all required gift fields.", true);
+
+            if (
+                !name ||
+                !description ||
+                !priceValue ||
+                imageUrls.length === 0
+            ) {
+
+                return showNotification(
+                    "Please complete all required gift fields.",
+                    true
+                );
+
             }
 
-            const price = parseFloat(priceValue);
 
-            if (isNaN(price) || price < 0) {
-                return showNotification("Enter a valid gift price.", true);
+            const price =
+                parseFloat(priceValue);
+
+
+            if (
+                isNaN(price) ||
+                price < 0
+            ) {
+
+                return showNotification(
+                    "Enter a valid gift price.",
+                    true
+                );
+
             }
+
 
             btn.disabled = true;
-            btn.innerText = "UPLOADING GIFT...";
+
+            btn.innerText =
+                "UPLOADING GIFT...";
+
 
             try {
-                await addDoc(collection(db, "gifts"), {
-                    name,
-                    description,
-                    price,
-                    imageUrls,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp(),
-                    active: true
-                });
 
-                showNotification("Gift successfully added to PR1MΞ Gift Store!");
+                await addDoc(
+                    collection(db, "gifts"),
+                    {
+                        name,
+                        description,
+                        price,
+                        imageUrls,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp(),
+                        active: true
+                    }
+                );
+
+
+                showNotification(
+                    "Gift successfully added to PR1MΞ Gift Store!"
+                );
+
 
                 document.getElementById('gift-name').value = "";
+
                 document.getElementById('gift-desc').value = "";
+
                 document.getElementById('gift-price').value = "";
+
 
                 document.getElementById('gift-image-urls').innerHTML = `
                     <div class="gift-url-row">
                         <input type="url" class="gift-url" placeholder="https://...">
                     </div>
+
                     <div class="gift-url-row">
                         <input type="url" class="gift-url" placeholder="https://...">
                     </div>
+
                     <div class="gift-url-row">
                         <input type="url" class="gift-url" placeholder="https://...">
                     </div>
+
                     <div class="gift-url-row">
                         <input type="url" class="gift-url" placeholder="https://...">
                     </div>
                 `;
 
             } catch (e) {
-                showNotification("Gift upload failed: " + e.message, true);
+
+                showNotification(
+                    "Gift upload failed: " + e.message,
+                    true
+                );
+
             } finally {
+
                 btn.disabled = false;
-                btn.innerText = "UPLOAD GIFT TO GIFT STORE";
+
+                btn.innerText =
+                    "UPLOAD GIFT TO GIFT STORE";
+
             }
+
         };
 
+
+        /* ============================================================
+           USERS
+        ============================================================ */
+
         function loadUsers() {
-            const tbody = document.getElementById('user-rows');
-            onSnapshot(collection(db, "users"), (snap) => {
-                snap.docChanges().forEach(change => {
-                    const u = change.doc.data();
-                    const userId = change.doc.id;
 
-                    if (change.type === "added") {
-                        if (!document.getElementById(`user-row-${userId}`)) {
-                            const row = document.createElement('tr');
-                            row.id = `user-row-${userId}`;
+            const tbody =
+                document.getElementById('user-rows');
 
-                            row.innerHTML = `
-                                <td class="user-email" style="font-weight: 600;">${u.email}</td>
-                                <td class="user-balance" style="color: var(--neon-cyan); font-weight:700;">₦${(u.balance || 0).toLocaleString()}</td>
-                                <td class="user-status"><span style="color:${u.status === 'banned' ? 'var(--stock-red)' : 'var(--stock-green)'}; font-weight:700; text-transform: uppercase; font-size: 0.75rem;">${u.status || 'active'}</span></td>
-                                <td style="text-align: right; padding-right: 16px;">
-                                    <button class="btn btn-approve btn-sm" id="btn-wallet-${userId}">Edit ₦</button>
-                                    <button class="btn btn-danger btn-sm" id="btn-ban-${userId}">${u.status === 'banned' ? 'Unban' : 'Ban'}</button>
-                                </td>
-                            `;
+            onSnapshot(
+                collection(db, "users"),
+                (snap) => {
 
-                            tbody.appendChild(row);
-                            
-                            document.getElementById(`btn-wallet-${userId}`).addEventListener('click', () => {
-                                const amt = prompt(`Enter NEW TOTAL balance for ${u.email}:`);
+                    snap.docChanges().forEach(change => {
 
-                                if(amt !== null && !isNaN(amt)) {
-                                    updateDoc(doc(db, "users", userId), { balance: parseFloat(amt) })
-                                        .then(() => showNotification("Wallet node balance synchronized correctly."))
-                                        .catch(() => showNotification("Balance update rejected.", true));
-                                }
-                            });
-                            
-                            document.getElementById(`btn-ban-${userId}`).addEventListener('click', () => {
-                                const newStatus = u.status === 'banned' ? 'active' : 'banned';
+                        const u =
+                            change.doc.data();
 
-                                updateDoc(doc(db, "users", userId), { status: newStatus })
-                                    .then(() => showNotification("User firewall status revised."))
-                                    .catch(() => showNotification("Status modification dropped.", true));
-                            });
+                        const userId =
+                            change.doc.id;
+
+
+                        if (change.type === "added") {
+
+                            if (
+                                !document.getElementById(
+                                    `user-row-${userId}`
+                                )
+                            ) {
+
+                                const row =
+                                    document.createElement('tr');
+
+                                row.id =
+                                    `user-row-${userId}`;
+
+
+                                row.innerHTML = `
+                                    <td class="user-email" style="font-weight: 600;">${u.email}</td>
+
+                                    <td class="user-balance" style="color: var(--neon-cyan); font-weight:700;">
+                                        ₦${(u.balance || 0).toLocaleString()}
+                                    </td>
+
+                                    <td class="user-status">
+                                        <span style="color:${u.status === 'banned' ? 'var(--stock-red)' : 'var(--stock-green)'}; font-weight:700; text-transform: uppercase; font-size: 0.75rem;">
+                                            ${u.status || 'active'}
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: right; padding-right: 16px;">
+                                        <button class="btn btn-approve btn-sm" id="btn-wallet-${userId}">
+                                            Edit ₦
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm" id="btn-ban-${userId}">
+                                            ${u.status === 'banned' ? 'Unban' : 'Ban'}
+                                        </button>
+                                    </td>
+                                `;
+
+
+                                tbody.appendChild(row);
+
+
+                                document
+                                    .getElementById(`btn-wallet-${userId}`)
+                                    .addEventListener('click', () => {
+
+                                        const amt =
+                                            prompt(
+                                                `Enter NEW TOTAL balance for ${u.email}:`
+                                            );
+
+                                        if (
+                                            amt !== null &&
+                                            !isNaN(amt)
+                                        ) {
+
+                                            updateDoc(
+                                                doc(db, "users", userId),
+                                                {
+                                                    balance:
+                                                        parseFloat(amt)
+                                                }
+                                            )
+                                            .then(() =>
+                                                showNotification(
+                                                    "Wallet node balance synchronized correctly."
+                                                )
+                                            )
+                                            .catch(() =>
+                                                showNotification(
+                                                    "Balance update rejected.",
+                                                    true
+                                                )
+                                            );
+
+                                        }
+
+                                    });
+
+
+                                document
+                                    .getElementById(`btn-ban-${userId}`)
+                                    .addEventListener('click', () => {
+
+                                        const newStatus =
+                                            u.status === 'banned'
+                                                ? 'active'
+                                                : 'banned';
+
+                                        updateDoc(
+                                            doc(db, "users", userId),
+                                            {
+                                                status: newStatus
+                                            }
+                                        )
+                                        .then(() =>
+                                            showNotification(
+                                                "User firewall status revised."
+                                            )
+                                        )
+                                        .catch(() =>
+                                            showNotification(
+                                                "Status modification dropped.",
+                                                true
+                                            )
+                                        );
+
+                                    });
+
+                            }
+
                         }
-                    }
 
-                    if (change.type === "modified") {
-                        const existingRow = document.getElementById(`user-row-${userId}`);
 
-                        if (existingRow) {
-                            existingRow.querySelector('.user-balance').innerText = `₦${(u.balance || 0).toLocaleString()}`;
+                        if (change.type === "modified") {
 
-                            const statusSpan = existingRow.querySelector('.user-status span');
-                            statusSpan.innerText = u.status || 'active';
-                            statusSpan.style.color = u.status === 'banned' ? 'var(--stock-red)' : 'var(--stock-green)';
+                            const existingRow =
+                                document.getElementById(
+                                    `user-row-${userId}`
+                                );
 
-                            const banBtn = existingRow.querySelector('.btn-danger');
-                            banBtn.innerText = u.status === 'banned' ? 'Unban' : 'Ban';
+                            if (existingRow) {
+
+                                existingRow
+                                    .querySelector('.user-balance')
+                                    .innerText =
+                                    `₦${(u.balance || 0).toLocaleString()}`;
+
+
+                                const statusSpan =
+                                    existingRow
+                                        .querySelector('.user-status span');
+
+                                statusSpan.innerText =
+                                    u.status || 'active';
+
+                                statusSpan.style.color =
+                                    u.status === 'banned'
+                                        ? 'var(--stock-red)'
+                                        : 'var(--stock-green)';
+
+
+                                const banBtn =
+                                    existingRow
+                                        .querySelector('.btn-danger');
+
+                                banBtn.innerText =
+                                    u.status === 'banned'
+                                        ? 'Unban'
+                                        : 'Ban';
+
+                            }
+
                         }
-                    }
 
-                    if (change.type === "removed") {
-                        const existingRow = document.getElementById(`user-row-${userId}`);
-                        if (existingRow) existingRow.remove();
-                    }
-                });
 
-                const currentSearch = document.getElementById('user-search').value.toLowerCase().trim();
+                        if (change.type === "removed") {
 
-                if (currentSearch) {
-                    document.querySelectorAll('#user-rows tr').forEach(row => {
-                        const emailText = row.querySelector('.user-email').innerText.toLowerCase();
-                        row.style.display = emailText.includes(currentSearch) ? "" : "none";
+                            const existingRow =
+                                document.getElementById(
+                                    `user-row-${userId}`
+                                );
+
+                            if (existingRow) {
+                                existingRow.remove();
+                            }
+
+                        }
+
                     });
+
+
+                    const currentSearch =
+                        document.getElementById('user-search')
+                            .value
+                            .toLowerCase()
+                            .trim();
+
+
+                    if (currentSearch) {
+
+                        document
+                            .querySelectorAll('#user-rows tr')
+                            .forEach(row => {
+
+                                const emailText =
+                                    row
+                                        .querySelector('.user-email')
+                                        .innerText
+                                        .toLowerCase();
+
+                                row.style.display =
+                                    emailText.includes(currentSearch)
+                                        ? ""
+                                        : "none";
+
+                            });
+
+                    }
+
                 }
-            });
+            );
+
         }
 
+
+        /* ============================================================
+           DEPOSITS
+        ============================================================ */
+
         function loadDeposits() {
-            const q = query(collection(db, "deposits"), where("status", "==", "success"));
+
+            const q =
+                query(
+                    collection(db, "deposits"),
+                    where("status", "==", "success")
+                );
+
 
             onSnapshot(q, (snap) => {
-                const container = document.getElementById('deposit-container');
-                
+
+                const container =
+                    document.getElementById('deposit-container');
+
+
                 if (snap.empty) {
-                    container.innerHTML = `<div style="text-align:center; padding: 40px 0; color:#4a5568; font-size:0.85rem; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;">No successful deposits logged within system arrays.</div>`;
+
+                    container.innerHTML = `
+                        <div style="text-align:center; padding: 40px 0; color:#4a5568; font-size:0.85rem; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;">
+                            No successful deposits logged within system arrays.
+                        </div>
+                    `;
+
                     return;
+
                 }
+
 
                 const depositsArray = [];
 
+
                 snap.forEach(docSnap => {
-                    depositsArray.push(docSnap.data());
+
+                    depositsArray.push(
+                        docSnap.data()
+                    );
+
                 });
 
+
                 depositsArray.sort((x, y) => {
-                    const timeX = x.timestamp ? x.timestamp.toMillis() : 0;
-                    const timeY = y.timestamp ? y.timestamp.toMillis() : 0;
+
+                    const timeX =
+                        x.timestamp
+                            ? x.timestamp.toMillis()
+                            : 0;
+
+                    const timeY =
+                        y.timestamp
+                            ? y.timestamp.toMillis()
+                            : 0;
+
                     return timeY - timeX;
+
                 });
+
 
                 container.innerHTML = "";
 
-                depositsArray.forEach(d => {
-                    const formattedDate = d.timestamp
-                        ? d.timestamp.toDate().toLocaleString('en-US', {
-                            hour12: true,
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })
-                        : 'Processing Transaction';
 
-                    const card = document.createElement('div');
-                    card.className = 'deposit-card';
+                depositsArray.forEach(d => {
+
+                    const formattedDate =
+                        d.timestamp
+                            ? d.timestamp.toDate()
+                                .toLocaleString(
+                                    'en-US',
+                                    {
+                                        hour12: true,
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }
+                                )
+                            : 'Processing Transaction';
+
+
+                    const card =
+                        document.createElement('div');
+
+                    card.className =
+                        'deposit-card';
+
 
                     card.innerHTML = `
                         <div style="width: 100%">
+
                             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <span style="color: var(--stock-green); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px;">₦${parseFloat(d.amount).toLocaleString()}</span>
-                                <span style="color: #718096; font-size: 0.7rem; font-weight:700; text-transform: uppercase;">${formattedDate}</span>
+
+                                <span style="color: var(--stock-green); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px;">
+                                    ₦${parseFloat(d.amount).toLocaleString()}
+                                </span>
+
+                                <span style="color: #718096; font-size: 0.7rem; font-weight:700; text-transform: uppercase;">
+                                    ${formattedDate}
+                                </span>
+
                             </div>
+
 
                             <p style="font-size: 0.85rem; color: #cbd5e0; margin: 0; font-weight: 500;">
                                 <strong>User Connection:</strong> ${d.email}
                             </p>
 
+
                             <p style="font-size: 0.7rem; color: #4a5568; margin-top: 4px; font-family: monospace; letter-spacing: 0.3px;">
                                 <strong>REF_ID:</strong> ${d.reference || 'SYSTEM_MANUAL'}
                             </p>
+
                         </div>
                     `;
 
+
                     container.appendChild(card);
+
                 });
+
             });
+
         }
+
+
+        /* ============================================================
+           NOTIFICATION CENTER
+        ============================================================ */
+
+
+        /*
+         * Generates a unique ID for each broadcast.
+         *
+         * Every user's copy of the same notification gets
+         * the same broadcastId.
+         *
+         * This allows the admin to delete the entire broadcast
+         * later instead of deleting users one-by-one.
+         */
+
+        function createBroadcastId() {
+
+            return 'broadcast_' +
+                Date.now() +
+                '_' +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 10);
+
+        }
+
+
+        /* ============================================================
+           CLEAR COMPOSER
+        ============================================================ */
+
+        window.clearNotificationComposer = () => {
+
+            document.getElementById('notification-title').value = "";
+
+            document.getElementById('notification-message').value = "";
+
+            updateNotificationPreview();
+
+        };
+
+
+        /* ============================================================
+           SEND NOTIFICATION TO ALL USERS
+        ============================================================ */
+
+        window.sendNotificationToAll = async () => {
+
+            const title =
+                document.getElementById('notification-title')
+                    .value
+                    .trim();
+
+            const message =
+                document.getElementById('notification-message')
+                    .value
+                    .trim();
+
+            const btn =
+                document.getElementById(
+                    'send-notification-btn'
+                );
+
+            const progress =
+                document.getElementById(
+                    'notification-progress'
+                );
+
+
+            /* ------------------------------
+               VALIDATION
+            ------------------------------ */
+
+            if (!title) {
+
+                return showNotification(
+                    "Enter a notification title first.",
+                    true
+                );
+
+            }
+
+
+            if (!message) {
+
+                return showNotification(
+                    "Enter a notification message first.",
+                    true
+                );
+
+            }
+
+
+            if (title.length > 100) {
+
+                return showNotification(
+                    "Notification title is too long.",
+                    true
+                );
+
+            }
+
+
+            if (message.length > 2000) {
+
+                return showNotification(
+                    "Notification message is too long.",
+                    true
+                );
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    "Send this notification to ALL registered users?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            btn.disabled = true;
+
+            btn.innerText =
+                "PREPARING BROADCAST...";
+
+            progress.style.display =
+                "block";
+
+            progress.innerText =
+                "Loading registered users...";
+
+
+            try {
+
+                /* ----------------------------------------
+                   GET ALL USERS
+                ---------------------------------------- */
+
+                const usersSnap =
+                    await getDocs(
+                        collection(db, "users")
+                    );
+
+
+                if (usersSnap.empty) {
+
+                    throw new Error(
+                        "No registered users were found."
+                    );
+
+                }
+
+
+                const users =
+                    usersSnap.docs;
+
+
+                const broadcastId =
+                    createBroadcastId();
+
+
+                const totalUsers =
+                    users.length;
+
+
+                let processed =
+                    0;
+
+
+                /*
+                 * Firestore batched writes have a limit.
+                 * Keep each batch safely below 500.
+                 */
+
+                const BATCH_SIZE = 450;
+
+
+                for (
+                    let start = 0;
+                    start < users.length;
+                    start += BATCH_SIZE
+                ) {
+
+                    const batch =
+                        writeBatch(db);
+
+
+                    const currentUsers =
+                        users.slice(
+                            start,
+                            start + BATCH_SIZE
+                        );
+
+
+                    currentUsers.forEach(userDoc => {
+
+                        const notificationRef =
+                            doc(
+                                collection(
+                                    db,
+                                    "notifications"
+                                )
+                            );
+
+
+                        batch.set(
+                            notificationRef,
+                            {
+
+                                userId:
+                                    userDoc.id,
+
+                                title,
+
+                                message,
+
+                                read: false,
+
+                                readAt: null,
+
+                                broadcastId,
+
+                                broadcast: true,
+
+                                createdAt:
+                                    serverTimestamp()
+
+                            }
+                        );
+
+                    });
+
+
+                    await batch.commit();
+
+
+                    processed +=
+                        currentUsers.length;
+
+
+                    const percentage =
+                        Math.round(
+                            (processed / totalUsers) * 100
+                        );
+
+
+                    progress.innerText =
+                        `Sending notification... ${processed}/${totalUsers} users (${percentage}%)`;
+
+                    btn.innerText =
+                        `SENDING ${percentage}%...`;
+
+                }
+
+
+                /* ----------------------------------------
+                   SUCCESS
+                ---------------------------------------- */
+
+                showNotification(
+                    `Notification sent successfully to ${totalUsers} users!`
+                );
+
+
+                document.getElementById(
+                    'notification-title'
+                ).value = "";
+
+
+                document.getElementById(
+                    'notification-message'
+                ).value = "";
+
+
+                updateNotificationPreview();
+
+
+                progress.innerText =
+                    `Broadcast complete — ${totalUsers} users received the notification.`;
+
+
+                /*
+                 * Refresh notification history immediately.
+                 * The real-time listener will also update.
+                 */
+
+                loadNotificationHistory();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Notification broadcast error:",
+                    error
+                );
+
+
+                showNotification(
+                    "Notification broadcast failed: " +
+                    error.message,
+                    true
+                );
+
+
+                progress.innerText =
+                    "Broadcast failed. Check the error message.";
+
+            } finally {
+
+                btn.disabled = false;
+
+                btn.innerText =
+                    "🔔 SEND TO ALL USERS";
+
+                setTimeout(() => {
+
+                    progress.style.display =
+                        "none";
+
+                }, 6000);
+
+            }
+
+        };
+
+
+        /* ============================================================
+           LOAD NOTIFICATION HISTORY
+        ============================================================ */
+
+        function loadNotificationHistory() {
+
+            /*
+             * Remove old listener before creating a new one.
+             */
+
+            if (notificationHistoryUnsubscribe) {
+
+                notificationHistoryUnsubscribe();
+
+                notificationHistoryUnsubscribe =
+                    null;
+
+            }
+
+
+            const notificationsRef =
+                collection(
+                    db,
+                    "notifications"
+                );
+
+
+            notificationHistoryUnsubscribe =
+                onSnapshot(
+                    notificationsRef,
+                    (snap) => {
+
+                        buildNotificationHistory(
+                            snap
+                        );
+
+                    },
+                    (error) => {
+
+                        console.error(
+                            "Notification history listener error:",
+                            error
+                        );
+
+                        const container =
+                            document.getElementById(
+                                'notification-history-list'
+                            );
+
+                        container.innerHTML = `
+                            <div class="notification-empty-history">
+                                Unable to load notification history.
+                            </div>
+                        `;
+
+                    }
+                );
+
+        }
+
+
+        /* ============================================================
+           BUILD UNIQUE BROADCAST HISTORY
+        ============================================================ */
+
+        function buildNotificationHistory(snap) {
+
+            /*
+             * New notifications have broadcastId.
+             *
+             * Older notifications without broadcastId are treated
+             * individually so they remain manageable.
+             */
+
+            const groups =
+                new Map();
+
+
+            snap.forEach(docSnap => {
+
+                const data =
+                    docSnap.data();
+
+
+                const groupKey =
+                    data.broadcastId
+                        ? `broadcast:${data.broadcastId}`
+                        : `legacy:${docSnap.id}`;
+
+
+                if (!groups.has(groupKey)) {
+
+                    groups.set(
+                        groupKey,
+                        {
+                            id:
+                                docSnap.id,
+
+                            broadcastId:
+                                data.broadcastId || null,
+
+                            title:
+                                data.title ||
+                                "Untitled Notification",
+
+                            message:
+                                data.message ||
+                                data.text ||
+                                data.body ||
+                                "",
+
+                            createdAt:
+                                data.createdAt ||
+                                null,
+
+                            recipientCount:
+                                0,
+
+                            notificationIds:
+                                []
+
+                        }
+                    );
+
+                }
+
+
+                const group =
+                    groups.get(groupKey);
+
+
+                group.recipientCount += 1;
+
+                group.notificationIds.push(
+                    docSnap.id
+                );
+
+
+                /*
+                 * If a broadcast's first document didn't yet
+                 * contain a timestamp, use another one that does.
+                 */
+
+                if (
+                    !group.createdAt &&
+                    data.createdAt
+                ) {
+
+                    group.createdAt =
+                        data.createdAt;
+
+                }
+
+            });
+
+
+            const history =
+                Array.from(groups.values());
+
+
+            history.sort((a, b) => {
+
+                const aTime =
+                    getTimestampMillis(
+                        a.createdAt
+                    );
+
+                const bTime =
+                    getTimestampMillis(
+                        b.createdAt
+                    );
+
+                return bTime - aTime;
+
+            });
+
+
+            renderNotificationHistory(
+                history
+            );
+
+        }
+
+
+        /* ============================================================
+           TIMESTAMP HELPER
+        ============================================================ */
+
+        function getTimestampMillis(timestamp) {
+
+            if (!timestamp) {
+                return 0;
+            }
+
+
+            if (
+                typeof timestamp.toMillis ===
+                "function"
+            ) {
+
+                return timestamp.toMillis();
+
+            }
+
+
+            if (
+                timestamp instanceof Date
+            ) {
+
+                return timestamp.getTime();
+
+            }
+
+
+            if (
+                typeof timestamp === "number"
+            ) {
+
+                return timestamp;
+
+            }
+
+
+            return 0;
+
+        }
+
+
+        /* ============================================================
+           FORMAT TIMESTAMP
+        ============================================================ */
+
+        function formatNotificationDate(timestamp) {
+
+            const millis =
+                getTimestampMillis(
+                    timestamp
+                );
+
+
+            if (!millis) {
+
+                return "Processing time";
+
+            }
+
+
+            return new Date(
+                millis
+            ).toLocaleString(
+                'en-US',
+                {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                }
+            );
+
+        }
+
+
+        /* ============================================================
+           RENDER HISTORY
+        ============================================================ */
+
+        function renderNotificationHistory(
+            history
+        ) {
+
+            const container =
+                document.getElementById(
+                    'notification-history-list'
+                );
+
+
+            const countElement =
+                document.getElementById(
+                    'notification-history-count'
+                );
+
+
+            countElement.innerText =
+                `${history.length} broadcast${history.length === 1 ? '' : 's'}`;
+
+
+            if (!history.length) {
+
+                container.innerHTML = `
+                    <div class="notification-empty-history">
+                        No previous notifications found.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            container.innerHTML = "";
+
+
+            history.forEach(notification => {
+
+                const card =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                card.className =
+                    'notification-history-card';
+
+
+                const top =
+                    document.createElement(
+                        'div'
+                    );
+
+                top.className =
+                    'notification-history-top';
+
+
+                const title =
+                    document.createElement(
+                        'h4'
+                    );
+
+                title.innerText =
+                    notification.title;
+
+
+                const time =
+                    document.createElement(
+                        'span'
+                    );
+
+                time.className =
+                    'notification-history-time';
+
+                time.innerText =
+                    formatNotificationDate(
+                        notification.createdAt
+                    );
+
+
+                top.appendChild(title);
+
+                top.appendChild(time);
+
+
+                const message =
+                    document.createElement(
+                        'p'
+                    );
+
+                message.innerText =
+                    notification.message;
+
+
+                const meta =
+                    document.createElement(
+                        'div'
+                    );
+
+                meta.className =
+                    'notification-history-meta';
+
+
+                const recipientCount =
+                    document.createElement(
+                        'span'
+                    );
+
+                recipientCount.className =
+                    'notification-recipient-count';
+
+                recipientCount.innerText =
+                    `${notification.recipientCount} user${notification.recipientCount === 1 ? '' : 's'} received`;
+
+
+                const deleteBtn =
+                    document.createElement(
+                        'button'
+                    );
+
+                deleteBtn.className =
+                    'btn btn-danger btn-sm';
+
+                deleteBtn.innerText =
+                    'DELETE';
+
+
+                deleteBtn.addEventListener(
+                    'click',
+                    () => {
+
+                        deleteNotificationBroadcast(
+                            notification
+                        );
+
+                    }
+                );
+
+
+                meta.appendChild(
+                    recipientCount
+                );
+
+                meta.appendChild(
+                    deleteBtn
+                );
+
+
+                card.appendChild(
+                    top
+                );
+
+                card.appendChild(
+                    message
+                );
+
+                card.appendChild(
+                    meta
+                );
+
+
+                container.appendChild(
+                    card
+                );
+
+            });
+
+        }
+
+
+        /* ============================================================
+           DELETE NOTIFICATION / BROADCAST
+        ============================================================ */
+
+        async function deleteNotificationBroadcast(
+            notification
+        ) {
+
+            const recipientCount =
+                notification.recipientCount;
+
+
+            const confirmed =
+                confirm(
+                    `Delete this notification from ${recipientCount} user${recipientCount === 1 ? '' : 's'}?\n\nThis cannot be undone.`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            try {
+
+                /*
+                 * For a broadcast, query all copies using the
+                 * shared broadcastId.
+                 */
+
+                let docsToDelete = [];
+
+
+                if (notification.broadcastId) {
+
+                    const q =
+                        query(
+                            collection(
+                                db,
+                                "notifications"
+                            ),
+                            where(
+                                "broadcastId",
+                                "==",
+                                notification.broadcastId
+                            )
+                        );
+
+
+                    const snap =
+                        await getDocs(q);
+
+
+                    docsToDelete =
+                        snap.docs.map(
+                            docSnap =>
+                                docSnap.ref
+                        );
+
+                } else {
+
+                    /*
+                     * Legacy notification:
+                     * only delete its single document.
+                     */
+
+                    docsToDelete = [
+                        doc(
+                            db,
+                            "notifications",
+                            notification.id
+                        )
+                    ];
+
+                }
+
+
+                if (!docsToDelete.length) {
+
+                    showNotification(
+                        "Notification was already removed.",
+                        true
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Delete safely in batches.
+                 */
+
+                const DELETE_BATCH_SIZE =
+                    450;
+
+
+                for (
+                    let start = 0;
+                    start < docsToDelete.length;
+                    start += DELETE_BATCH_SIZE
+                ) {
+
+                    const batch =
+                        writeBatch(db);
+
+
+                    const currentRefs =
+                        docsToDelete.slice(
+                            start,
+                            start + DELETE_BATCH_SIZE
+                        );
+
+
+                    currentRefs.forEach(
+                        ref => {
+                            batch.delete(ref);
+                        }
+                    );
+
+
+                    await batch.commit();
+
+                }
+
+
+                showNotification(
+                    `Notification deleted from ${docsToDelete.length} user${docsToDelete.length === 1 ? '' : 's'}.`
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Notification deletion error:",
+                    error
+                );
+
+
+                showNotification(
+                    "Could not delete notification: " +
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+
     </script>
 </body>
 </html>
