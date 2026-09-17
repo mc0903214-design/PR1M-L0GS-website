@@ -51,6 +51,27 @@
             margin-bottom: 22px;
         }
 
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(0,243,255,0.06);
+            border: 1px solid rgba(0,243,255,0.3);
+            border-radius: 11px;
+            padding: 10px 14px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .back-btn:hover {
+            background: rgba(0,243,255,0.12);
+            transform: translateY(-1px);
+        }
+
         .brand {
             font-size: 1.25rem;
             font-weight: 900;
@@ -444,11 +465,16 @@
             }
 
             .topbar {
-                align-items: flex-start;
+                align-items: center;
             }
 
             .brand {
                 font-size: 1rem;
+            }
+
+            .back-btn {
+                padding: 8px 10px;
+                font-size: 0.62rem;
             }
 
             .balance-card {
@@ -526,6 +552,11 @@
 
     <!-- HEADER -->
     <header class="topbar">
+
+        <a href="shop.html" class="back-btn">
+            ← BACK TO SHOP
+        </a>
+
         <div class="brand">
             PR1MΞ <span>GIFT STORE</span>
         </div>
@@ -534,6 +565,7 @@
             <span class="balance-label">Balance</span>
             <span class="balance-value" id="balance-value">₦0</span>
         </div>
+
     </header>
 
     <!-- HERO -->
@@ -920,7 +952,7 @@
 
     /* ============================================================
        USER BALANCE
-       
+
        IMPORTANT:
        This reads the authenticated user's Firestore document.
        The document ID must match the Firebase Authentication UID.
