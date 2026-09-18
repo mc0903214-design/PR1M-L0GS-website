@@ -1,2519 +1,3391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>PR1MΞ Gift Store</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR1MΞ Market</title>
 <style>
-
-:root {
-    --neon-cyan: #00f3ff;
-    --neon-purple: #bc13fe;
-    --dark-bg: #060608;
-    --glass-bg: rgba(255,255,255,.035);
-    --glass-border: rgba(255,255,255,.08);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    background:
-        radial-gradient(
-            circle at 10% 20%,
-            rgba(188,19,254,.08) 0%,
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 90% 80%,
-            rgba(0,243,255,.06) 0%,
-            transparent 35%
-        ),
-        #060608;
-
-    color: #f1f1f3;
-    min-height: 100vh;
-
-    padding: 20px 14px 50px;
-
-    overflow-x: hidden;
-
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeSpeed;
-}
-
-button,
-a {
-    -webkit-tap-highlight-color: transparent;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-/* =========================================================
-   LOADER
-========================================================= */
-
-.spinner {
-    width: 25px;
-    height: 25px;
-
-    border: 2.5px solid rgba(255,255,255,.14);
-    border-top-color: var(--neon-cyan);
-
-    border-radius: 50%;
-
-    animation: spin .8s linear infinite;
-
-    display: inline-block;
-}
-
-@keyframes spin {
-
-    to {
-        transform: rotate(360deg);
+    :root {
+        --neon-cyan: #00f3ff;
+        --neon-purple: #bc13fe;
+        --glass-bg: rgba(255,255,255,.035);
+        --glass-border: rgba(255,255,255,.08);
+        --dark-bg: #060608;
+        --stock-red: #ff4b4b;
+        --stock-green: #00ff88;
     }
 
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-header {
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 4px 5px 20px;
-}
-
-.logo {
-
-    font-size: 1.35rem;
-    font-weight: 800;
-
-    letter-spacing: 2.5px;
-
-    color: #fff;
-
-    text-shadow:
-        0 0 10px rgba(0,243,255,.4);
-}
-
-.back-btn {
-
-    width: 42px;
-    height: 42px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-
-    background: rgba(255,255,255,.045);
-
-    border: 1px solid var(--glass-border);
-
-    color: #fff;
-
-    cursor: pointer;
-
-    transition:
-        background .15s ease,
-        transform .15s ease;
-}
-
-.back-btn:hover {
-
-    background: rgba(255,255,255,.08);
-
-}
-
-.back-btn:active {
-
-    transform: scale(.95);
-
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
-
-    position: relative;
-
-    padding: 28px 22px;
-
-    margin-bottom: 22px;
-
-    border-radius: 24px;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(188,19,254,.18),
-            rgba(0,243,255,.08)
-        );
-
-    border: 1px solid rgba(188,19,254,.18);
-
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.25);
-}
-
-.hero::after {
-
-    content: '';
-
-    position: absolute;
-
-    width: 170px;
-    height: 170px;
-
-    right: -70px;
-    top: -70px;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(0,243,255,.16),
-            transparent 70%
-        );
-
-    pointer-events: none;
-}
-
-.hero-content {
-
-    position: relative;
-
-    z-index: 1;
-}
-
-.hero-title {
-
-    font-size: 1.75rem;
-
-    font-weight: 800;
-
-    margin-bottom: 8px;
-
-    color: #fff;
-}
-
-.hero-title span {
-
-    color: var(--neon-cyan);
-
-    text-shadow:
-        0 0 10px rgba(0,243,255,.3);
-}
-
-.hero-description {
-
-    color: #aeb8c7;
-
-    font-size: .9rem;
-
-    line-height: 1.6;
-
-    max-width: 500px;
-}
-
-
-/* =========================================================
-   BALANCE
-========================================================= */
-
-.balance-card {
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(30,60,114,.40),
-            rgba(42,82,152,.18)
-        );
-
-    border:
-        1px solid rgba(58,118,240,.25);
-
-    border-radius: 22px;
-
-    padding: 20px;
-
-    margin-bottom: 24px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-.balance-left {
-
-    min-width: 0;
-}
-
-.balance-label {
-
-    color: #8e9aaa;
-
-    font-size: .7rem;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1.3px;
-
-    font-weight: 600;
-
-    margin-bottom: 5px;
-}
-
-.balance-value {
-
-    font-size: 1.45rem;
-
-    font-weight: 750;
-
-    color: #fff;
-
-    min-height: 30px;
-
-    display: flex;
-
-    align-items: center;
-}
-
-.topup-btn {
-
-    flex-shrink: 0;
-
-    text-decoration: none;
-
-    color: #060608;
-
-    background: #fff;
-
-    padding: 10px 14px;
-
-    border-radius: 12px;
-
-    font-size: .75rem;
-
-    font-weight: 750;
-
-    border: none;
-
-    transition:
-        transform .15s ease,
-        opacity .15s ease;
-}
-
-.topup-btn:active {
-
-    transform: scale(.96);
-
-}
-
-.topup-btn:hover {
-
-    opacity: .9;
-
-}
-
-
-/* =========================================================
-   SECTION
-========================================================= */
-
-.section-header {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    margin-bottom: 14px;
-
-    padding: 0 3px;
-}
-
-.section-title {
-
-    font-size: .78rem;
-
-    color: #718096;
-
-    font-weight: 700;
-
-    text-transform: uppercase;
-
-    letter-spacing: 2px;
-}
-
-
-/* =========================================================
-   GIFT GRID
-========================================================= */
-
-.gift-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 13px;
-
-    margin-bottom: 40px;
-}
-
-
-/* =========================================================
-   GIFT CARD
-========================================================= */
-
-.gift-card {
-
-    background: rgba(255,255,255,.028);
-
-    border:
-        1px solid var(--glass-border);
-
-    border-radius: 18px;
-
-    overflow: hidden;
-
-    display: flex;
-
-    flex-direction: column;
-
-    min-width: 0;
-
-    contain: content;
-
-    transition:
-        transform .15s ease,
-        background .15s ease,
-        border-color .15s ease;
-}
-
-.gift-card:hover {
-
-    background: rgba(255,255,255,.045);
-
-    border-color:
-        rgba(255,255,255,.13);
-
-}
-
-.gift-card:active {
-
-    transform: scale(.985);
-
-}
-
-
-/* =========================================================
-   IMAGE SWIPE AREA
-========================================================= */
-
-.gift-image-container {
-
-    width: 100%;
-
-    aspect-ratio: 1 / 1;
-
-    background:
-        rgba(255,255,255,.025);
-
-    overflow: hidden;
-
-    position: relative;
-}
-
-.gift-image-track {
-
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-
-    transform: translateX(0);
-
-    transition:
-        transform .65s cubic-bezier(.22,.61,.36,1);
-
-    will-change: transform;
-}
-
-.gift-image-slide {
-
-    width: 100%;
-    height: 100%;
-
-    flex: 0 0 100%;
-
-    min-width: 100%;
-
-    object-fit: cover;
-
-    display: block;
-
-    user-select: none;
-
-    -webkit-user-drag: none;
-}
-
-
-/* =========================================================
-   IMAGE FALLBACK
-========================================================= */
-
-.gift-image-fallback {
-
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(188,19,254,.12),
-            rgba(0,243,255,.08)
-        );
-
-    color: #718096;
-}
-
-.gift-image-fallback svg {
-
-    width: 35px;
-    height: 35px;
-
-    opacity: .55;
-}
-
-
-/* =========================================================
-   SWIPE INDICATORS
-========================================================= */
-
-.gift-image-dots {
-
-    position: absolute;
-
-    left: 50%;
-    bottom: 9px;
-
-    transform: translateX(-50%);
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 5px;
-
-    padding: 5px 7px;
-
-    border-radius: 20px;
-
-    background:
-        rgba(0,0,0,.35);
-
-    backdrop-filter: blur(5px);
-
-    -webkit-backdrop-filter: blur(5px);
-
-    pointer-events: none;
-}
-
-.gift-image-dot {
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,.45);
-
-    transition:
-        width .25s ease,
-        background .25s ease;
-}
-
-.gift-image-dot.active {
-
-    width: 14px;
-
-    border-radius: 5px;
-
-    background:
-        var(--neon-cyan);
-
-    box-shadow:
-        0 0 7px rgba(0,243,255,.55);
-}
-
-
-/* =========================================================
-   CARD CONTENT
-========================================================= */
-
-.gift-content {
-
-    padding: 13px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    flex: 1;
-
-    min-width: 0;
-}
-
-.gift-name {
-
-    color: #fff;
-
-    font-size: .88rem;
-
-    font-weight: 700;
-
-    line-height: 1.35;
-
-    margin-bottom: 7px;
-
-    overflow-wrap: anywhere;
-
-    word-break: break-word;
-}
-
-.gift-description {
-
-    color: #8792a3;
-
-    font-size: .72rem;
-
-    line-height: 1.55;
-
-    margin-bottom: 14px;
-
-    overflow-wrap: anywhere;
-
-    word-break: break-word;
-
-    flex: 1;
-}
-
-
-/* =========================================================
-   CARD BOTTOM
-   PRICE ABOVE BUTTON
-========================================================= */
-
-.gift-bottom {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: stretch;
-
-    justify-content: flex-start;
-
-    gap: 9px;
-
-    margin-top: auto;
-
-    width: 100%;
-
-    min-width: 0;
-}
-
-.gift-price {
-
-    color: var(--neon-cyan);
-
-    font-size: .92rem;
-
-    font-weight: 800;
-
-    line-height: 1.3;
-
-    width: 100%;
-
-    min-width: 0;
-
-    white-space: normal;
-
-    overflow-wrap: anywhere;
-
-    word-break: break-word;
-}
-
-.send-gift-btn {
-
-    border: none;
-
-    border-radius: 10px;
-
-    padding: 9px 10px;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--neon-purple),
-            #9d4edd
-        );
-
-    color: #fff;
-
-    font-size: .63rem;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    min-width: 0;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    display: block;
-
-    transition:
-        transform .12s ease,
-        opacity .12s ease;
-}
-
-.send-gift-btn:hover {
-
-    opacity: .92;
-
-}
-
-.send-gift-btn:active {
-
-    transform: scale(.97);
-
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-.loading-state {
-
-    grid-column: 1 / -1;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    min-height: 170px;
-
-    border:
-        1px dashed rgba(255,255,255,.08);
-
-    border-radius: 18px;
-}
-
-.loading-inner {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 12px;
-}
-
-.loading-text {
-
-    color: #718096;
-
-    font-size: .78rem;
-}
-
-
-/* =========================================================
-   EMPTY
-========================================================= */
-
-.empty-state {
-
-    grid-column: 1 / -1;
-
-    padding: 45px 20px;
-
-    text-align: center;
-
-    border:
-        1px dashed var(--glass-border);
-
-    border-radius: 18px;
-
-    color: #718096;
-}
-
-.empty-icon {
-
-    width: 55px;
-    height: 55px;
-
-    border-radius: 18px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin: 0 auto 14px;
-
-    background:
-        rgba(255,255,255,.035);
-
-    border:
-        1px solid rgba(255,255,255,.07);
-}
-
-.empty-icon svg {
-
-    width: 26px;
-    height: 26px;
-
-    opacity: .6;
-}
-
-.empty-title {
-
-    color: #cbd5e0;
-
-    font-size: .9rem;
-
-    font-weight: 700;
-
-    margin-bottom: 5px;
-}
-
-.empty-message {
-
-    font-size: .75rem;
-
-    color: #667386;
-}
-
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-.error-state {
-
-    grid-column: 1 / -1;
-
-    padding: 35px 20px;
-
-    text-align: center;
-
-    border:
-        1px dashed rgba(255,75,75,.18);
-
-    border-radius: 18px;
-
-    color: #9b6b6b;
-}
-
-.retry-btn {
-
-    margin-top: 13px;
-
-    padding: 9px 15px;
-
-    border-radius: 10px;
-
-    border:
-        1px solid rgba(255,255,255,.1);
-
-    background:
-        rgba(255,255,255,.045);
-
-    color: #fff;
-
-    font-size: .75rem;
-
-    font-weight: 700;
-
-    cursor: pointer;
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast {
-
-    position: fixed;
-
-    left: 50%;
-
-    bottom: 25px;
-
-    transform:
-        translate(-50%, 100px);
-
-    width: calc(100% - 30px);
-
-    max-width: 380px;
-
-    padding: 13px 16px;
-
-    border-radius: 14px;
-
-    background:
-        rgba(10,10,14,.97);
-
-    border:
-        1px solid rgba(255,255,255,.1);
-
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.4);
-
-    color: #fff;
-
-    font-size: .78rem;
-
-    text-align: center;
-
-    z-index: 9999;
-
-    opacity: 0;
-
-    transition:
-        transform .22s ease,
-        opacity .22s ease;
-}
-
-.toast.show {
-
-    transform:
-        translate(-50%, 0);
-
-    opacity: 1;
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 520px) {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
 
     body {
-        padding:
-            16px 11px 40px;
+        background:
+            radial-gradient(circle at 10% 20%, rgba(188,19,254,.08) 0%, transparent 35%),
+            radial-gradient(circle at 90% 80%, rgba(0,243,255,.06) 0%, transparent 35%),
+            #060608;
+        color: #f1f1f3;
+        min-height: 100vh;
+        padding: 24px 16px;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeSpeed;
     }
 
-    .hero {
-        padding: 24px 19px;
+    button,
+    a {
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .hero-title {
-        font-size: 1.5rem;
+    .hidden {
+        display: none !important;
     }
 
-    .balance-card {
-        padding: 17px;
+    /* =========================
+       LOADER
+    ========================= */
+
+    .spinner {
+        width: 24px;
+        height: 24px;
+        border: 2.5px solid rgba(255,255,255,.15);
+        border-top-color: var(--neon-cyan);
+        border-radius: 50%;
+        animation: spin .8s linear infinite;
+        display: inline-block;
     }
 
-    .gift-grid {
-        gap: 10px;
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
     }
 
-    .gift-content {
-        padding: 11px;
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 8px 16px;
     }
 
-    .gift-name {
-        font-size: .82rem;
+    .logo {
+        font-size: 1.4rem;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0,243,255,.45);
     }
 
-    .gift-description {
-        font-size: .68rem;
-        line-height: 1.5;
-    }
-
-    .gift-bottom {
+    .header-actions {
+        display: flex;
+        align-items: center;
         gap: 8px;
     }
 
-    .gift-price {
+    .menu-btn,
+    .notification-btn {
+        background: rgba(255,255,255,.04);
+        border: 1px solid var(--glass-border);
+        color: #fff;
+        border-radius: 12px;
+        cursor: pointer;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+            background .15s ease,
+            border-color .15s ease;
+    }
+
+    .menu-btn:hover,
+    .notification-btn:hover {
+        background: rgba(255,255,255,.08);
+        border-color: rgba(255,255,255,.16);
+    }
+
+    /* =========================
+       NOTIFICATION BUTTON
+    ========================= */
+
+    .notification-btn {
+        position: relative;
+    }
+
+    .notification-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        min-width: 15px;
+        height: 15px;
+        padding: 0 4px;
+        border-radius: 10px;
+        background: #ff3030;
+        color: #fff;
+        font-size: 8px;
+        line-height: 15px;
+        font-weight: 800;
+        text-align: center;
+        border: 1px solid #060608;
+        display: none;
+        pointer-events: none;
+    }
+
+    .notification-badge.visible {
+        display: block;
+    }
+
+    /* =========================
+       WELCOME
+    ========================= */
+
+    .welcome-container {
+        padding: 0 8px 16px;
+    }
+
+    .welcome-text {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #cbd5e0;
+    }
+
+    .welcome-username {
+        color: var(--neon-cyan);
+        font-weight: 700;
+        text-shadow: 0 0 7px rgba(0,243,255,.25);
+    }
+
+    /* =========================
+       DASHBOARD
+    ========================= */
+
+    .dashboard-card {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(30,60,114,.42),
+                rgba(42,82,152,.20)
+            );
+        border: 1px solid rgba(58,118,240,.28);
+        border-radius: 24px;
+        padding: 28px 24px;
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0,0,0,.25);
+        contain: layout paint;
+    }
+
+    .dashboard-card::after {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(
+            circle,
+            rgba(0,243,255,.16) 0%,
+            transparent 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .balance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .balance-label {
+        font-size: .85rem;
+        font-weight: 500;
+        color: #a0aec0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .balance-amount {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        min-height: 48px;
+        color: #fff;
+        letter-spacing: -.5px;
+    }
+
+    .fund-btn-new {
+        background: linear-gradient(90deg,var(--neon-purple),#9d4edd);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: .85rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(188,19,254,.22);
+        transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .fund-btn-new:hover {
+        transform: translateY(-1px);
+        opacity: .95;
+    }
+
+    /* =========================
+       QUICK CATEGORIES
+    ========================= */
+
+    .quick-category-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 12px;
+        margin-bottom: 28px;
+    }
+
+    .quick-card {
+        background: rgba(255,255,255,.045);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 16px 10px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform .12s ease, background .12s ease;
+    }
+
+    .quick-card:active {
+        transform: scale(.97);
+    }
+
+    .quick-icon-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.05);
+    }
+
+    .quick-card.blue .quick-icon-circle {
+        background: #3b82f6;
+        color: #fff;
+    }
+
+    .quick-card.green .quick-icon-circle {
+        background: #10b981;
+        color: #fff;
+    }
+
+    .quick-card.pink {
+        background: linear-gradient(135deg,#f43f5e,#e11d48);
+        border: none;
+    }
+
+    .quick-card.pink .quick-icon-circle {
+        background: rgba(255,255,255,.18);
+    }
+
+    .quick-label {
+        font-size: .75rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        line-height: 1.2;
+    }
+
+    .badge-soon,
+    .badge-active {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: .55rem;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 8px;
+        text-transform: uppercase;
+    }
+
+    .badge-soon {
+        background: #fff;
+        color: #e11d48;
+    }
+
+    .badge-active {
+        background: rgba(0,243,255,.12);
+        border: 1px solid rgba(0,243,255,.35);
+        color: var(--neon-cyan);
+    }
+
+    .disabled-card {
+        opacity: .6;
+        cursor: not-allowed !important;
+    }
+
+    /* =========================
+       CATEGORY NAV
+    ========================= */
+
+    .category-nav-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        padding: 12px 0;
+        margin-bottom: 24px;
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        background: rgba(12,12,17,.90);
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 30px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.28);
+    }
+
+    .category-nav-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-navbar {
+        display: inline-flex;
+        gap: 8px;
+        padding: 0 4px;
+    }
+
+    .nav-category-btn {
+        background: rgba(255,255,255,.035);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #a0aec0;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: .85rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        transition:
+            background .15s ease,
+            border-color .15s ease,
+            color .15s ease;
+    }
+
+    .nav-category-btn:hover,
+    .nav-category-btn.active {
+        background: rgba(255,255,255,.11);
+        border-color: rgba(255,255,255,.18);
+        color: #fff;
+        box-shadow: 0 0 12px rgba(0,243,255,.10);
+    }
+
+    /* =========================
+       SECTION
+    ========================= */
+
+    .section-title {
+        font-size: .8rem;
+        color: #718096;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+        padding-left: 4px;
+    }
+
+    /* =========================
+       PRODUCTS
+    ========================= */
+
+    .product-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 40px;
+        contain: layout;
+    }
+
+    .product-list.switching {
+        opacity: .5;
+    }
+
+    .product-list-row {
+        background: rgba(255,255,255,.025);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        min-height: 90px;
+        contain: content;
+        content-visibility: auto;
+        contain-intrinsic-size: 90px;
+        transition:
+            background .15s ease,
+            border-color .15s ease;
+    }
+
+    .product-list-row:hover {
+        background: rgba(255,255,255,.045);
+        border-color: rgba(255,255,255,.12);
+    }
+
+    .product-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-media-frame {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(0,243,255,.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px rgba(0,243,255,.06);
+    }
+
+    .product-media-frame img,
+    .product-media-frame video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        pointer-events: none;
+    }
+
+    .product-text-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-name {
+        font-weight: 600;
+        font-size: .88rem;
+        color: #e2e8f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-meta-subline {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: .8rem;
+        color: #a0aec0;
+    }
+
+    .stock-indicator {
+        font-weight: 700;
+        font-size: .75rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .stock-indicator.low {
+        color: var(--stock-red);
+    }
+
+    .stock-indicator.high {
+        color: var(--stock-green);
+    }
+
+    .product-price-container {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        color: var(--neon-cyan);
+        font-weight: 700;
+    }
+
+    .product-right {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .purchase-btn {
+        background: rgba(255,255,255,.05);
+        border: 1px solid var(--glass-border);
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: .8rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        transition:
+            background .15s ease,
+            color .15s ease,
+            border-color .15s ease;
+    }
+
+    .purchase-btn:hover {
+        background: var(--neon-cyan);
+        border-color: var(--neon-cyan);
+        color: #060608;
+    }
+
+    /* =========================
+       ENTRY ANIMATION
+    ========================= */
+
+    .fade-slide-entry {
+        animation: productEntry .14s ease-out both;
+    }
+
+    @keyframes productEntry {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* =========================
+       SIDE NAV
+    ========================= */
+
+    .side-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 290px;
+        height: 100%;
+        background: rgba(8,8,12,.98);
+        border-left: 1px solid var(--glass-border);
+        z-index: 1000;
+        transition: right .28s ease;
+        padding: 90px 24px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        box-shadow: -8px 0 25px rgba(0,0,0,.35);
+    }
+
+    .side-nav.active {
+        right: 0;
+    }
+
+    .nav-item {
+        color: #e2e8f0;
+        text-decoration: none;
+        font-size: .95rem;
+        font-weight: 600;
+        padding: 16px;
+        background: rgba(255,255,255,.025);
+        border-radius: 14px;
+        border: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: background .15s ease;
+    }
+
+    .nav-item:hover {
+        background: rgba(255,255,255,.07);
+        color: #fff;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2;
+        color: var(--neon-cyan);
+    }
+
+    /* =========================
+       POPUP / MODALS
+    ========================= */
+
+    #tg-popup,
+    .modal,
+    #tg-confirm-modal,
+    #notification-modal {
+        background: rgba(10,10,14,.98);
+        border: 1px solid rgba(0,243,255,.25);
+        box-shadow: 0 10px 35px rgba(0,0,0,.55);
+    }
+
+    #tg-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%) scale(.94);
+        width: 88%;
+        max-width: 340px;
+        border-radius: 24px;
+        padding: 32px 24px;
+        z-index: 3000;
+        text-align: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease, transform .22s ease;
+    }
+
+    #tg-popup.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%,-50%) scale(1);
+    }
+
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%) scale(.94);
+        width: 92%;
+        max-width: 380px;
+        border-radius: 24px;
+        padding: 28px;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .modal.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%,-50%) scale(1);
+    }
+
+    .modal textarea {
+        width: 100%;
+        height: 130px;
+        background: rgba(0,0,0,.2);
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
+        padding: 14px;
+        color: #fff;
+        outline: none;
+        resize: vertical;
+    }
+
+    /* =========================
+       NOTIFICATIONS MODAL
+    ========================= */
+
+    #notification-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%) scale(.94);
+        width: 92%;
+        max-width: 420px;
+        max-height: 78vh;
+        border-radius: 24px;
+        padding: 22px;
+        z-index: 7000;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+            opacity .2s ease,
+            transform .2s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #notification-modal.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%,-50%) scale(1);
+    }
+
+    .notification-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .notification-title {
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        overflow-y: auto;
+        max-height: 48vh;
+        padding-right: 2px;
+        overscroll-behavior: contain;
+    }
+
+    .notification-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .notification-list::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.12);
+        border-radius: 10px;
+    }
+
+    .notification-item {
+        background: rgba(255,255,255,.035);
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 14px;
+        padding: 13px;
+    }
+
+    .notification-item.unread {
+        border-color: rgba(0,243,255,.20);
+        background: rgba(0,243,255,.045);
+    }
+
+    .notification-item-title {
+        color: #fff;
+        font-size: .86rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .notification-item-message {
+        color: #a0aec0;
+        font-size: .8rem;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .notification-item-time {
+        color: #5f6b7a;
+        font-size: .68rem;
+        margin-top: 8px;
+    }
+
+    .notification-empty {
+        text-align: center;
+        padding: 34px 14px;
+        color: #718096;
+        font-size: .85rem;
+    }
+
+    .notification-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .notification-action-btn {
+        flex: 1;
+        min-height: 42px;
+        border-radius: 12px;
+        padding: 10px 12px;
         font-size: .78rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,.045);
+        color: #fff;
     }
 
-    .send-gift-btn {
+    .notification-action-btn.primary {
+        background: linear-gradient(
+            90deg,
+            var(--neon-cyan),
+            #00a8ff
+        );
+        border-color: transparent;
+        color: #060608;
+    }
+
+    .notification-action-btn:active {
+        transform: scale(.98);
+    }
+
+    .nav-overlay {
+        position: fixed;
+        inset: 0;
         width: 100%;
-
-        padding:
-            8px 7px;
-
-        font-size: .57rem;
+        height: 100%;
+        background: rgba(0,0,0,.6);
+        display: none;
+        z-index: 999;
     }
 
-}
-
-@media (max-width: 360px) {
-
-    .gift-grid {
-        grid-template-columns: 1fr;
+    .nav-overlay.active {
+        display: block;
     }
 
-    .gift-name {
-        font-size: .88rem;
+    /* =========================
+       EMPTY
+    ========================= */
+
+    .empty-products {
+        padding: 32px;
+        text-align: center;
+        color: #718096;
+        border: 1px dashed var(--glass-border);
+        border-radius: 16px;
     }
 
-    .gift-description {
-        font-size: .73rem;
+    /* =========================
+       TELEGRAM FLOAT
+    ========================= */
+
+    .telegram-float {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.12);
+        box-shadow: 0 6px 20px rgba(0,0,0,.35);
+        transition: transform .15s ease, background .15s ease;
+        z-index: 5000;
+        overflow: hidden;
+        cursor: pointer;
     }
 
-    .gift-price {
-        font-size: .88rem;
+    .telegram-float:hover {
+        transform: translateY(-3px);
+        background: rgba(255,255,255,.1);
     }
 
-    .send-gift-btn {
-        width: 100%;
-
-        font-size: .64rem;
-
-        padding:
-            9px 10px;
+    .telegram-float:active {
+        transform: scale(.96);
     }
 
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-
-        animation-duration: .01ms !important;
-
-        animation-iteration-count: 1 !important;
-
-        transition-duration: .01ms !important;
-
-        scroll-behavior: auto !important;
+    .telegram-float svg {
+        width: 26px;
+        height: 26px;
+        fill: #fff;
+        opacity: .92;
     }
 
-}
+    /* =========================
+       TELEGRAM CONFIRM MODAL
+    ========================= */
 
+    #tg-confirm-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%) scale(.94);
+        width: 90%;
+        max-width: 400px;
+        border-radius: 28px;
+        padding: 36px 28px;
+        z-index: 6000;
+        text-align: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease, transform .22s ease;
+    }
+
+    #tg-confirm-modal.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%,-50%) scale(1);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 520px) {
+
+        body {
+            padding: 18px 12px;
+        }
+
+        .dashboard-card {
+            padding: 24px 20px;
+        }
+
+        .balance-amount {
+            font-size: 2.15rem;
+        }
+
+        .product-list-row {
+            padding: 13px;
+            gap: 10px;
+        }
+
+        .product-left {
+            gap: 10px;
+        }
+
+        .product-media-frame {
+            width: 44px;
+            height: 44px;
+        }
+
+        .purchase-btn {
+            padding: 8px 13px;
+        }
+
+        .product-meta-subline {
+            gap: 8px;
+        }
+
+        .telegram-float {
+            right: 18px;
+            bottom: 18px;
+        }
+
+        #notification-modal {
+            width: 94%;
+            padding: 18px;
+        }
+    }
+
+    /* Respect reduced-motion preferences */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: .01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 </style>
 </head>
 
-
 <body>
 
+<div class="nav-overlay" id="overlay"></div>
+
+<!-- WHATSAPP POPUP -->
+
+<div id="tg-popup">
+
+    <p style="color:#cbd5e0;margin-bottom:24px;">
+        Stay updated with the latest tools, daily giveaway & early access drops on our WhatsApp community.
+    </p>
+
+    <a
+        href="https://chat.whatsapp.com/C1vMoJBhZ2MEoW8yjekEnT"
+        class="fund-btn-new"
+        style="width:100%;margin-bottom:16px;background:linear-gradient(90deg,#25D366,#128C7E);"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+        </svg>
+
+        Join WhatsApp Community
+
+    </a>
+
+    <button
+        id="close-tg-popup"
+        style="background:none;border:none;color:#718096;cursor:pointer;"
+    >
+        Maybe later
+    </button>
+
+</div>
+
+
+<!-- TELEGRAM CONFIRM -->
+
+<div id="tg-confirm-modal">
+
+    <div style="
+        width:56px;
+        height:56px;
+        border-radius:50%;
+        background:rgba(0,243,255,.1);
+        border:1px solid rgba(0,243,255,.3);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin:0 auto 20px;
+    ">
+
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff">
+            <path d="M9.04 15.47 8.67 20.7c.53 0 .76-.23 1.04-.5l2.5-2.39 5.18 3.79c.95.52 1.62.25 1.88-.88l3.4-15.92h0c.31-1.45-.52-2.02-1.45-1.67L1.46 10.3c-1.4.55-1.38 1.33-.24 1.68l5.14 1.6L18.3 6.1c.56-.34 1.07-.15.65.22"/>
+        </svg>
+
+    </div>
+
+    <h3 style="color:#fff;font-size:1.25rem;font-weight:700;margin-bottom:10px;">
+        Redirecting to Telegram
+    </h3>
+
+    <p style="color:#cbd5e0;margin-bottom:28px;font-size:.9rem;line-height:1.6;">
+        You will be redirected to our telegram bot to continue with your sms verification process. Click Confirm to continue.
+    </p>
+
+    <div style="display:flex;gap:12px;">
+
+        <button
+            onclick="confirmTelegramRedirect()"
+            class="fund-btn-new"
+            style="
+                flex:1;
+                background:linear-gradient(90deg,var(--neon-cyan),#00a8ff);
+                color:#060608;
+            "
+        >
+            CONFIRM
+        </button>
+
+        <button
+            onclick="closeTgConfirmModal()"
+            class="menu-btn"
+            style="flex:1;background:rgba(255,255,255,.05);"
+        >
+            CANCEL
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- NOTIFICATIONS MODAL -->
+
+<div id="notification-modal">
+
+    <div class="notification-header">
+
+        <div class="notification-title">
+            Notifications
+        </div>
+
+        <button
+            id="notification-close-top"
+            class="menu-btn"
+            type="button"
+            aria-label="Close notifications"
+            style="padding:7px;"
+        >
+            <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+
+    </div>
+
+    <div
+        class="notification-list"
+        id="notification-list"
+    >
+        <div class="notification-empty">
+            No notifications yet.
+        </div>
+    </div>
+
+    <div class="notification-actions">
+
+        <button
+            class="notification-action-btn"
+            id="notification-cancel"
+            type="button"
+        >
+            Cancel
+        </button>
+
+        <button
+            class="notification-action-btn primary"
+            id="mark-all-read"
+            type="button"
+        >
+            Mark all as read
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- SIDE NAV -->
+
+<nav class="side-nav" id="sideNav">
+
+    <a href="prof.html" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Profile
+    </a>
+
+    <a href="mine.html" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <path d="M3 6h18"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        Order History
+    </a>
+
+    <a href="fund.html" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        Top Up Wallet
+    </a>
+
+    <a
+        href="https://t.me/pr1me_logs_support_bot"
+        class="nav-item"
+        target="_blank"
+        rel="noopener noreferrer"
+        onclick="event.preventDefault();openTgConfirmModal('https://t.me/pr1me_logs_support_bot');"
+    >
+
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 12a8 8 0 0 1 16 0"/>
+            <rect x="2" y="12" width="4" height="8" rx="2"/>
+            <rect x="18" y="12" width="4" height="8" rx="2"/>
+            <path d="M12 20v2"/>
+        </svg>
+
+        Support
+
+    </a>
+
+    <a href="rules.html" class="nav-item">
+
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 20v-20H6.5A2.5 2.5 0 0 1 4 4.5v15A2.5 2.5 0 0 1 6.5 20z"/>
+        </svg>
+
+        Rules
+
+    </a>
+
+    <a href="#" class="nav-item" id="logout-btn" style="margin-top:auto;color:#ff4b4b;">
+
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#ff4b4b">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+
+        Sign Out
+
+    </a>
+
+</nav>
+
+
+<!-- SUPPORT MODAL -->
+
+<div class="modal" id="supportModal">
+
+    <h2 style="color:#fff;margin-bottom:18px;">
+        Support Ticket
+    </h2>
+
+    <textarea
+        id="ticketMsg"
+        placeholder="Describe your issue..."
+    ></textarea>
+
+    <button
+        class="fund-btn-new"
+        style="width:100%;margin-top:12px;"
+        id="sendTicket"
+    >
+        Submit
+    </button>
+
+    <button
+        class="menu-btn"
+        style="width:100%;margin-top:12px;"
+        onclick="closeSupport()"
+    >
+        Cancel
+    </button>
+
+</div>
+
+
+<!-- HEADER -->
 
 <header>
 
-    <button
-        class="back-btn"
-        id="backButton"
-        type="button"
-        aria-label="Go back"
-    >
-
-        <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-        >
-            <path d="M19 12H5"/>
-            <path d="M12 19l-7-7 7-7"/>
-        </svg>
-
-    </button>
-
-
     <div class="logo">
-        PR1MΞ GIFT STORE
+        PR1MΞ L0GS
     </div>
 
+    <div class="header-actions">
 
-    <div style="width:42px;"></div>
+        <!-- NOTIFICATION BELL -->
+
+        <button
+            class="notification-btn"
+            id="notification-button"
+            type="button"
+            aria-label="Notifications"
+        >
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+
+            <span
+                id="notification-badge"
+                class="notification-badge"
+            >
+                0
+            </span>
+
+        </button>
+
+
+        <!-- HAMBURGER -->
+
+        <button
+            class="menu-btn"
+            id="menu-button"
+            aria-label="Open menu"
+        >
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+
+        </button>
+
+    </div>
 
 </header>
 
 
+<!-- WELCOME -->
 
-<!-- =========================================================
-     HERO
-========================================================= -->
+<div class="welcome-container">
 
-<section class="hero">
+    <span class="welcome-text">
 
-    <div class="hero-content">
+        welcome back 👋,
 
-        <div class="hero-title">
-            Send a <span>Gift</span> 🎁
-        </div>
+        <span
+            id="username-display"
+            class="welcome-username"
+        >
+            User
+        </span>
 
-        <div class="hero-description">
-            Choose a gift and send something special
-            directly to loved ones.
-        </div>
+    </span>
 
-    </div>
-
-</section>
+</div>
 
 
+<!-- DASHBOARD -->
 
-<!-- =========================================================
-     BALANCE
-========================================================= -->
+<div class="dashboard-card">
 
-<div class="balance-card">
-
-    <div class="balance-left">
+    <div class="balance-header">
 
         <div class="balance-label">
             Available Balance
         </div>
 
+    </div>
 
-        <div class="balance-value">
+    <div class="balance-amount">
 
-            <div
-                id="balanceLoader"
-                class="spinner"
-            ></div>
+        <div
+            id="balance-loader"
+            class="spinner"
+        ></div>
 
+        <span
+            id="balance-text"
+            class="hidden"
+        >
 
-            <span
-                id="balanceText"
-                class="hidden"
-            >
-                ₦<span id="balance">
-                    0.00
-                </span>
+            <span id="currency-symbol">
+                ₦
             </span>
 
-        </div>
+            <span id="balance">
+                0.00
+            </span>
+
+        </span>
 
     </div>
 
-
     <a
         href="fund.html"
-        class="topup-btn"
+        class="fund-btn-new"
+        style="background:#fff;color:#000;"
     >
-        + Top Up
+        + Top Up Wallet
     </a>
 
 </div>
 
 
+<!-- QUICK CATEGORIES -->
 
-<!-- =========================================================
-     GIFTS
-========================================================= -->
+<div class="quick-category-grid">
 
-<div class="section-header">
+    <div
+        class="quick-card blue"
+        onclick="window.location.href='sms.html'"
+    >
 
-    <div class="section-title">
-        Available Gifts
-    </div>
+        <div class="badge-active">
+            ADMIN
+        </div>
 
-</div>
+        <div class="quick-icon-circle">
 
-
-<div
-    class="gift-grid"
-    id="giftGrid"
->
-
-    <div class="loading-state">
-
-        <div class="loading-inner">
-
-            <div class="spinner"></div>
-
-            <div class="loading-text">
-                Loading gifts...
-            </div>
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
 
         </div>
 
+        <span class="quick-label">
+            Buy<br>Numbers
+        </span>
+
+    </div>
+
+
+    <div
+        class="quick-card green"
+        onclick="window.location.href='celeb.html?category=other'"
+    >
+
+        <div class="quick-icon-circle">
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+
+        </div>
+
+        <span class="quick-label">
+            CELEB<br>FAN CARD
+        </span>
+
+    </div>
+
+
+    <!-- GIFT STORE -->
+
+    <div
+        class="quick-card pink"
+        onclick="window.location.href='gift.html'"
+    >
+
+        <div class="badge-active">
+            NEW
+        </div>
+
+        <div class="quick-icon-circle">
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
+                <rect x="3" y="8" width="18" height="13" rx="2"/>
+                <path d="M12 8v13"/>
+                <path d="M3 12h18"/>
+                <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
+                <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+            </svg>
+
+        </div>
+
+        <span class="quick-label">
+            Gift<br>Store
+        </span>
+
     </div>
 
 </div>
 
 
+<div class="section-title">
+    Marketplace Categories
+</div>
 
-<!-- TOAST -->
+
+<!-- CATEGORY NAV -->
+
+<div class="category-nav-container">
+
+    <div
+        class="category-navbar"
+        id="categoryNavbar"
+    >
+
+        <button
+            class="nav-category-btn active"
+            data-category="All"
+        >
+            All Products
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="TikTok Logs"
+        >
+            TikTok Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="X/Twitter Logs"
+        >
+            X/Twitter Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="FB Logs"
+        >
+            FB Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="IG Logs"
+        >
+            IG Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="MAIL Logs"
+        >
+            MAIL Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="OTHER Logs"
+        >
+            OTHER Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Texting Apps"
+        >
+            Texting Apps
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Working Pics"
+        >
+            Working Pics
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Modded Apps"
+        >
+            📱 Modded Apps
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Websites"
+        >
+            Websites
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="VPNs and Proxies"
+        >
+            VPNs/Proxies
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="iCloud"
+        >
+             iCloud
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Courses and Digital Guides"
+        >
+            Courses/Guides
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="FMT and Updates"
+        >
+            FMT & Updates
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Tools"
+        >
+            Tools
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Bots"
+        >
+            Bots
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Movie and TV"
+        >
+            Movie/TV
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="Freebies"
+        >
+            Freebies
+        </button>
+
+    </div>
+
+</div>
+
 
 <div
-    class="toast"
-    id="toast"
-></div>
+    class="section-title"
+    id="current-category-title"
+>
+    All Products
+</div>
 
+
+<div
+    class="product-list"
+    id="productList"
+>
+
+    <div style="text-align:center;padding:20px;">
+
+        <div class="spinner"></div>
+
+    </div>
+
+</div>
+
+
+<!-- TELEGRAM FLOAT -->
+
+<a
+    onclick="openTgConfirmModal('https://t.me/pr1me_logs_support_bot')"
+    class="telegram-float"
+    aria-label="Telegram Support"
+>
+
+    <svg viewBox="0 0 24 24">
+
+        <path d="M9.04 15.47 8.67 20.7c.53 0 .76-.23 1.04-.5l2.5-2.39 5.18 3.79c.95.52 1.62.25 1.88-.88l3.4-15.92h0c.31-1.45-.52-2.02-1.45-1.67L1.46 10.3c-1.4.55-1.38 1.33-.24 1.68l5.14 1.6L18.3 6.1c.56-.34 1.07-.15.65.22"/>
+
+    </svg>
+
+</a>
+
+
+<script>
+
+    let pendingTelegramUrl = '';
+
+    function openTgConfirmModal(url) {
+
+        pendingTelegramUrl = url;
+
+        document
+            .getElementById('tg-confirm-modal')
+            .classList.add('active');
+
+        document
+            .getElementById('overlay')
+            .classList.add('active');
+
+    }
+
+    function closeTgConfirmModal() {
+
+        document
+            .getElementById('tg-confirm-modal')
+            .classList.remove('active');
+
+        document
+            .getElementById('overlay')
+            .classList.remove('active');
+
+        pendingTelegramUrl = '';
+
+    }
+
+    function confirmTelegramRedirect() {
+
+        if (!pendingTelegramUrl) return;
+
+        const url = pendingTelegramUrl;
+
+        closeTgConfirmModal();
+
+        window.location.href = url;
+
+    }
+
+</script>
 
 
 <script type="module">
 
-/* =========================================================
-   FIREBASE IMPORTS
-========================================================= */
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+        getAuth,
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-
-import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-
-import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs,
-    doc,
-    onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+    import {
+        getFirestore,
+        doc,
+        onSnapshot,
+        addDoc,
+        collection,
+        getDocs,
+        serverTimestamp,
+        query,
+        where,
+        updateDoc,
+        writeBatch
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-/* =========================================================
-   FIREBASE CONFIG
-========================================================= */
+    /* =========================
+       FIREBASE
+    ========================= */
 
-const firebaseConfig = {
+    const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+        apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
 
-    authDomain:
-        "primelogs-web.firebaseapp.com",
+        authDomain: "primelogs-web.firebaseapp.com",
 
-    projectId:
-        "primelogs-web",
+        projectId: "primelogs-web",
 
-    storageBucket:
-        "primelogs-web.firebasestorage.app",
+        storageBucket: "primelogs-web.firebasestorage.app",
 
-    messagingSenderId:
-        "732956069251",
+        messagingSenderId: "732956069251",
 
-    appId:
-        "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab3"
 
-};
+    };
 
 
+    const app = initializeApp(firebaseConfig);
 
-/* =========================================================
-   INITIALIZE FIREBASE
-========================================================= */
+    const auth = getAuth(app);
 
-const app =
-    initializeApp(firebaseConfig);
-
-const auth =
-    getAuth(app);
-
-const db =
-    getFirestore(app);
+    const db = getFirestore(app);
 
 
+    /* =========================
+       DOM CACHE
+    ========================= */
 
-/* =========================================================
-   DOM CACHE
-========================================================= */
+    const $ = id =>
+        document.getElementById(id);
 
-const giftGrid =
-    document.getElementById(
-        'giftGrid'
+    const balanceLoader =
+        $('balance-loader');
+
+    const balanceText =
+        $('balance-text');
+
+    const balanceDisplay =
+        $('balance');
+
+    const productListContainer =
+        $('productList');
+
+    const usernameDisplay =
+        $('username-display');
+
+    const tgPopup =
+        $('tg-popup');
+
+    const overlay =
+        $('overlay');
+
+    const sideNav =
+        $('sideNav');
+
+    const supportModal =
+        $('supportModal');
+
+    const logoutBtn =
+        $('logout-btn');
+
+    const sendTicketBtn =
+        $('sendTicket');
+
+    const ticketMsg =
+        $('ticketMsg');
+
+    const menuButton =
+        $('menu-button');
+
+    const categoryNavbar =
+        $('categoryNavbar');
+
+    const categoryTitle =
+        $('current-category-title');
+
+    const closeTgPopupBtn =
+        $('close-tg-popup');
+
+
+    /* =========================
+       NOTIFICATION DOM
+    ========================= */
+
+    const notificationButton =
+        $('notification-button');
+
+    const notificationBadge =
+        $('notification-badge');
+
+    const notificationModal =
+        $('notification-modal');
+
+    const notificationList =
+        $('notification-list');
+
+    const notificationCancel =
+        $('notification-cancel');
+
+    const notificationCloseTop =
+        $('notification-close-top');
+
+    const markAllReadButton =
+        $('mark-all-read');
+
+
+    /* =========================
+       STATE
+    ========================= */
+
+    let currentUser = null;
+
+    let shopBalance = 0;
+
+    let allProducts = [];
+
+    let renderToken = 0;
+
+    let balanceUnsubscribe = null;
+
+    let notificationUnsubscribe = null;
+
+    let notifications = [];
+
+
+    /* =========================
+       TELEGRAM / POPUP
+    ========================= */
+
+    closeTgPopupBtn.addEventListener(
+        'click',
+        closeTgPopup
     );
 
-const balanceLoader =
-    document.getElementById(
-        'balanceLoader'
-    );
 
-const balanceText =
-    document.getElementById(
-        'balanceText'
-    );
+    overlay.addEventListener(
+        'click',
+        () => {
 
-const balanceDisplay =
-    document.getElementById(
-        'balance'
-    );
+            closeMenu();
 
-const backButton =
-    document.getElementById(
-        'backButton'
-    );
+            closeTgConfirmModal();
 
-const toast =
-    document.getElementById(
-        'toast'
-    );
+            closeNotificationModal();
 
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentUser = null;
-
-let allGifts = [];
-
-let balanceUnsubscribe = null;
-
-
-
-/* =========================================================
-   BACK BUTTON
-========================================================= */
-
-/*
- * Always return directly to shop.html.
- */
-
-backButton.addEventListener(
-    'click',
-    () => {
-
-        window.location.href =
-            'shop.html';
-
-    }
-);
-
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer = null;
-
-
-function showToast(message) {
-
-    clearTimeout(toastTimer);
-
-    toast.textContent =
-        message;
-
-    toast.classList.add(
-        'show'
-    );
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    'show'
-                );
-
-            },
-            3000
-        );
-
-}
-
-
-
-/* =========================================================
-   FORMAT PRICE
-========================================================= */
-
-function formatPrice(value) {
-
-    const number =
-        Number(value || 0);
-
-    return number.toLocaleString(
-        undefined,
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
         }
     );
 
-}
 
+    function showCommunityPopup() {
 
+        if (!currentUser) return;
 
-/* =========================================================
-   CREATE IMAGE FALLBACK
-========================================================= */
+        tgPopup.classList.add('active');
 
-function createImageFallback() {
-
-    const fallback =
-        document.createElement(
-            'div'
-        );
-
-    fallback.className =
-        'gift-image-fallback';
-
-    fallback.innerHTML = `
-
-        <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-        >
-
-            <rect
-                x="3"
-                y="8"
-                width="18"
-                height="13"
-                rx="2"
-            />
-
-            <path d="M12 8v13"/>
-
-            <path d="M3 12h18"/>
-
-            <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
-
-            <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
-
-        </svg>
-
-    `;
-
-    return fallback;
-
-}
-
-
-
-/* =========================================================
-   CREATE GIFT CARD
-========================================================= */
-
-function createGiftCard(
-    gift,
-    index
-) {
-
-    const card =
-        document.createElement(
-            'div'
-        );
-
-    card.className =
-        'gift-card';
-
-
-
-    /* =====================================================
-       IMAGE CONTAINER
-    ===================================================== */
-
-    const imageContainer =
-        document.createElement(
-            'div'
-        );
-
-    imageContainer.className =
-        'gift-image-container';
-
-
-
-    /*
-     * Support:
-     *
-     * imageUrls: [...]
-     *
-     * and:
-     *
-     * imageUrl: "..."
-     */
-
-    let imageUrls = [];
-
-
-    if (
-        Array.isArray(
-            gift.imageUrls
-        )
-    ) {
-
-        imageUrls =
-            gift.imageUrls.filter(
-                url =>
-                    typeof url === 'string' &&
-                    url.trim()
-            );
+        overlay.classList.add('active');
 
     }
 
 
-    if (
-        !imageUrls.length &&
-        typeof gift.imageUrl === 'string' &&
-        gift.imageUrl.trim()
-    ) {
+    function closeTgPopup() {
 
-        imageUrls = [
-            gift.imageUrl.trim()
-        ];
+        tgPopup.classList.remove('active');
+
+        if (
+            !sideNav.classList.contains('active') &&
+            !supportModal.classList.contains('active') &&
+            !notificationModal.classList.contains('active') &&
+            !document
+                .getElementById('tg-confirm-modal')
+                .classList.contains('active')
+        ) {
+
+            overlay.classList.remove('active');
+
+        }
 
     }
 
 
+    /* =========================
+       MENU
+    ========================= */
 
-    /* =====================================================
-       NO IMAGE
-    ===================================================== */
+    function toggleMenu() {
 
-    if (
-        !imageUrls.length
-    ) {
+        const active =
+            sideNav.classList.toggle('active');
 
-        imageContainer.appendChild(
-            createImageFallback()
-        );
+        if (active) {
 
-    } else {
+            overlay.classList.add('active');
 
-        /*
-         * Create horizontal image track.
-         */
+        } else {
 
-        const track =
-            document.createElement(
-                'div'
-            );
+            closeMenu();
 
-        track.className =
-            'gift-image-track';
+        }
+
+    }
 
 
+    function closeMenu() {
 
-        /*
-         * Add every image as a
-         * separate horizontal slide.
-         */
+        sideNav.classList.remove('active');
 
-        imageUrls.forEach(
-            (url, imageIndex) => {
+        if (
+            !tgPopup.classList.contains('active') &&
+            !supportModal.classList.contains('active') &&
+            !notificationModal.classList.contains('active') &&
+            !document
+                .getElementById('tg-confirm-modal')
+                .classList.contains('active')
+        ) {
 
-                const image =
-                    document.createElement(
-                        'img'
-                    );
+            overlay.classList.remove('active');
 
-                image.className =
-                    'gift-image-slide';
+        }
 
-                image.alt =
-                    gift.name ||
-                    'Gift';
-
-                image.loading =
-                    index < 4
-                        ? 'eager'
-                        : 'lazy';
-
-                image.decoding =
-                    'async';
-
-                image.src =
-                    url;
+    }
 
 
-                image.addEventListener(
-                    'error',
-                    () => {
-
-                        image.replaceWith(
-                            createImageFallback()
-                        );
-
-                    },
-                    {
-                        once: true
-                    }
-                );
+    menuButton.addEventListener(
+        'click',
+        toggleMenu
+    );
 
 
-                track.appendChild(
-                    image
-                );
+    /* =========================
+       NOTIFICATIONS
+    ========================= */
 
+    function getNotificationTime(value) {
+
+        if (!value) return '';
+
+        let date = null;
+
+        if (
+            value &&
+            typeof value.toDate === 'function'
+        ) {
+
+            date = value.toDate();
+
+        } else if (
+            typeof value === 'number'
+        ) {
+
+            date = new Date(value);
+
+        } else {
+
+            const parsed =
+                new Date(value);
+
+            if (!isNaN(parsed.getTime())) {
+                date = parsed;
+            }
+
+        }
+
+        if (!date) return '';
+
+        return date.toLocaleString(
+            undefined,
+            {
+                dateStyle: 'short',
+                timeStyle: 'short'
             }
         );
 
+    }
 
-        imageContainer.appendChild(
-            track
+
+    function renderNotifications() {
+
+        notificationList.replaceChildren();
+
+        if (!notifications.length) {
+
+            const empty =
+                document.createElement('div');
+
+            empty.className =
+                'notification-empty';
+
+            empty.textContent =
+                'No notifications yet.';
+
+            notificationList.appendChild(empty);
+
+            return;
+        }
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        notifications.forEach(notification => {
+
+            const item =
+                document.createElement('div');
+
+            item.className =
+                `notification-item ${
+                    notification.read ? '' : 'unread'
+                }`;
+
+
+            const title =
+                document.createElement('div');
+
+            title.className =
+                'notification-item-title';
+
+            title.textContent =
+                notification.title ||
+                'Notification';
+
+
+            const message =
+                document.createElement('div');
+
+            message.className =
+                'notification-item-message';
+
+            message.textContent =
+                notification.message ||
+                '';
+
+
+            const time =
+                document.createElement('div');
+
+            time.className =
+                'notification-item-time';
+
+            time.textContent =
+                getNotificationTime(
+                    notification.createdAt
+                );
+
+
+            item.appendChild(title);
+
+            item.appendChild(message);
+
+            if (time.textContent) {
+                item.appendChild(time);
+            }
+
+            fragment.appendChild(item);
+
+        });
+
+
+        notificationList.appendChild(
+            fragment
+        );
+
+    }
+
+
+    function updateNotificationBadge() {
+
+        const unreadCount =
+            notifications.filter(
+                notification =>
+                    notification.read !== true
+            ).length;
+
+
+        if (unreadCount <= 0) {
+
+            notificationBadge.classList.remove(
+                'visible'
+            );
+
+            notificationBadge.textContent =
+                '0';
+
+            return;
+        }
+
+
+        notificationBadge.classList.add(
+            'visible'
         );
 
 
+        notificationBadge.textContent =
+            unreadCount > 99
+                ? '99+'
+                : String(unreadCount);
 
-        /* =================================================
-           AUTOMATIC SWIPE
-        ================================================= */
+    }
+
+
+    function openNotificationModal() {
+
+        closeMenu();
+
+        renderNotifications();
+
+        notificationModal.classList.add(
+            'active'
+        );
+
+        overlay.classList.add('active');
+
+    }
+
+
+    function closeNotificationModal() {
+
+        notificationModal.classList.remove(
+            'active'
+        );
 
         if (
-            imageUrls.length > 1
+            !sideNav.classList.contains('active') &&
+            !tgPopup.classList.contains('active') &&
+            !supportModal.classList.contains('active') &&
+            !document
+                .getElementById('tg-confirm-modal')
+                .classList.contains('active')
         ) {
 
-            /*
-             * Create dots so the user can
-             * see that the card contains
-             * multiple images.
-             */
-
-            const dots =
-                document.createElement(
-                    'div'
-                );
-
-            dots.className =
-                'gift-image-dots';
-
-
-            const dotElements = [];
-
-
-            imageUrls.forEach(
-                (
-                    _,
-                    dotIndex
-                ) => {
-
-                    const dot =
-                        document.createElement(
-                            'span'
-                        );
-
-                    dot.className =
-                        'gift-image-dot';
-
-
-                    if (
-                        dotIndex === 0
-                    ) {
-
-                        dot.classList.add(
-                            'active'
-                        );
-
-                    }
-
-
-                    dots.appendChild(
-                        dot
-                    );
-
-                    dotElements.push(
-                        dot
-                    );
-
-                }
-            );
-
-
-            imageContainer.appendChild(
-                dots
-            );
-
-
-
-            let imageIndex = 0;
-
-            let interval = null;
-
-
-            const moveToNextImage =
-                () => {
-
-                    if (
-                        !document.body.contains(
-                            card
-                        )
-                    ) {
-
-                        if (interval) {
-
-                            clearInterval(
-                                interval
-                            );
-
-                        }
-
-                        return;
-
-                    }
-
-
-                    imageIndex =
-                        (
-                            imageIndex + 1
-                        ) %
-                        imageUrls.length;
-
-
-                    /*
-                     * Move the entire track
-                     * horizontally.
-                     */
-
-                    track.style.transform =
-                        `translateX(-${
-                            imageIndex * 100
-                        }%)`;
-
-
-                    /*
-                     * Update dots.
-                     */
-
-                    dotElements.forEach(
-                        (
-                            dot,
-                            dotIndex
-                        ) => {
-
-                            dot.classList.toggle(
-                                'active',
-                                dotIndex === imageIndex
-                            );
-
-                        }
-                    );
-
-                };
-
-
-            /*
-             * Swipe to the next image
-             * every 4 seconds.
-             */
-
-            interval =
-                setInterval(
-                    moveToNextImage,
-                    4000
-                );
-
-
-            /*
-             * Pause automatic swipe
-             * when the user touches.
-             */
-
-            imageContainer.addEventListener(
-                'touchstart',
-                () => {
-
-                    if (interval) {
-
-                        clearInterval(
-                            interval
-                        );
-
-                        interval =
-                            null;
-
-                    }
-
-                },
-                {
-                    passive: true
-                }
-            );
-
-
-            /*
-             * Restart automatic swiping
-             * after touch ends.
-             */
-
-            imageContainer.addEventListener(
-                'touchend',
-                () => {
-
-                    if (
-                        !document.body.contains(
-                            card
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    if (!interval) {
-
-                        interval =
-                            setInterval(
-                                moveToNextImage,
-                                4000
-                            );
-
-                    }
-
-                },
-                {
-                    passive: true
-                }
-            );
+            overlay.classList.remove('active');
 
         }
 
     }
 
 
-
-    /* =====================================================
-       CARD CONTENT
-    ===================================================== */
-
-    const content =
-        document.createElement(
-            'div'
-        );
-
-    content.className =
-        'gift-content';
-
-
-
-    /* =====================================================
-       NAME
-    ===================================================== */
-
-    const name =
-        document.createElement(
-            'div'
-        );
-
-    name.className =
-        'gift-name';
-
-    name.textContent =
-        gift.name ||
-        'Unnamed Gift';
-
-
-
-    /* =====================================================
-       DESCRIPTION
-    ===================================================== */
-
-    const description =
-        document.createElement(
-            'div'
-        );
-
-    description.className =
-        'gift-description';
-
-    description.textContent =
-        gift.description ||
-        'A special gift for someone special.';
-
-
-
-    /* =====================================================
-       BOTTOM
-    ===================================================== */
-
-    const bottom =
-        document.createElement(
-            'div'
-        );
-
-    bottom.className =
-        'gift-bottom';
-
-
-
-    /* =====================================================
-       PRICE
-    ===================================================== */
-
-    const price =
-        document.createElement(
-            'div'
-        );
-
-    price.className =
-        'gift-price';
-
-    price.textContent =
-        `₦${formatPrice(
-            gift.price
-        )}`;
-
-
-
-    /* =====================================================
-       SEND BUTTON
-    ===================================================== */
-
-    const sendButton =
-        document.createElement(
-            'button'
-        );
-
-    sendButton.type =
-        'button';
-
-    sendButton.className =
-        'send-gift-btn';
-
-    sendButton.textContent =
-        'SEND THIS GIFT';
-
-
-    sendButton.addEventListener(
+    notificationButton.addEventListener(
         'click',
-        event => {
+        openNotificationModal
+    );
 
-            event.stopPropagation();
+
+    notificationCancel.addEventListener(
+        'click',
+        closeNotificationModal
+    );
 
 
-            /*
-             * Logged-out users
-             * must login first.
-             */
+    notificationCloseTop.addEventListener(
+        'click',
+        closeNotificationModal
+    );
 
-            if (!currentUser) {
 
-                window.location.href =
-                    'login.html';
+    async function markAllNotificationsRead() {
+
+        if (
+            !currentUser ||
+            !notifications.length
+        ) {
+            return;
+        }
+
+
+        const unread =
+            notifications.filter(
+                notification =>
+                    notification.read !== true
+            );
+
+
+        if (!unread.length) {
+
+            closeNotificationModal();
+
+            return;
+        }
+
+
+        markAllReadButton.disabled =
+            true;
+
+        markAllReadButton.style.opacity =
+            '.5';
+
+
+        try {
+
+            const batch =
+                writeBatch(db);
+
+
+            unread.forEach(notification => {
+
+                const notificationRef =
+                    doc(
+                        db,
+                        "notifications",
+                        notification.id
+                    );
+
+
+                batch.update(
+                    notificationRef,
+                    {
+                        read: true,
+                        readAt: serverTimestamp()
+                    }
+                );
+
+            });
+
+
+            await batch.commit();
+
+        } catch (error) {
+
+            console.error(
+                "Mark notifications read error:",
+                error
+            );
+
+            alert(
+                "Unable to mark notifications as read. Please try again."
+            );
+
+        } finally {
+
+            markAllReadButton.disabled =
+                false;
+
+            markAllReadButton.style.opacity =
+                '1';
+
+        }
+
+    }
+
+
+    markAllReadButton.addEventListener(
+        'click',
+        markAllNotificationsRead
+    );
+
+
+    function listenForNotifications(user) {
+
+        if (notificationUnsubscribe) {
+
+            notificationUnsubscribe();
+
+            notificationUnsubscribe =
+                null;
+
+        }
+
+
+        /*
+         * Expected future structure:
+         *
+         * notifications/{notificationId}
+         * userId
+         * title
+         * message
+         * read
+         * createdAt
+         */
+
+        const notificationQuery =
+            query(
+                collection(db, "notifications"),
+                where(
+                    "userId",
+                    "==",
+                    user.uid
+                )
+            );
+
+
+        notificationUnsubscribe =
+            onSnapshot(
+                notificationQuery,
+                snapshot => {
+
+                    const items = [];
+
+                    snapshot.forEach(
+                        notificationDoc => {
+
+                            items.push({
+                                id:
+                                    notificationDoc.id,
+                                ...notificationDoc.data()
+                            });
+
+                        }
+                    );
+
+
+                    /*
+                     * Sort locally so no Firestore
+                     * composite index is required.
+                     */
+                    items.sort(
+                        (a, b) => {
+
+                            const aMs =
+                                getTimestampMs(
+                                    a.createdAt
+                                );
+
+                            const bMs =
+                                getTimestampMs(
+                                    b.createdAt
+                                );
+
+                            return bMs - aMs;
+
+                        }
+                    );
+
+
+                    notifications =
+                        items;
+
+                    updateNotificationBadge();
+
+                    if (
+                        notificationModal
+                            .classList
+                            .contains('active')
+                    ) {
+
+                        renderNotifications();
+
+                    }
+
+                },
+                error => {
+
+                    console.error(
+                        "Notification listener error:",
+                        error
+                    );
+
+                }
+            );
+
+    }
+
+
+    /* =========================
+       SUPPORT
+    ========================= */
+
+    window.openSupport = () => {
+
+        closeMenu();
+
+        supportModal.classList.add(
+            'active'
+        );
+
+        overlay.classList.add(
+            'active'
+        );
+
+    };
+
+
+    window.closeSupport = () => {
+
+        supportModal.classList.remove(
+            'active'
+        );
+
+        if (
+            !tgPopup.classList.contains('active') &&
+            !sideNav.classList.contains('active') &&
+            !notificationModal.classList.contains('active')
+        ) {
+
+            overlay.classList.remove(
+                'active'
+            );
+
+        }
+
+    };
+
+
+    sendTicketBtn.addEventListener(
+        'click',
+        async () => {
+
+            if (!currentUser) return;
+
+            const msg =
+                ticketMsg.value.trim();
+
+
+            if (!msg) {
+
+                alert(
+                    "Please enter a message to send."
+                );
 
                 return;
 
             }
 
 
-            /*
-             * Logged-in users go
-             * directly to checkout.
-             */
+            sendTicketBtn.innerText =
+                "Submitting...";
 
-            window.location.href =
-                `buygift.html?id=${encodeURIComponent(
-                    gift.id
-                )}`;
+            sendTicketBtn.style.opacity =
+                ".5";
+
+            sendTicketBtn.disabled =
+                true;
+
+
+            try {
+
+                await addDoc(
+                    collection(
+                        db,
+                        "support_tickets"
+                    ),
+                    {
+                        userId:
+                            currentUser.uid,
+                        email:
+                            currentUser.email,
+                        message: msg,
+                        status:
+                            "Pending",
+                        timestamp:
+                            serverTimestamp()
+                    }
+                );
+
+
+                alert(
+                    "Support ticket submitted successfully!"
+                );
+
+                ticketMsg.value = "";
+
+                closeSupport();
+
+            } catch (error) {
+
+                console.error(
+                    "Ticket Error:",
+                    error
+                );
+
+                alert(
+                    "Failed to submit ticket. Please try again later."
+                );
+
+            } finally {
+
+                sendTicketBtn.innerText =
+                    "Submit";
+
+                sendTicketBtn.style.opacity =
+                    "1";
+
+                sendTicketBtn.disabled =
+                    false;
+
+            }
 
         }
     );
 
 
+    /* =========================
+       LOGOUT
+    ========================= */
 
-    /*
-     * PRICE FIRST
-     * BUTTON SECOND
-     */
+    logoutBtn.addEventListener(
+        'click',
+        async event => {
 
-    bottom.appendChild(
-        price
+            event.preventDefault();
+
+            if (
+                logoutBtn.dataset.busy ===
+                "true"
+            ) {
+                return;
+            }
+
+
+            logoutBtn.dataset.busy =
+                "true";
+
+            logoutBtn.style.opacity =
+                ".5";
+
+            logoutBtn.innerText =
+                "Signing Out...";
+
+
+            try {
+
+                await signOut(auth);
+
+                window.location.href =
+                    "index.html";
+
+            } catch (error) {
+
+                console.error(
+                    "Logout Error:",
+                    error
+                );
+
+                logoutBtn.dataset.busy =
+                    "false";
+
+                logoutBtn.style.opacity =
+                    "1";
+
+                logoutBtn.innerText =
+                    "Sign Out";
+
+                alert(
+                    "Logout failed. Please check your connection."
+                );
+
+            }
+
+        }
     );
 
-    bottom.appendChild(
-        sendButton
-    );
+
+    /* =========================
+       PRODUCT LOADING
+    ========================= */
+
+    async function fetchProducts() {
+
+        try {
+
+            const snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "products"
+                    )
+                );
 
 
-    content.appendChild(
-        name
-    );
-
-    content.appendChild(
-        description
-    );
-
-    content.appendChild(
-        bottom
-    );
+            const products = [];
 
 
-    card.appendChild(
-        imageContainer
-    );
+            snapshot.forEach(
+                productDoc => {
 
-    card.appendChild(
-        content
-    );
+                    products.push({
+                        id:
+                            productDoc.id,
+                        ...productDoc.data()
+                    });
 
-
-    return card;
-
-}
-
+                }
+            );
 
 
-/* =========================================================
-   RENDER GIFTS
-========================================================= */
-
-function renderGifts(
-    gifts
-) {
-
-    giftGrid.replaceChildren();
+            allProducts =
+                products;
 
 
-    if (
-        !gifts.length
+            renderProducts(
+                allProducts
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Product loading error:",
+                error
+            );
+
+            productListContainer.innerHTML =
+                '<div class="empty-products">Error loading marketplace.</div>';
+
+        }
+
+    }
+
+
+    /* =========================
+       PRODUCT ROW
+    ========================= */
+
+    function createProductRow(
+        product,
+        index
     ) {
 
-        const empty =
+        const row =
+            document.createElement('div');
+
+
+        row.className =
+            'product-list-row';
+
+
+        /*
+         * Only animate the first few products.
+         * This prevents dozens/hundreds of
+         * simultaneous animations.
+         */
+
+        if (index < 8) {
+
+            row.classList.add(
+                'fade-slide-entry'
+            );
+
+        }
+
+
+        const isSingleSecret =
+            product.mode === 'SINGLE';
+
+
+        const stockCount =
+            Array.isArray(product.stock)
+                ? product.stock.length
+                : Number(
+                    product.stockCount || 0
+                );
+
+
+        const stockClass =
+            isSingleSecret
+                ? 'high'
+                : stockCount < 10
+                    ? 'low'
+                    : 'high';
+
+
+        const roundedPrice =
+            typeof product.price === 'number'
+                ? product.price
+                : parseFloat(
+                    product.price || 0
+                );
+
+
+        const mediaUrl =
+            product.image ||
+            product.imageUrl ||
+            product.icon ||
+            'https://i.postimg.cc/m2pGVsSV/images.jpg';
+
+
+        const isVideo =
+            typeof mediaUrl === 'string' &&
+            /\.(mp4|webm|ogg)(\?.*)?$/i.test(
+                mediaUrl
+            );
+
+
+        let mediaElement;
+
+
+        if (isVideo) {
+
+            mediaElement =
+                document.createElement(
+                    'video'
+                );
+
+            mediaElement.src =
+                mediaUrl;
+
+            mediaElement.muted =
+                true;
+
+            mediaElement.playsInline =
+                true;
+
+            mediaElement.preload =
+                "none";
+
+
+            mediaElement.addEventListener(
+                'error',
+                () => {
+
+                    const fallback =
+                        document.createElement(
+                            'img'
+                        );
+
+                    fallback.src =
+                        'https://i.postimg.cc/m2pGVsSV/images.jpg';
+
+                    fallback.alt =
+                        "";
+
+                    fallback.loading =
+                        "lazy";
+
+                    fallback.decoding =
+                        "async";
+
+                    mediaElement.replaceWith(
+                        fallback
+                    );
+
+                },
+                { once: true }
+            );
+
+        } else {
+
+            mediaElement =
+                document.createElement(
+                    'img'
+                );
+
+            mediaElement.src =
+                mediaUrl;
+
+            mediaElement.alt =
+                "";
+
+            mediaElement.loading =
+                index < 4
+                    ? "eager"
+                    : "lazy";
+
+            mediaElement.decoding =
+                "async";
+
+
+            mediaElement.addEventListener(
+                'error',
+                () => {
+
+                    if (
+                        mediaElement.src !==
+                        'https://i.postimg.cc/m2pGVsSV/images.jpg'
+                    ) {
+
+                        mediaElement.src =
+                            'https://i.postimg.cc/m2pGVsSV/images.jpg';
+
+                    }
+
+                },
+                { once: true }
+            );
+
+        }
+
+
+        mediaElement.width =
+            48;
+
+        mediaElement.height =
+            48;
+
+
+        const mediaFrame =
             document.createElement(
                 'div'
             );
 
-        empty.className =
-            'empty-state';
+        mediaFrame.className =
+            'product-media-frame';
 
-        empty.innerHTML = `
+        mediaFrame.appendChild(
+            mediaElement
+        );
 
-            <div class="empty-icon">
 
+        const nameElement =
+            document.createElement(
+                'div'
+            );
+
+        nameElement.className =
+            'product-name';
+
+        nameElement.textContent =
+            product.name ||
+            "Unnamed Product";
+
+
+        const metaElement =
+            document.createElement(
+                'div'
+            );
+
+        metaElement.className =
+            'product-meta-subline';
+
+
+        const stockElement =
+            document.createElement(
+                'span'
+            );
+
+        stockElement.className =
+            `stock-indicator ${stockClass}`;
+
+
+        if (isSingleSecret) {
+
+            stockElement.innerHTML = `
                 <svg
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.7"
+                    stroke-width="2.5"
                 >
-
-                    <rect
-                        x="3"
-                        y="8"
-                        width="18"
-                        height="13"
-                        rx="2"
-                    />
-
-                    <path d="M12 8v13"/>
-
-                    <path d="M3 12h18"/>
-
-                    <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
-
-                    <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
-
+                    <path d="M12 12c-2-2.67-4-4-6-4a6 6 0 1 0 0 12c2 0 4-1.33 6-4zm0 0c2 2.67 4 4 6 4a6 6 0 1 0 0-12c-2 0-4 1.33-6 4z"/>
                 </svg>
+            `;
 
-            </div>
+        } else {
 
-            <div class="empty-title">
-                No Gifts Available
-            </div>
+            stockElement.textContent =
+                `${stockCount} left`;
 
-            <div class="empty-message">
-                New gifts will appear here when they are available.
-            </div>
+        }
 
-        `;
 
-        giftGrid.appendChild(
-            empty
+        const priceElement =
+            document.createElement(
+                'div'
+            );
+
+        priceElement.className =
+            'product-price-container';
+
+        priceElement.textContent =
+            `₦${roundedPrice.toLocaleString(
+                undefined,
+                {
+                    minimumFractionDigits: 2
+                }
+            )}`;
+
+
+        metaElement.appendChild(
+            stockElement
         );
 
-        return;
+        metaElement.appendChild(
+            priceElement
+        );
+
+
+        const textDetails =
+            document.createElement(
+                'div'
+            );
+
+        textDetails.className =
+            'product-text-details';
+
+        textDetails.appendChild(
+            nameElement
+        );
+
+        textDetails.appendChild(
+            metaElement
+        );
+
+
+        const left =
+            document.createElement(
+                'div'
+            );
+
+        left.className =
+            'product-left';
+
+        left.appendChild(
+            mediaFrame
+        );
+
+        left.appendChild(
+            textDetails
+        );
+
+
+        const buyButton =
+            document.createElement(
+                'button'
+            );
+
+        buyButton.className =
+            'purchase-btn';
+
+        buyButton.type =
+            'button';
+
+        buyButton.textContent =
+            'Buy';
+
+
+        buyButton.addEventListener(
+            'click',
+            () => {
+
+                window.processPurchase(
+                    product.id,
+                    roundedPrice
+                );
+
+            }
+        );
+
+
+        const right =
+            document.createElement(
+                'div'
+            );
+
+        right.className =
+            'product-right';
+
+        right.appendChild(
+            buyButton
+        );
+
+
+        row.appendChild(
+            left
+        );
+
+        row.appendChild(
+            right
+        );
+
+
+        return row;
 
     }
 
 
+    /* =========================
+       PRODUCT RENDER
+    ========================= */
 
-    /* =====================================================
-       SORT NEWEST FIRST
-    ===================================================== */
+    function renderProducts(
+        productsArray
+    ) {
 
-    gifts.sort(
-        (a, b) => {
+        const currentToken =
+            ++renderToken;
 
-            const aTime =
-                getTimestampMs(
-                    a.createdAt
+
+        productListContainer.replaceChildren();
+
+
+        if (!productsArray.length) {
+
+            const empty =
+                document.createElement(
+                    'div'
                 );
 
-            const bTime =
-                getTimestampMs(
-                    b.createdAt
+            empty.className =
+                'empty-products';
+
+            empty.textContent =
+                'No items found in this category.';
+
+            productListContainer.appendChild(
+                empty
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Small batches prevent a huge
+         * synchronous DOM operation.
+         */
+
+        const BATCH_SIZE =
+            12;
+
+        let currentIndex =
+            0;
+
+
+        function renderBatch() {
+
+            if (
+                currentToken !==
+                renderToken
+            ) {
+                return;
+            }
+
+
+            const fragment =
+                document.createDocumentFragment();
+
+
+            const end =
+                Math.min(
+                    currentIndex +
+                        BATCH_SIZE,
+                    productsArray.length
                 );
 
-            return bTime - aTime;
+
+            for (
+                let i = currentIndex;
+                i < end;
+                i++
+            ) {
+
+                fragment.appendChild(
+                    createProductRow(
+                        productsArray[i],
+                        i
+                    )
+                );
+
+            }
+
+
+            productListContainer.appendChild(
+                fragment
+            );
+
+
+            currentIndex =
+                end;
+
+
+            if (
+                currentIndex <
+                productsArray.length
+            ) {
+
+                requestAnimationFrame(
+                    renderBatch
+                );
+
+            }
+
+        }
+
+
+        renderBatch();
+
+    }
+
+
+    /* =========================
+       CATEGORY FILTER
+    ========================= */
+
+    function filterCategory(
+        category,
+        element
+    ) {
+
+        const buttons =
+            categoryNavbar.children;
+
+
+        for (
+            let i = 0;
+            i < buttons.length;
+            i++
+        ) {
+
+            buttons[i].classList.remove(
+                'active'
+            );
+
+        }
+
+
+        if (element) {
+
+            element.classList.add(
+                'active'
+            );
+
+        }
+
+
+        categoryTitle.textContent =
+            category;
+
+
+        const filtered =
+            category === 'All'
+                ? allProducts
+                : allProducts.filter(
+                    product =>
+                        product.category ===
+                        category
+                );
+
+
+        renderProducts(
+            filtered
+        );
+
+    }
+
+
+    categoryNavbar.addEventListener(
+        'click',
+        event => {
+
+            const button =
+                event.target.closest(
+                    '.nav-category-btn'
+                );
+
+
+            if (!button) return;
+
+
+            filterCategory(
+                button.dataset.category,
+                button
+            );
 
         }
     );
 
 
+    window.filterCategory =
+        filterCategory;
 
-    /* =====================================================
-       BATCH RENDER
-    ===================================================== */
 
-    const BATCH_SIZE = 10;
+    /* =========================
+       PURCHASE
+    ========================= */
 
-    let currentIndex = 0;
+    window.processPurchase =
+        (id) => {
 
+            window.location.href =
+                `buy.html?id=${encodeURIComponent(id)}`;
 
-    function renderBatch() {
+        };
 
-        const fragment =
-            document.createDocumentFragment();
 
+    /* =========================
+       AUTH
+    ========================= */
 
-        const end =
-            Math.min(
-                currentIndex +
-                    BATCH_SIZE,
-                gifts.length
-            );
+    onAuthStateChanged(
+        auth,
+        user => {
 
+            if (!user) {
 
-        for (
-            let i = currentIndex;
-            i < end;
-            i++
-        ) {
+                window.location.href =
+                    "index.html";
 
-            fragment.appendChild(
-                createGiftCard(
-                    gifts[i],
-                    i
-                )
-            );
-
-        }
-
-
-        giftGrid.appendChild(
-            fragment
-        );
-
-
-        currentIndex =
-            end;
-
-
-        if (
-            currentIndex <
-            gifts.length
-        ) {
-
-            requestAnimationFrame(
-                renderBatch
-            );
-
-        }
-
-    }
-
-
-    renderBatch();
-
-}
-
-
-
-/* =========================================================
-   TIMESTAMP HELPER
-========================================================= */
-
-function getTimestampMs(
-    value
-) {
-
-    if (!value) {
-        return 0;
-    }
-
-
-    if (
-        typeof value.toMillis ===
-        'function'
-    ) {
-
-        return value.toMillis();
-
-    }
-
-
-    if (
-        typeof value.toDate ===
-        'function'
-    ) {
-
-        return value.toDate().getTime();
-
-    }
-
-
-    if (
-        typeof value === 'number'
-    ) {
-
-        return value;
-
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    return isNaN(
-        date.getTime()
-    )
-        ? 0
-        : date.getTime();
-
-}
-
-
-
-/* =========================================================
-   LOAD GIFTS
-========================================================= */
-
-async function loadGifts() {
-
-    giftGrid.innerHTML = `
-
-        <div class="loading-state">
-
-            <div class="loading-inner">
-
-                <div class="spinner"></div>
-
-                <div class="loading-text">
-                    Loading gifts...
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    try {
-
-        const giftsQuery =
-            query(
-                collection(
-                    db,
-                    'gifts'
-                ),
-
-                where(
-                    'active',
-                    '==',
-                    true
-                )
-            );
-
-
-        const snapshot =
-            await getDocs(
-                giftsQuery
-            );
-
-
-        const gifts = [];
-
-
-        snapshot.forEach(
-            giftDoc => {
-
-                const data =
-                    giftDoc.data();
-
-
-                gifts.push({
-
-                    id:
-                        giftDoc.id,
-
-                    ...data
-
-                });
+                return;
 
             }
-        );
 
 
-        allGifts =
-            gifts;
+            currentUser =
+                user;
 
 
-        renderGifts(
-            allGifts
-        );
+            /*
+             * Start notification listener
+             * immediately after authentication.
+             */
 
-
-    } catch (error) {
-
-        console.error(
-            'Gift loading error:',
-            error
-        );
-
-
-        giftGrid.innerHTML = `
-
-            <div class="error-state">
-
-                <div style="
-                    color:#ff7a7a;
-                    font-size:.9rem;
-                    font-weight:700;
-                    margin-bottom:6px;
-                ">
-                    Unable to load gifts
-                </div>
-
-                <div style="
-                    font-size:.75rem;
-                    line-height:1.5;
-                ">
-                    Please check your connection
-                    and try again.
-                </div>
-
-                <button
-                    class="retry-btn"
-                    id="retryGiftButton"
-                    type="button"
-                >
-                    Try Again
-                </button>
-
-            </div>
-
-        `;
-
-
-        const retryButton =
-            document.getElementById(
-                'retryGiftButton'
-            );
-
-
-        if (retryButton) {
-
-            retryButton.addEventListener(
-                'click',
-                loadGifts
-            );
-
-        }
-
-    }
-
-}
-
-
-
-/* =========================================================
-   BALANCE
-========================================================= */
-
-function startBalanceListener(
-    user
-) {
-
-    if (
-        balanceUnsubscribe
-    ) {
-
-        balanceUnsubscribe();
-
-        balanceUnsubscribe =
-            null;
-
-    }
-
-
-    balanceUnsubscribe =
-        onSnapshot(
-            doc(
-                db,
-                'users',
-                user.uid
-            ),
-
-            snapshot => {
-
-                if (
-                    !snapshot.exists()
-                ) {
-
-                    balanceLoader.classList.add(
-                        'hidden'
-                    );
-
-                    balanceText.classList.remove(
-                        'hidden'
-                    );
-
-                    balanceDisplay.textContent =
-                        '0.00';
-
-                    return;
-
-                }
-
-
-                const data =
-                    snapshot.data();
-
-
-                const userBalance =
-                    Number(
-                        data.balance || 0
-                    );
-
-
-                balanceDisplay.textContent =
-                    userBalance.toLocaleString(
-                        undefined,
-                        {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }
-                    );
-
-
-                balanceLoader.classList.add(
-                    'hidden'
-                );
-
-
-                balanceText.classList.remove(
-                    'hidden'
-                );
-
-            },
-
-            error => {
-
-                console.error(
-                    'Balance listener error:',
-                    error
-                );
-
-
-                balanceLoader.classList.add(
-                    'hidden'
-                );
-
-
-                balanceText.classList.remove(
-                    'hidden'
-                );
-
-
-                balanceDisplay.textContent =
-                    '0.00';
-
-            }
-        );
-
-}
-
-
-
-/* =========================================================
-   AUTH
-========================================================= */
-
-onAuthStateChanged(
-    auth,
-    user => {
-
-        currentUser =
-            user || null;
-
-
-        if (user) {
-
-            startBalanceListener(
+            listenForNotifications(
                 user
             );
 
-        } else {
+
+            /*
+             * Delay popup so it doesn't
+             * compete with initial rendering.
+             */
+
+            setTimeout(
+                showCommunityPopup,
+                1800
+            );
+
+
+            /*
+             * Balance listener.
+             * Keep realtime balance functionality.
+             */
+
+            balanceUnsubscribe =
+                onSnapshot(
+                    doc(
+                        db,
+                        "users",
+                        user.uid
+                    ),
+
+                    docSnap => {
+
+                        if (
+                            !docSnap.exists()
+                        ) {
+                            return;
+                        }
+
+
+                        const data =
+                            docSnap.data();
+
+
+                        usernameDisplay.textContent =
+                            data.username ||
+                            user.email
+                                ?.split('@')[0] ||
+                            "User";
+
+
+                        shopBalance =
+                            Number(
+                                data.balance || 0
+                            );
+
+
+                        balanceLoader.classList.add(
+                            'hidden'
+                        );
+
+
+                        balanceText.classList.remove(
+                            'hidden'
+                        );
+
+
+                        balanceDisplay.textContent =
+                            shopBalance.toLocaleString(
+                                undefined,
+                                {
+                                    minimumFractionDigits: 2
+                                }
+                            );
+
+                    },
+
+                    error => {
+
+                        console.error(
+                            "Balance listener error:",
+                            error
+                        );
+
+
+                        balanceLoader.classList.add(
+                            'hidden'
+                        );
+
+
+                        balanceText.classList.remove(
+                            'hidden'
+                        );
+
+
+                        balanceDisplay.textContent =
+                            "0.00";
+
+                    }
+                );
+
+
+            /*
+             * Start products immediately
+             * after authentication.
+             */
+
+            fetchProducts();
+
+        }
+    );
+
+
+    /* =========================
+       CLEANUP
+    ========================= */
+
+    window.addEventListener(
+        'beforeunload',
+        () => {
 
             if (
                 balanceUnsubscribe
@@ -2521,56 +3393,39 @@ onAuthStateChanged(
 
                 balanceUnsubscribe();
 
-                balanceUnsubscribe =
-                    null;
-
             }
 
 
-            balanceLoader.classList.add(
-                'hidden'
-            );
+            if (
+                notificationUnsubscribe
+            ) {
 
-            balanceText.classList.remove(
-                'hidden'
-            );
+                notificationUnsubscribe();
 
-            balanceDisplay.textContent =
-                '0.00';
+            }
 
         }
-
-    }
-);
+    );
 
 
+    /* =========================
+       MAKE FUNCTIONS AVAILABLE
+    ========================= */
 
-/* =========================================================
-   START GIFT LOADING
-========================================================= */
+    window.openTgConfirmModal =
+        openTgConfirmModal;
 
-loadGifts();
+    window.closeTgConfirmModal =
+        closeTgConfirmModal;
 
+    window.confirmTelegramRedirect =
+        confirmTelegramRedirect;
 
+    window.toggleMenu =
+        toggleMenu;
 
-/* =========================================================
-   CLEANUP
-========================================================= */
-
-window.addEventListener(
-    'beforeunload',
-    () => {
-
-        if (
-            balanceUnsubscribe
-        ) {
-
-            balanceUnsubscribe();
-
-        }
-
-    }
-);
+    window.closeTgPopup =
+        closeTgPopup;
 
 </script>
 
