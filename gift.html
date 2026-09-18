@@ -1,1432 +1,1704 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR1MΞ | Gift Store</title>
-
-    <style>
-        :root {
-            --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe;
-            --glass: rgba(255, 255, 255, 0.035);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --dark: #060608;
-            --stock-green: #00ff88;
-            --stock-red: #ff4b4b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-        }
-
-        body {
-            background: var(--dark);
-            color: #f1f1f3;
-            min-height: 100vh;
-            padding: 20px 14px 40px;
-            background-image:
-                radial-gradient(circle at 10% 10%, rgba(188, 19, 254, 0.10) 0%, transparent 42%),
-                radial-gradient(circle at 90% 10%, rgba(0, 243, 255, 0.07) 0%, transparent 42%),
-                radial-gradient(circle at 50% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 45%);
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .page {
-            width: 100%;
-            max-width: 1150px;
-            margin: 0 auto;
-        }
-
-        /* HEADER */
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 22px;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            text-decoration: none;
-            color: #fff;
-            background: rgba(0,243,255,0.06);
-            border: 1px solid rgba(0,243,255,0.3);
-            border-radius: 11px;
-            padding: 10px 14px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            transition: 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .back-btn:hover {
-            background: rgba(0,243,255,0.12);
-            transform: translateY(-1px);
-        }
-
-        .brand {
-            font-size: 1.25rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #fff;
-        }
-
-        .brand span {
-            color: var(--neon-cyan);
-        }
-
-        .balance-card {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 14px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-
-        .balance-label {
-            font-size: 0.65rem;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 800;
-        }
-
-        .balance-value {
-            color: var(--neon-cyan);
-            font-weight: 900;
-            font-size: 0.95rem;
-        }
-
-        /* HERO */
-
-        .hero {
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-            background: linear-gradient(
-                135deg,
-                rgba(188, 19, 254, 0.10),
-                rgba(0, 243, 255, 0.04)
-            );
-            border-radius: 24px;
-            padding: 30px 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.25);
-        }
-
-        .hero::after {
-            content: "🎁";
-            position: absolute;
-            right: 22px;
-            top: 15px;
-            font-size: 5rem;
-            opacity: 0.08;
-            pointer-events: none;
-        }
-
-        .hero h1 {
-            font-size: clamp(1.7rem, 5vw, 2.7rem);
-            font-weight: 900;
-            letter-spacing: 1px;
-            margin-bottom: 9px;
-        }
-
-        .hero h1 span {
-            color: var(--neon-cyan);
-        }
-
-        .hero p {
-            color: #8b96a8;
-            max-width: 650px;
-            line-height: 1.65;
-            font-size: 0.9rem;
-        }
-
-        /* SECTION */
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 28px 2px 14px;
-            gap: 10px;
-        }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .gift-count {
-            color: #718096;
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        /* GIFT GRID */
-
-        .gift-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
-            gap: 16px;
-        }
-
-        .gift-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            overflow: hidden;
-            transition:
-                transform 0.2s ease,
-                border-color 0.2s ease,
-                box-shadow 0.2s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.20);
-        }
-
-        .gift-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(0, 243, 255, 0.25);
-            box-shadow: 0 14px 35px rgba(0, 243, 255, 0.07);
-        }
-
-        /* IMAGE */
-
-        .gift-media {
-            width: 100%;
-            height: 235px;
-            position: relative;
-            background: #0b0b10;
-            overflow: hidden;
-        }
-
-        .gift-media img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .image-counter {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            background: rgba(0,0,0,0.65);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #fff;
-            padding: 6px 9px;
-            border-radius: 9px;
-            font-size: 0.65rem;
-            font-weight: 800;
-        }
-
-        .media-dots {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 5px;
-        }
-
-        .media-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.35);
-        }
-
-        .media-dot.active {
-            background: var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(0,243,255,0.5);
-        }
-
-        /* CONTENT */
-
-        .gift-content {
-            padding: 17px;
-        }
-
-        .gift-name {
-            font-size: 1rem;
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 7px;
-        }
-
-        .gift-description {
-            color: #718096;
-            font-size: 0.78rem;
-            line-height: 1.55;
-            min-height: 38px;
-            margin-bottom: 15px;
-        }
-
-        .gift-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .gift-price {
-            color: var(--neon-cyan);
-            font-size: 1.05rem;
-            font-weight: 900;
-            white-space: nowrap;
-        }
-
-        .buy-btn {
-            flex: 1;
-            border: none;
-            border-radius: 11px;
-            padding: 12px 13px;
-            cursor: pointer;
-            color: #fff;
-            background: linear-gradient(
-                90deg,
-                #9d4edd,
-                var(--neon-purple)
-            );
-            font-size: 0.7rem;
-            font-weight: 900;
-            letter-spacing: 0.4px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .buy-btn:hover {
-            box-shadow: 0 7px 20px rgba(188,19,254,0.20);
-        }
-
-        .buy-btn:active {
-            transform: scale(0.97);
-        }
-
-        /* LOADING */
-
-        .loading-box {
-            text-align: center;
-            padding: 70px 20px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass);
-            border-radius: 20px;
-        }
-
-        .loader {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.08);
-            border-top-color: var(--neon-cyan);
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-box p {
-            color: #718096;
-            font-size: 0.78rem;
-            font-weight: 700;
-        }
-
-        /* EMPTY */
-
-        .empty-box {
-            display: none;
-            text-align: center;
-            padding: 70px 20px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass);
-            border-radius: 20px;
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
-        .empty-box h3 {
-            font-size: 1rem;
-            margin-bottom: 7px;
-        }
-
-        .empty-box p {
-            color: #718096;
-            font-size: 0.8rem;
-        }
-
-        /* LOGIN */
-
-        .login-box {
-            display: none;
-            text-align: center;
-            padding: 70px 20px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass);
-            border-radius: 20px;
-        }
-
-        .login-box h3 {
-            margin-bottom: 8px;
-        }
-
-        .login-box p {
-            color: #718096;
-            font-size: 0.8rem;
-            line-height: 1.5;
-        }
-
-        /* FOOTER */
-
-        footer {
-            margin-top: 45px;
-            padding: 24px 5px 10px;
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .footer-brand {
-            font-size: 0.8rem;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-        }
-
-        .whatsapp-btn {
-            text-decoration: none;
-            color: #fff;
-            background: rgba(0,255,136,0.08);
-            border: 1px solid rgba(0,255,136,0.4);
-            border-radius: 11px;
-            padding: 10px 16px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            transition: 0.2s ease;
-        }
-
-        .whatsapp-btn:hover {
-            background: rgba(0,255,136,0.15);
-            transform: translateY(-1px);
-        }
-
-        /* TOAST */
-
-        .toast {
-            position: fixed;
-            left: 50%;
-            bottom: 24px;
-            transform: translate(-50%, 20px);
-            background: rgba(6,6,8,0.96);
-            border: 1px solid var(--neon-cyan);
-            color: #fff;
-            padding: 13px 20px;
-            border-radius: 13px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            z-index: 99999;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.25s ease;
-            box-shadow: 0 10px 30px rgba(0,243,255,0.12);
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
-
-        .toast.error {
-            border-color: var(--stock-red);
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 600px) {
-
-            body {
-                padding: 14px 11px 30px;
-            }
-
-            .topbar {
-                align-items: center;
-            }
-
-            .brand {
-                font-size: 1rem;
-            }
-
-            .back-btn {
-                padding: 8px 10px;
-                font-size: 0.62rem;
-            }
-
-            .balance-card {
-                padding: 8px 10px;
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 2px;
-            }
-
-            .hero {
-                padding: 25px 19px;
-            }
-
-            .hero::after {
-                font-size: 4rem;
-            }
-
-            .gift-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-            }
-
-            .gift-media {
-                height: 175px;
-            }
-
-            .gift-content {
-                padding: 12px;
-            }
-
-            .gift-name {
-                font-size: 0.85rem;
-            }
-
-            .gift-description {
-                font-size: 0.7rem;
-                min-height: 34px;
-            }
-
-            .gift-bottom {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 9px;
-            }
-
-            .gift-price {
-                font-size: 0.9rem;
-            }
-
-            .buy-btn {
-                width: 100%;
-            }
-
-            footer {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 350px) {
-
-            .gift-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gift-media {
-                height: 220px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PR1MΞ Gift Store</title>
+
+<style>
+
+:root {
+    --neon-cyan: #00f3ff;
+    --neon-purple: #bc13fe;
+    --dark-bg: #060608;
+    --glass-bg: rgba(255,255,255,.035);
+    --glass-border: rgba(255,255,255,.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(188,19,254,.08) 0%,
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(0,243,255,.06) 0%,
+            transparent 35%
+        ),
+        #060608;
+
+    color: #f1f1f3;
+    min-height: 100vh;
+
+    padding: 20px 14px 50px;
+
+    overflow-x: hidden;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeSpeed;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.spinner {
+    width: 25px;
+    height: 25px;
+
+    border: 2.5px solid rgba(255,255,255,.14);
+    border-top-color: var(--neon-cyan);
+
+    border-radius: 50%;
+
+    animation: spin .8s linear infinite;
+
+    display: inline-block;
+}
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 4px 5px 20px;
+}
+
+.logo {
+
+    font-size: 1.35rem;
+    font-weight: 800;
+
+    letter-spacing: 2.5px;
+
+    color: #fff;
+
+    text-shadow:
+        0 0 10px rgba(0,243,255,.4);
+}
+
+.back-btn {
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,.045);
+
+    border: 1px solid var(--glass-border);
+
+    color: #fff;
+
+    cursor: pointer;
+
+    transition:
+        background .15s ease,
+        transform .15s ease;
+}
+
+.back-btn:hover {
+
+    background: rgba(255,255,255,.08);
+
+}
+
+.back-btn:active {
+
+    transform: scale(.95);
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+
+    position: relative;
+
+    padding: 28px 22px;
+
+    margin-bottom: 22px;
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(188,19,254,.18),
+            rgba(0,243,255,.08)
+        );
+
+    border: 1px solid rgba(188,19,254,.18);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.25);
+}
+
+.hero::after {
+
+    content: '';
+
+    position: absolute;
+
+    width: 170px;
+    height: 170px;
+
+    right: -70px;
+    top: -70px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,243,255,.16),
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+.hero-content {
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.hero-title {
+
+    font-size: 1.75rem;
+
+    font-weight: 800;
+
+    margin-bottom: 8px;
+
+    color: #fff;
+}
+
+.hero-title span {
+
+    color: var(--neon-cyan);
+
+    text-shadow:
+        0 0 10px rgba(0,243,255,.3);
+}
+
+.hero-description {
+
+    color: #aeb8c7;
+
+    font-size: .9rem;
+
+    line-height: 1.6;
+
+    max-width: 500px;
+}
+
+.gift-count {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 18px;
+
+    padding: 8px 12px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.045);
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    color: #cbd5e0;
+
+    font-size: .75rem;
+
+    font-weight: 600;
+}
+
+.gift-count-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--neon-cyan);
+
+    box-shadow:
+        0 0 8px rgba(0,243,255,.7);
+}
+
+
+/* =========================================================
+   BALANCE
+========================================================= */
+
+.balance-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30,60,114,.40),
+            rgba(42,82,152,.18)
+        );
+
+    border:
+        1px solid rgba(58,118,240,.25);
+
+    border-radius: 22px;
+
+    padding: 20px;
+
+    margin-bottom: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.balance-left {
+
+    min-width: 0;
+}
+
+.balance-label {
+
+    color: #8e9aaa;
+
+    font-size: .7rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1.3px;
+
+    font-weight: 600;
+
+    margin-bottom: 5px;
+}
+
+.balance-value {
+
+    font-size: 1.45rem;
+
+    font-weight: 750;
+
+    color: #fff;
+
+    min-height: 30px;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.topup-btn {
+
+    flex-shrink: 0;
+
+    text-decoration: none;
+
+    color: #060608;
+
+    background: #fff;
+
+    padding: 10px 14px;
+
+    border-radius: 12px;
+
+    font-size: .75rem;
+
+    font-weight: 750;
+
+    border: none;
+
+    transition:
+        transform .15s ease,
+        opacity .15s ease;
+}
+
+.topup-btn:active {
+
+    transform: scale(.96);
+
+}
+
+.topup-btn:hover {
+
+    opacity: .9;
+
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 14px;
+
+    padding: 0 3px;
+}
+
+.section-title {
+
+    font-size: .78rem;
+
+    color: #718096;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   GIFT GRID
+========================================================= */
+
+.gift-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 13px;
+
+    margin-bottom: 40px;
+}
+
+
+/* =========================================================
+   GIFT CARD
+========================================================= */
+
+.gift-card {
+
+    background: rgba(255,255,255,.028);
+
+    border:
+        1px solid var(--glass-border);
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    contain: content;
+
+    transition:
+        transform .15s ease,
+        background .15s ease,
+        border-color .15s ease;
+}
+
+.gift-card:hover {
+
+    background: rgba(255,255,255,.045);
+
+    border-color:
+        rgba(255,255,255,.13);
+
+}
+
+.gift-card:active {
+
+    transform: scale(.985);
+
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.gift-image-container {
+
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    background:
+        rgba(255,255,255,.025);
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+.gift-image-container img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition:
+        opacity .2s ease;
+}
+
+.gift-image-fallback {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(188,19,254,.12),
+            rgba(0,243,255,.08)
+        );
+
+    color: #718096;
+}
+
+.gift-image-fallback svg {
+
+    width: 35px;
+    height: 35px;
+
+    opacity: .55;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+========================================================= */
+
+.gift-content {
+
+    padding: 13px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+}
+
+.gift-name {
+
+    color: #fff;
+
+    font-size: .88rem;
+
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    margin-bottom: 5px;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+.gift-description {
+
+    color: #8792a3;
+
+    font-size: .72rem;
+
+    line-height: 1.45;
+
+    margin-bottom: 12px;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+
+    flex: 1;
+}
+
+.gift-bottom {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    margin-top: auto;
+}
+
+.gift-price {
+
+    color: var(--neon-cyan);
+
+    font-size: .88rem;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.send-gift-btn {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 8px 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--neon-purple),
+            #9d4edd
+        );
+
+    color: #fff;
+
+    font-size: .66rem;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        transform .12s ease,
+        opacity .12s ease;
+}
+
+.send-gift-btn:hover {
+
+    opacity: .92;
+
+}
+
+.send-gift-btn:active {
+
+    transform: scale(.95);
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-state {
+
+    grid-column: 1 / -1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 170px;
+
+    border:
+        1px dashed rgba(255,255,255,.08);
+
+    border-radius: 18px;
+}
+
+.loading-inner {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.loading-text {
+
+    color: #718096;
+
+    font-size: .78rem;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty-state {
+
+    grid-column: 1 / -1;
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+    border:
+        1px dashed var(--glass-border);
+
+    border-radius: 18px;
+
+    color: #718096;
+}
+
+.empty-icon {
+
+    width: 55px;
+    height: 55px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 14px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+}
+
+.empty-icon svg {
+
+    width: 26px;
+    height: 26px;
+
+    opacity: .6;
+}
+
+.empty-title {
+
+    color: #cbd5e0;
+
+    font-size: .9rem;
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+}
+
+.empty-message {
+
+    font-size: .75rem;
+
+    color: #667386;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-state {
+
+    grid-column: 1 / -1;
+
+    padding: 35px 20px;
+
+    text-align: center;
+
+    border:
+        1px dashed rgba(255,75,75,.18);
+
+    border-radius: 18px;
+
+    color: #9b6b6b;
+}
+
+.retry-btn {
+
+    margin-top: 13px;
+
+    padding: 9px 15px;
+
+    border-radius: 10px;
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    background:
+        rgba(255,255,255,.045);
+
+    color: #fff;
+
+    font-size: .75rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 25px;
+
+    transform:
+        translate(-50%, 100px);
+
+    width: calc(100% - 30px);
+
+    max-width: 380px;
+
+    padding: 13px 16px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(10,10,14,.97);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.4);
+
+    color: #fff;
+
+    font-size: .78rem;
+
+    text-align: center;
+
+    z-index: 9999;
+
+    opacity: 0;
+
+    transition:
+        transform .22s ease,
+        opacity .22s ease;
+}
+
+.toast.show {
+
+    transform:
+        translate(-50%, 0);
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 520px) {
+
+    body {
+        padding:
+            16px 11px 40px;
+    }
+
+    .hero {
+        padding: 24px 19px;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .balance-card {
+        padding: 17px;
+    }
+
+    .gift-grid {
+        gap: 10px;
+    }
+
+    .gift-content {
+        padding: 11px;
+    }
+
+    .gift-name {
+        font-size: .82rem;
+    }
+
+    .gift-description {
+        font-size: .68rem;
+    }
+
+    .gift-price {
+        font-size: .8rem;
+    }
+
+    .send-gift-btn {
+        padding:
+            8px 9px;
+
+        font-size: .61rem;
+    }
+
+}
+
+@media (max-width: 360px) {
+
+    .gift-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration: .01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        transition-duration: .01ms !important;
+
+        scroll-behavior: auto !important;
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-<div class="page">
 
-    <!-- HEADER -->
+<header>
 
-    <header class="topbar">
+    <button
+        class="back-btn"
+        id="backButton"
+        type="button"
+        aria-label="Go back"
+    >
 
-        <a href="shop.html" class="back-btn">
-            ← BACK TO SHOP
-        </a>
-
-        <div class="brand">
-            PR1MΞ <span>GIFT STORE</span>
-        </div>
-
-        <div class="balance-card">
-
-            <span class="balance-label">
-                Balance
-            </span>
-
-            <span class="balance-value" id="balance-value">
-                ₦0
-            </span>
-
-        </div>
-
-    </header>
-
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <h1>
-            Send a <span>Gift</span> ❤️
-        </h1>
-
-        <p>
-            Choose a gift for someone special. Select your favorite item
-            and provide the delivery details on the next page.
-        </p>
-
-    </section>
-
-
-    <!-- PRODUCTS -->
-
-    <div class="section-header">
-
-        <div class="section-title">
-            Available Gifts
-        </div>
-
-        <div class="gift-count" id="gift-count">
-            Loading...
-        </div>
-
-    </div>
-
-
-    <div id="loading-box" class="loading-box">
-
-        <div class="loader"></div>
-
-        <p>
-            Loading available gifts...
-        </p>
-
-    </div>
-
-
-    <!--
-        This box is no longer used to block the gift store
-        for logged-out users.
-
-        Gifts are now visible to everyone.
-        Login is only required when they try to purchase.
-    -->
-
-    <div id="login-box" class="login-box">
-
-        <div class="empty-icon">
-            🔐
-        </div>
-
-        <h3>
-            Login Required
-        </h3>
-
-        <p>
-            Please log into your PR1MΞ account to purchase gifts.
-        </p>
-
-    </div>
-
-
-    <div id="empty-box" class="empty-box">
-
-        <div class="empty-icon">
-            🎁
-        </div>
-
-        <h3>
-            No Gifts Available
-        </h3>
-
-        <p>
-            There are currently no gifts available.
-            Please check again later.
-        </p>
-
-    </div>
-
-
-    <div id="gift-grid" class="gift-grid"></div>
-
-
-    <!-- FOOTER -->
-
-    <footer>
-
-        <div class="footer-brand">
-            PR1MΞ L0GS
-        </div>
-
-        <a
-            class="whatsapp-btn"
-            href="https://wa.me/message/IXDUVSQ5CHUKP1"
-            target="_blank"
-            rel="noopener noreferrer"
+        <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
         >
-            WhatsApp
-        </a>
+            <path d="M19 12H5"/>
+            <path d="M12 19l-7-7 7-7"/>
+        </svg>
 
-    </footer>
+    </button>
+
+
+    <div class="logo">
+        PR1MΞ GIFT STORE
+    </div>
+
+
+    <div style="width:42px;"></div>
+
+</header>
+
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-title">
+            Send a <span>Gift</span> 🎁
+        </div>
+
+        <div class="hero-description">
+            Choose a gift and send something special
+            directly to someone you care about.
+        </div>
+
+
+        <div class="gift-count">
+
+            <span class="gift-count-dot"></span>
+
+            <span id="giftCount">
+                Loading gifts...
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     BALANCE
+========================================================= -->
+
+<div class="balance-card">
+
+    <div class="balance-left">
+
+        <div class="balance-label">
+            Available Balance
+        </div>
+
+
+        <div class="balance-value">
+
+            <div
+                id="balanceLoader"
+                class="spinner"
+            ></div>
+
+
+            <span
+                id="balanceText"
+                class="hidden"
+            >
+                ₦<span id="balance">
+                    0.00
+                </span>
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="fund.html"
+        class="topup-btn"
+    >
+        + Top Up
+    </a>
 
 </div>
 
 
-<div id="toast" class="toast"></div>
+
+<!-- =========================================================
+     GIFTS
+========================================================= -->
+
+<div class="section-header">
+
+    <div class="section-title">
+        Available Gifts
+    </div>
+
+</div>
+
+
+<div
+    class="gift-grid"
+    id="giftGrid"
+>
+
+    <!-- IMPORTANT:
+         This spinner remains here until
+         getDocs() actually finishes.
+    -->
+
+    <div class="loading-state">
+
+        <div class="loading-inner">
+
+            <div class="spinner"></div>
+
+            <div class="loading-text">
+                Loading gifts...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
 
 
 <script type="module">
 
-    import {
-        initializeApp
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+/* =========================================================
+   FIREBASE IMPORTS
+========================================================= */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
 
-    import {
-        getFirestore,
-        collection,
-        query,
-        where,
-        onSnapshot
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
-    import {
-        getAuth,
-        onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    doc,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-    /* ============================================================
-       FIREBASE
-    ============================================================ */
 
-    const firebaseConfig = {
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
-        apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+const firebaseConfig = {
 
-        authDomain: "primelogs-web.firebaseapp.com",
+    apiKey:
+        "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
 
-        projectId: "primelogs-web",
+    authDomain:
+        "primelogs-web.firebaseapp.com",
 
-        storageBucket: "primelogs-web.firebasestorage.app",
+    projectId:
+        "primelogs-web",
 
-        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+    storageBucket:
+        "primelogs-web.firebasestorage.app",
 
-    };
+    messagingSenderId:
+        "732956069251",
 
+    appId:
+        "1:732956069251:web:b9c8be37e6db4f98db3ab6"
 
-    const app =
-        initializeApp(firebaseConfig);
-
-    const db =
-        getFirestore(app);
-
-    const auth =
-        getAuth(app);
-
-
-    /* ============================================================
-       DOM
-    ============================================================ */
-
-    const balanceValue =
-        document.getElementById("balance-value");
-
-    const giftGrid =
-        document.getElementById("gift-grid");
-
-    const loadingBox =
-        document.getElementById("loading-box");
-
-    const emptyBox =
-        document.getElementById("empty-box");
-
-    const loginBox =
-        document.getElementById("login-box");
-
-    const giftCount =
-        document.getElementById("gift-count");
-
-    const toast =
-        document.getElementById("toast");
+};
 
 
-    /* ============================================================
-       STATE
-    ============================================================ */
 
-    let currentUser = null;
+/* =========================================================
+   INITIALIZE FIREBASE
+========================================================= */
 
-    let giftsLoaded = false;
+const app =
+    initializeApp(firebaseConfig);
 
+const auth =
+    getAuth(app);
 
-    /* ============================================================
-       TOAST
-    ============================================================ */
-
-    function showToast(message, isError = false) {
-
-        toast.innerText =
-            message;
+const db =
+    getFirestore(app);
 
 
-        if (isError) {
 
-            toast.classList.add("error");
+/* =========================================================
+   DOM CACHE
+========================================================= */
+
+const giftGrid =
+    document.getElementById(
+        'giftGrid'
+    );
+
+const giftCount =
+    document.getElementById(
+        'giftCount'
+    );
+
+const balanceLoader =
+    document.getElementById(
+        'balanceLoader'
+    );
+
+const balanceText =
+    document.getElementById(
+        'balanceText'
+    );
+
+const balanceDisplay =
+    document.getElementById(
+        'balance'
+    );
+
+const backButton =
+    document.getElementById(
+        'backButton'
+    );
+
+const toast =
+    document.getElementById(
+        'toast'
+    );
+
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let allGifts = [];
+
+let balanceUnsubscribe = null;
+
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+backButton.addEventListener(
+    'click',
+    () => {
+
+        if (
+            window.history.length > 1
+        ) {
+
+            window.history.back();
 
         } else {
 
-            toast.classList.remove("error");
+            window.location.href =
+                'index.html';
 
         }
 
-
-        toast.classList.add("show");
-
-
-        setTimeout(() => {
-
-            toast.classList.remove("show");
-
-        }, 3000);
-
     }
+);
 
 
-    /* ============================================================
-       FORMAT MONEY
-    ============================================================ */
 
-    function formatMoney(amount) {
+/* =========================================================
+   TOAST
+========================================================= */
 
-        const number =
-            Number(amount) || 0;
+let toastTimer = null;
 
 
-        return "₦" +
-            number.toLocaleString("en-NG", {
+function showToast(message) {
 
-                minimumFractionDigits: 0,
+    clearTimeout(toastTimer);
 
-                maximumFractionDigits: 2
+    toast.textContent =
+        message;
 
-            });
+    toast.classList.add(
+        'show'
+    );
 
-    }
+    toastTimer =
+        setTimeout(
+            () => {
 
-
-    /* ============================================================
-       IMAGE URL NORMALIZATION
-    ============================================================ */
-
-    function normalizeImages(gift) {
-
-        if (Array.isArray(gift.imageUrls)) {
-
-            return gift.imageUrls
-
-                .map(url =>
-                    String(url).trim()
-                )
-
-                .filter(url =>
-                    url !== ""
+                toast.classList.remove(
+                    'show'
                 );
 
-        }
+            },
+            3000
+        );
+
+}
 
 
-        if (gift.image) {
 
-            return [
-                String(gift.image).trim()
-            ];
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-        }
+function escapeHTML(value) {
 
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
-        return [];
+        return '';
 
     }
 
 
-    /* ============================================================
-       CREATE GIFT CARD
-    ============================================================ */
+    const div =
+        document.createElement(
+            'div'
+        );
 
-    function createGiftCard(gift, id) {
+    div.textContent =
+        String(value);
 
-        const images =
-            normalizeImages(gift);
+    return div.innerHTML;
+
+}
 
 
-        if (images.length === 0) {
 
-            images.push(
-                "https://via.placeholder.com/600x600?text=PR1M%E2%9C%94+GIFT"
+/* =========================================================
+   FORMAT PRICE
+========================================================= */
+
+function formatPrice(value) {
+
+    const number =
+        Number(value || 0);
+
+    return number.toLocaleString(
+        undefined,
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   CREATE GIFT CARD
+========================================================= */
+
+function createGiftCard(
+    gift,
+    index
+) {
+
+    const card =
+        document.createElement(
+            'div'
+        );
+
+    card.className =
+        'gift-card';
+
+
+    const imageContainer =
+        document.createElement(
+            'div'
+        );
+
+    imageContainer.className =
+        'gift-image-container';
+
+
+    /*
+     * Support both imageUrls array
+     * and a possible single imageUrl.
+     */
+
+    let imageUrls = [];
+
+
+    if (
+        Array.isArray(
+            gift.imageUrls
+        )
+    ) {
+
+        imageUrls =
+            gift.imageUrls.filter(
+                url =>
+                    typeof url === 'string' &&
+                    url.trim()
             );
 
-        }
+    }
 
 
-        const card =
-            document.createElement("article");
+    if (
+        !imageUrls.length &&
+        typeof gift.imageUrl === 'string' &&
+        gift.imageUrl.trim()
+    ) {
 
-        card.className =
-            "gift-card";
+        imageUrls = [
+            gift.imageUrl.trim()
+        ];
+
+    }
 
 
-        /* --------------------------------------------------------
-           MEDIA
-        -------------------------------------------------------- */
+    if (
+        !imageUrls.length
+    ) {
 
-        const media =
-            document.createElement("div");
+        const fallback =
+            document.createElement(
+                'div'
+            );
 
-        media.className =
-            "gift-media";
+        fallback.className =
+            'gift-image-fallback';
 
+        fallback.innerHTML = `
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+            >
+                <rect
+                    x="3"
+                    y="8"
+                    width="18"
+                    height="13"
+                    rx="2"
+                />
+                <path d="M12 8v13"/>
+                <path d="M3 12h18"/>
+                <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
+                <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+            </svg>
+        `;
+
+        imageContainer.appendChild(
+            fallback
+        );
+
+    } else {
 
         const image =
-            document.createElement("img");
-
-        image.src =
-            images[0];
+            document.createElement(
+                'img'
+            );
 
         image.alt =
-            gift.name || "Gift";
+            gift.name ||
+            'Gift';
 
         image.loading =
-            "lazy";
+            index < 4
+                ? 'eager'
+                : 'lazy';
+
+        image.decoding =
+            'async';
+
+        image.src =
+            imageUrls[0];
 
 
-        image.onerror =
-            function() {
+        image.addEventListener(
+            'error',
+            () => {
 
-                this.src =
-                    "https://via.placeholder.com/600x600?text=PR1M%E2%9C%94+GIFT";
+                image.style.display =
+                    'none';
 
-            };
+                const fallback =
+                    document.createElement(
+                        'div'
+                    );
 
+                fallback.className =
+                    'gift-image-fallback';
 
-        media.appendChild(image);
+                fallback.innerHTML = `
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                    >
+                        <rect
+                            x="3"
+                            y="8"
+                            width="18"
+                            height="13"
+                            rx="2"
+                        />
+                        <path d="M12 8v13"/>
+                        <path d="M3 12h18"/>
+                        <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
+                        <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+                    </svg>
+                `;
 
+                imageContainer.appendChild(
+                    fallback
+                );
 
-        /* --------------------------------------------------------
-           MULTIPLE IMAGES
-        -------------------------------------------------------- */
-
-        if (images.length > 1) {
-
-            const counter =
-                document.createElement("div");
-
-            counter.className =
-                "image-counter";
-
-            counter.innerText =
-                `1 / ${images.length}`;
-
-
-            media.appendChild(counter);
-
-
-            const dots =
-                document.createElement("div");
-
-            dots.className =
-                "media-dots";
-
-
-            images.forEach((url, index) => {
-
-                const dot =
-                    document.createElement("div");
-
-                dot.className =
-                    "media-dot";
-
-
-                if (index === 0) {
-
-                    dot.classList.add("active");
-
-                }
+            },
+            {
+                once: true
+            }
+        );
 
 
-                dots.appendChild(dot);
+        imageContainer.appendChild(
+            image
+        );
 
-            });
 
+        /*
+         * If a gift has multiple images,
+         * automatically rotate them.
+         *
+         * This does NOT affect loading
+         * of the Firestore data.
+         */
 
-            media.appendChild(dots);
-
+        if (
+            imageUrls.length > 1
+        ) {
 
             let imageIndex = 0;
 
+            const interval =
+                setInterval(
+                    () => {
 
-            setInterval(() => {
+                        if (
+                            !document.body.contains(
+                                card
+                            )
+                        ) {
 
-                imageIndex++;
+                            clearInterval(
+                                interval
+                            );
 
+                            return;
 
-                if (
-                    imageIndex >=
-                    images.length
-                ) {
-
-                    imageIndex = 0;
-
-                }
-
-
-                image.src =
-                    images[imageIndex];
-
-
-                counter.innerText =
-                    `${imageIndex + 1} / ${images.length}`;
+                        }
 
 
-                Array.from(
-                    dots.children
-                ).forEach((dot, index) => {
+                        imageIndex =
+                            (
+                                imageIndex + 1
+                            ) %
+                            imageUrls.length;
 
-                    dot.classList.toggle(
-                        "active",
-                        index === imageIndex
-                    );
 
-                });
+                        image.style.opacity =
+                            '.25';
 
-            }, 4000);
+
+                        setTimeout(
+                            () => {
+
+                                image.src =
+                                    imageUrls[
+                                        imageIndex
+                                    ];
+
+                                image.style.opacity =
+                                    '1';
+
+                            },
+                            120
+                        );
+
+                    },
+                    4000
+                );
 
         }
 
-
-        /* --------------------------------------------------------
-           CONTENT
-        -------------------------------------------------------- */
-
-        const content =
-            document.createElement("div");
-
-        content.className =
-            "gift-content";
+    }
 
 
-        const name =
-            document.createElement("div");
 
-        name.className =
-            "gift-name";
+    /* =====================================================
+       CARD CONTENT
+    ===================================================== */
 
-        name.innerText =
-            gift.name || "Gift";
+    const content =
+        document.createElement(
+            'div'
+        );
 
-
-        const description =
-            document.createElement("div");
-
-        description.className =
-            "gift-description";
-
-        description.innerText =
-            gift.description ||
-            "A special gift from PR1MΞ Gift Store.";
+    content.className =
+        'gift-content';
 
 
-        const bottom =
-            document.createElement("div");
+    const name =
+        document.createElement(
+            'div'
+        );
 
-        bottom.className =
-            "gift-bottom";
+    name.className =
+        'gift-name';
 
-
-        const price =
-            document.createElement("div");
-
-        price.className =
-            "gift-price";
-
-        price.innerText =
-            formatMoney(gift.price);
+    name.textContent =
+        gift.name ||
+        'Unnamed Gift';
 
 
-        /* --------------------------------------------------------
-           BUY BUTTON
-        -------------------------------------------------------- */
+    const description =
+        document.createElement(
+            'div'
+        );
 
-        const buyButton =
-            document.createElement("button");
+    description.className =
+        'gift-description';
 
-        buyButton.className =
-            "buy-btn";
-
-        buyButton.innerText =
-            "SEND THIS GIFT";
-
-
-        buyButton.addEventListener(
-            "click",
-            () => {
-
-                /*
-                 * Logged-out users can now see
-                 * all gifts, but must log in
-                 * before continuing to checkout.
-                 */
-
-                if (!currentUser) {
-
-                    window.location.href =
-                        "login.html";
-
-                    return;
-
-                }
+    description.textContent =
+        gift.description ||
+        'A special gift for someone special.';
 
 
-                /*
-                 * Logged-in users go directly
-                 * to the gift checkout page.
-                 */
+    const bottom =
+        document.createElement(
+            'div'
+        );
+
+    bottom.className =
+        'gift-bottom';
+
+
+    const price =
+        document.createElement(
+            'div'
+        );
+
+    price.className =
+        'gift-price';
+
+    price.textContent =
+        `₦${formatPrice(
+            gift.price
+        )}`;
+
+
+    const sendButton =
+        document.createElement(
+            'button'
+        );
+
+    sendButton.type =
+        'button';
+
+    sendButton.className =
+        'send-gift-btn';
+
+    sendButton.textContent =
+        'SEND THIS GIFT';
+
+
+    sendButton.addEventListener(
+        'click',
+        event => {
+
+            event.stopPropagation();
+
+
+            /*
+             * Logged-out users must login
+             * before purchasing.
+             */
+
+            if (!currentUser) {
 
                 window.location.href =
-                    `buygift.html?id=${encodeURIComponent(id)}`;
-
-            }
-        );
-
-
-        bottom.appendChild(price);
-
-        bottom.appendChild(buyButton);
-
-
-        content.appendChild(name);
-
-        content.appendChild(description);
-
-        content.appendChild(bottom);
-
-
-        card.appendChild(media);
-
-        card.appendChild(content);
-
-
-        return card;
-
-    }
-
-
-    /* ============================================================
-       LOAD GIFTS
-       
-       IMPORTANT:
-       This is intentionally called regardless of login status.
-       Visitors can browse gifts without authentication.
-    ============================================================ */
-
-    function loadGifts() {
-
-        const giftsQuery =
-            query(
-
-                collection(
-                    db,
-                    "gifts"
-                ),
-
-                where(
-                    "active",
-                    "==",
-                    true
-                )
-
-            );
-
-
-        onSnapshot(
-
-            giftsQuery,
-
-            (snapshot) => {
-
-                giftGrid.innerHTML = "";
-
-                loadingBox.style.display =
-                    "none";
-
-                emptyBox.style.display =
-                    "none";
-
-
-                const gifts = [];
-
-
-                snapshot.forEach(
-                    (giftDoc) => {
-
-                        gifts.push({
-
-                            id:
-                                giftDoc.id,
-
-                            ...giftDoc.data()
-
-                        });
-
-                    }
-                );
-
-
-                gifts.sort(
-                    (a, b) => {
-
-                        const aTime =
-                            a.createdAt?.toMillis
-                                ? a.createdAt.toMillis()
-                                : 0;
-
-
-                        const bTime =
-                            b.createdAt?.toMillis
-                                ? b.createdAt.toMillis()
-                                : 0;
-
-
-                        return bTime - aTime;
-
-                    }
-                );
-
-
-                if (gifts.length === 0) {
-
-                    giftCount.innerText =
-                        "0 gifts";
-
-                    emptyBox.style.display =
-                        "block";
-
-                    giftsLoaded =
-                        true;
-
-                    return;
-
-                }
-
-
-                giftCount.innerText =
-                    `${gifts.length} ${
-                        gifts.length === 1
-                            ? "gift"
-                            : "gifts"
-                    }`;
-
-
-                gifts.forEach(
-                    gift => {
-
-                        const card =
-                            createGiftCard(
-                                gift,
-                                gift.id
-                            );
-
-
-                        giftGrid.appendChild(
-                            card
-                        );
-
-                    }
-                );
-
-
-                giftsLoaded =
-                    true;
-
-            },
-
-
-            (error) => {
-
-                console.error(
-                    "Gift loading error:",
-                    error
-                );
-
-
-                loadingBox.style.display =
-                    "none";
-
-
-                emptyBox.style.display =
-                    "block";
-
-
-                giftCount.innerText =
-                    "Unavailable";
-
-
-                showToast(
-                    "Could not load the gift store.",
-                    true
-                );
-
-            }
-
-        );
-
-    }
-
-
-    /* ============================================================
-       USER BALANCE
-       
-       Only runs when a user is logged in.
-       The gift store itself does NOT depend on this.
-    ============================================================ */
-
-    function loadUserBalance(user) {
-
-        if (!user) return;
-
-
-        const userRef =
-            collection(
-                db,
-                "users"
-            );
-
-
-        const userQuery =
-            query(
-
-                userRef,
-
-                where(
-                    "__name__",
-                    "==",
-                    user.uid
-                )
-
-            );
-
-
-        onSnapshot(
-
-            userQuery,
-
-            (snapshot) => {
-
-                if (snapshot.empty) {
-
-                    balanceValue.innerText =
-                        "₦0";
-
-                    return;
-
-                }
-
-
-                snapshot.forEach(
-                    docSnap => {
-
-                        const data =
-                            docSnap.data();
-
-
-                        const balance =
-                            Number(
-                                data.balance
-                            ) || 0;
-
-
-                        balanceValue.innerText =
-                            formatMoney(
-                                balance
-                            );
-
-                    }
-                );
-
-            },
-
-
-            (error) => {
-
-                console.error(
-                    "Balance loading error:",
-                    error
-                );
-
-
-                balanceValue.innerText =
-                    "₦0";
-
-            }
-
-        );
-
-    }
-
-
-    /* ============================================================
-       AUTH STATE
-       
-       Authentication now ONLY controls:
-       1. Balance display
-       2. Whether purchase sends to login.html
-       
-       It does NOT control gift visibility.
-    ============================================================ */
-
-    onAuthStateChanged(
-        auth,
-        (user) => {
-
-            currentUser =
-                user;
-
-
-            if (!user) {
-
-                /*
-                 * Logged-out visitor:
-                 * Keep the gifts visible.
-                 */
-
-                balanceValue.innerText =
-                    "₦0";
-
-                loginBox.style.display =
-                    "none";
-
-                /*
-                 * Do NOT clear giftGrid.
-                 * Do NOT hide the gifts.
-                 */
+                    'login.html';
 
                 return;
 
@@ -1434,29 +1706,701 @@
 
 
             /*
-             * Logged-in visitor:
-             * Load their balance.
+             * Logged-in users go directly
+             * to the gift checkout page.
              */
 
-            loginBox.style.display =
-                "none";
-
-
-            loadUserBalance(
-                user
-            );
+            window.location.href =
+                `buygift.html?id=${encodeURIComponent(
+                    gift.id
+                )}`;
 
         }
     );
 
 
-    /* ============================================================
-       START GIFT STORE
-       
-       This runs immediately for everyone.
-    ============================================================ */
+    bottom.appendChild(
+        price
+    );
 
-    loadGifts();
+    bottom.appendChild(
+        sendButton
+    );
+
+
+    content.appendChild(
+        name
+    );
+
+    content.appendChild(
+        description
+    );
+
+    content.appendChild(
+        bottom
+    );
+
+
+    card.appendChild(
+        imageContainer
+    );
+
+    card.appendChild(
+        content
+    );
+
+
+    return card;
+
+}
+
+
+
+/* =========================================================
+   RENDER GIFTS
+========================================================= */
+
+function renderGifts(
+    gifts
+) {
+
+    /*
+     * Clear the loading spinner only
+     * after Firestore has finished.
+     */
+
+    giftGrid.replaceChildren();
+
+
+    if (
+        !gifts.length
+    ) {
+
+        const empty =
+            document.createElement(
+                'div'
+            );
+
+        empty.className =
+            'empty-state';
+
+        empty.innerHTML = `
+
+            <div class="empty-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                >
+                    <rect
+                        x="3"
+                        y="8"
+                        width="18"
+                        height="13"
+                        rx="2"
+                    />
+
+                    <path d="M12 8v13"/>
+
+                    <path d="M3 12h18"/>
+
+                    <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
+
+                    <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+                </svg>
+
+            </div>
+
+            <div class="empty-title">
+                No Gifts Available
+            </div>
+
+            <div class="empty-message">
+                New gifts will appear here when they are available.
+            </div>
+
+        `;
+
+        giftGrid.appendChild(
+            empty
+        );
+
+        giftCount.textContent =
+            '0 gifts available';
+
+        return;
+
+    }
+
+
+    /*
+     * Sort newest gifts first.
+     */
+
+    gifts.sort(
+        (a, b) => {
+
+            const aTime =
+                getTimestampMs(
+                    a.createdAt
+                );
+
+            const bTime =
+                getTimestampMs(
+                    b.createdAt
+                );
+
+            return bTime - aTime;
+
+        }
+    );
+
+
+    giftCount.textContent =
+        `${gifts.length} ${
+            gifts.length === 1
+                ? 'gift'
+                : 'gifts'
+        } available`;
+
+
+    /*
+     * Same basic loading/rendering
+     * philosophy as your marketplace.
+     *
+     * Render in small batches so
+     * a large gift collection does
+     * not block the page.
+     */
+
+    const BATCH_SIZE = 10;
+
+    let currentIndex = 0;
+
+
+    function renderBatch() {
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        const end =
+            Math.min(
+                currentIndex +
+                    BATCH_SIZE,
+                gifts.length
+            );
+
+
+        for (
+            let i = currentIndex;
+            i < end;
+            i++
+        ) {
+
+            fragment.appendChild(
+                createGiftCard(
+                    gifts[i],
+                    i
+                )
+            );
+
+        }
+
+
+        giftGrid.appendChild(
+            fragment
+        );
+
+
+        currentIndex =
+            end;
+
+
+        if (
+            currentIndex <
+            gifts.length
+        ) {
+
+            requestAnimationFrame(
+                renderBatch
+            );
+
+        }
+
+    }
+
+
+    renderBatch();
+
+}
+
+
+
+/* =========================================================
+   TIMESTAMP HELPER
+========================================================= */
+
+function getTimestampMs(
+    value
+) {
+
+    if (!value) {
+        return 0;
+    }
+
+
+    if (
+        typeof value.toMillis ===
+        'function'
+    ) {
+
+        return value.toMillis();
+
+    }
+
+
+    if (
+        typeof value.toDate ===
+        'function'
+    ) {
+
+        return value.toDate().getTime();
+
+    }
+
+
+    if (
+        typeof value === 'number'
+    ) {
+
+        return value;
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    return isNaN(
+        date.getTime()
+    )
+        ? 0
+        : date.getTime();
+
+}
+
+
+
+/* =========================================================
+   LOAD GIFTS
+========================================================= */
+
+async function loadGifts() {
+
+    /*
+     * IMPORTANT:
+     *
+     * We do NOT use onSnapshot()
+     * here.
+     *
+     * This follows the same basic
+     * loading method as your
+     * marketplace page:
+     *
+     * getDocs()
+     *
+     * Wait for Firebase.
+     *
+     * Then render.
+     */
+
+
+    giftGrid.innerHTML = `
+
+        <div class="loading-state">
+
+            <div class="loading-inner">
+
+                <div class="spinner"></div>
+
+                <div class="loading-text">
+                    Loading gifts...
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    giftCount.textContent =
+        'Loading gifts...';
+
+
+    try {
+
+        const giftsQuery =
+            query(
+                collection(
+                    db,
+                    'gifts'
+                ),
+
+                where(
+                    'active',
+                    '==',
+                    true
+                )
+            );
+
+
+        /*
+         * Wait for Firestore to actually
+         * return the collection.
+         */
+
+        const snapshot =
+            await getDocs(
+                giftsQuery
+            );
+
+
+        const gifts = [];
+
+
+        snapshot.forEach(
+            giftDoc => {
+
+                const data =
+                    giftDoc.data();
+
+
+                gifts.push({
+
+                    id:
+                        giftDoc.id,
+
+                    ...data
+
+                });
+
+            }
+        );
+
+
+        /*
+         * Store the complete result.
+         */
+
+        allGifts =
+            gifts;
+
+
+        /*
+         * ONLY NOW do we remove
+         * the loading spinner.
+         */
+
+        renderGifts(
+            allGifts
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Gift loading error:',
+            error
+        );
+
+
+        /*
+         * Important:
+         *
+         * An actual Firestore error
+         * should NOT be displayed as
+         * "No Gifts Available".
+         */
+
+        giftGrid.innerHTML = `
+
+            <div class="error-state">
+
+                <div style="
+                    color:#ff7a7a;
+                    font-size:.9rem;
+                    font-weight:700;
+                    margin-bottom:6px;
+                ">
+                    Unable to load gifts
+                </div>
+
+                <div style="
+                    font-size:.75rem;
+                    line-height:1.5;
+                ">
+                    Please check your connection
+                    and try again.
+                </div>
+
+                <button
+                    class="retry-btn"
+                    id="retryGiftButton"
+                    type="button"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        `;
+
+
+        giftCount.textContent =
+            'Unavailable';
+
+
+        const retryButton =
+            document.getElementById(
+                'retryGiftButton'
+            );
+
+
+        if (retryButton) {
+
+            retryButton.addEventListener(
+                'click',
+                loadGifts
+            );
+
+        }
+
+    }
+
+}
+
+
+
+/* =========================================================
+   BALANCE
+========================================================= */
+
+function startBalanceListener(
+    user
+) {
+
+    if (
+        balanceUnsubscribe
+    ) {
+
+        balanceUnsubscribe();
+
+        balanceUnsubscribe =
+            null;
+
+    }
+
+
+    balanceUnsubscribe =
+        onSnapshot(
+            doc(
+                db,
+                'users',
+                user.uid
+            ),
+
+            snapshot => {
+
+                /*
+                 * We still keep the balance
+                 * realtime because that is
+                 * separate from gift loading.
+                 */
+
+                if (
+                    !snapshot.exists()
+                ) {
+
+                    balanceLoader.classList.add(
+                        'hidden'
+                    );
+
+                    balanceText.classList.remove(
+                        'hidden'
+                    );
+
+                    balanceDisplay.textContent =
+                        '0.00';
+
+                    return;
+
+                }
+
+
+                const data =
+                    snapshot.data();
+
+
+                const userBalance =
+                    Number(
+                        data.balance || 0
+                    );
+
+
+                balanceDisplay.textContent =
+                    userBalance.toLocaleString(
+                        undefined,
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    );
+
+
+                balanceLoader.classList.add(
+                    'hidden'
+                );
+
+
+                balanceText.classList.remove(
+                    'hidden'
+                );
+
+            },
+
+            error => {
+
+                console.error(
+                    'Balance listener error:',
+                    error
+                );
+
+
+                balanceLoader.classList.add(
+                    'hidden'
+                );
+
+
+                balanceText.classList.remove(
+                    'hidden'
+                );
+
+
+                balanceDisplay.textContent =
+                    '0.00';
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    user => {
+
+        currentUser =
+            user || null;
+
+
+        /*
+         * Gift loading is NOT dependent
+         * on authentication.
+         *
+         * Everyone can browse gifts.
+         */
+
+        if (user) {
+
+            startBalanceListener(
+                user
+            );
+
+        } else {
+
+            /*
+             * Logged-out users simply
+             * see ₦0.00.
+             */
+
+            if (
+                balanceUnsubscribe
+            ) {
+
+                balanceUnsubscribe();
+
+                balanceUnsubscribe =
+                    null;
+
+            }
+
+
+            balanceLoader.classList.add(
+                'hidden'
+            );
+
+            balanceText.classList.remove(
+                'hidden'
+            );
+
+            balanceDisplay.textContent =
+                '0.00';
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   START GIFT LOADING IMMEDIATELY
+========================================================= */
+
+/*
+ * IMPORTANT:
+ *
+ * This is intentionally outside
+ * onAuthStateChanged().
+ *
+ * Therefore the gift collection
+ * starts loading immediately,
+ * whether the visitor is logged
+ * in or logged out.
+ */
+
+loadGifts();
+
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener(
+    'beforeunload',
+    () => {
+
+        if (
+            balanceUnsubscribe
+        ) {
+
+            balanceUnsubscribe();
+
+        }
+
+    }
+);
 
 </script>
 
