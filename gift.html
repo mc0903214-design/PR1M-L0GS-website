@@ -242,44 +242,6 @@ header {
     max-width: 500px;
 }
 
-.gift-count {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-    margin-top: 18px;
-
-    padding: 8px 12px;
-
-    border-radius: 12px;
-
-    background: rgba(255,255,255,.045);
-
-    border: 1px solid rgba(255,255,255,.07);
-
-    color: #cbd5e0;
-
-    font-size: .75rem;
-
-    font-weight: 600;
-}
-
-.gift-count-dot {
-
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: var(--neon-cyan);
-
-    box-shadow:
-        0 0 8px rgba(0,243,255,.7);
-}
-
 
 /* =========================================================
    BALANCE
@@ -479,7 +441,7 @@ header {
 
 
 /* =========================================================
-   IMAGE
+   IMAGE SWIPE AREA
 ========================================================= */
 
 .gift-image-container {
@@ -496,18 +458,43 @@ header {
     position: relative;
 }
 
-.gift-image-container img {
+.gift-image-track {
 
     width: 100%;
     height: 100%;
+
+    display: flex;
+
+    transform: translateX(0);
+
+    transition:
+        transform .65s cubic-bezier(.22,.61,.36,1);
+
+    will-change: transform;
+}
+
+.gift-image-slide {
+
+    width: 100%;
+    height: 100%;
+
+    flex: 0 0 100%;
+
+    min-width: 100%;
 
     object-fit: cover;
 
     display: block;
 
-    transition:
-        opacity .2s ease;
+    user-select: none;
+
+    -webkit-user-drag: none;
 }
+
+
+/* =========================================================
+   IMAGE FALLBACK
+========================================================= */
 
 .gift-image-fallback {
 
@@ -539,6 +526,68 @@ header {
 
 
 /* =========================================================
+   SWIPE INDICATORS
+========================================================= */
+
+.gift-image-dots {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 9px;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 7px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,0,0,.35);
+
+    backdrop-filter: blur(5px);
+
+    -webkit-backdrop-filter: blur(5px);
+
+    pointer-events: none;
+}
+
+.gift-image-dot {
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.45);
+
+    transition:
+        width .25s ease,
+        background .25s ease;
+}
+
+.gift-image-dot.active {
+
+    width: 14px;
+
+    border-radius: 5px;
+
+    background:
+        var(--neon-cyan);
+
+    box-shadow:
+        0 0 7px rgba(0,243,255,.55);
+}
+
+
+/* =========================================================
    CARD CONTENT
 ========================================================= */
 
@@ -551,6 +600,8 @@ header {
     flex-direction: column;
 
     flex: 1;
+
+    min-width: 0;
 }
 
 .gift-name {
@@ -561,17 +612,13 @@ header {
 
     font-weight: 700;
 
-    line-height: 1.3;
+    line-height: 1.35;
 
-    margin-bottom: 5px;
+    margin-bottom: 7px;
 
-    display: -webkit-box;
+    overflow-wrap: anywhere;
 
-    -webkit-line-clamp: 2;
-
-    -webkit-box-orient: vertical;
-
-    overflow: hidden;
+    word-break: break-word;
 }
 
 .gift-description {
@@ -580,43 +627,61 @@ header {
 
     font-size: .72rem;
 
-    line-height: 1.45;
+    line-height: 1.55;
 
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 
-    display: -webkit-box;
+    overflow-wrap: anywhere;
 
-    -webkit-line-clamp: 2;
-
-    -webkit-box-orient: vertical;
-
-    overflow: hidden;
+    word-break: break-word;
 
     flex: 1;
 }
+
+
+/* =========================================================
+   CARD BOTTOM
+   PRICE ABOVE BUTTON
+========================================================= */
 
 .gift-bottom {
 
     display: flex;
 
-    align-items: center;
+    flex-direction: column;
 
-    justify-content: space-between;
+    align-items: stretch;
 
-    gap: 8px;
+    justify-content: flex-start;
+
+    gap: 9px;
 
     margin-top: auto;
+
+    width: 100%;
+
+    min-width: 0;
 }
 
 .gift-price {
 
     color: var(--neon-cyan);
 
-    font-size: .88rem;
+    font-size: .92rem;
 
     font-weight: 800;
 
-    white-space: nowrap;
+    line-height: 1.3;
+
+    width: 100%;
+
+    min-width: 0;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
 }
 
 .send-gift-btn {
@@ -625,7 +690,7 @@ header {
 
     border-radius: 10px;
 
-    padding: 8px 10px;
+    padding: 9px 10px;
 
     background:
         linear-gradient(
@@ -636,13 +701,25 @@ header {
 
     color: #fff;
 
-    font-size: .66rem;
+    font-size: .63rem;
 
     font-weight: 800;
 
     cursor: pointer;
 
+    width: 100%;
+
+    max-width: 100%;
+
+    min-width: 0;
+
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    display: block;
 
     transition:
         transform .12s ease,
@@ -657,7 +734,7 @@ header {
 
 .send-gift-btn:active {
 
-    transform: scale(.95);
+    transform: scale(.97);
 
 }
 
@@ -908,17 +985,24 @@ header {
 
     .gift-description {
         font-size: .68rem;
+        line-height: 1.5;
+    }
+
+    .gift-bottom {
+        gap: 8px;
     }
 
     .gift-price {
-        font-size: .8rem;
+        font-size: .78rem;
     }
 
     .send-gift-btn {
-        padding:
-            8px 9px;
+        width: 100%;
 
-        font-size: .61rem;
+        padding:
+            8px 7px;
+
+        font-size: .57rem;
     }
 
 }
@@ -927,6 +1011,27 @@ header {
 
     .gift-grid {
         grid-template-columns: 1fr;
+    }
+
+    .gift-name {
+        font-size: .88rem;
+    }
+
+    .gift-description {
+        font-size: .73rem;
+    }
+
+    .gift-price {
+        font-size: .88rem;
+    }
+
+    .send-gift-btn {
+        width: 100%;
+
+        font-size: .64rem;
+
+        padding:
+            9px 10px;
     }
 
 }
@@ -1009,18 +1114,7 @@ header {
 
         <div class="hero-description">
             Choose a gift and send something special
-            directly to someone you care about.
-        </div>
-
-
-        <div class="gift-count">
-
-            <span class="gift-count-dot"></span>
-
-            <span id="giftCount">
-                Loading gifts...
-            </span>
-
+            directly to loved ones.
         </div>
 
     </div>
@@ -1092,11 +1186,6 @@ header {
     class="gift-grid"
     id="giftGrid"
 >
-
-    <!-- IMPORTANT:
-         This spinner remains here until
-         getDocs() actually finishes.
-    -->
 
     <div class="loading-state">
 
@@ -1206,11 +1295,6 @@ const giftGrid =
         'giftGrid'
     );
 
-const giftCount =
-    document.getElementById(
-        'giftCount'
-    );
-
 const balanceLoader =
     document.getElementById(
         'balanceLoader'
@@ -1254,22 +1338,15 @@ let balanceUnsubscribe = null;
    BACK BUTTON
 ========================================================= */
 
+/*
+ * Return to the previous browser history page.
+ */
+
 backButton.addEventListener(
     'click',
     () => {
 
-        if (
-            window.history.length > 1
-        ) {
-
-            window.history.back();
-
-        } else {
-
-            window.location.href =
-                'index.html';
-
-        }
+        history.back();
 
     }
 );
@@ -1311,36 +1388,6 @@ function showToast(message) {
 
 
 /* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return '';
-
-    }
-
-
-    const div =
-        document.createElement(
-            'div'
-        );
-
-    div.textContent =
-        String(value);
-
-    return div.innerHTML;
-
-}
-
-
-
-/* =========================================================
    FORMAT PRICE
 ========================================================= */
 
@@ -1356,6 +1403,55 @@ function formatPrice(value) {
             maximumFractionDigits: 2
         }
     );
+
+}
+
+
+
+/* =========================================================
+   CREATE IMAGE FALLBACK
+========================================================= */
+
+function createImageFallback() {
+
+    const fallback =
+        document.createElement(
+            'div'
+        );
+
+    fallback.className =
+        'gift-image-fallback';
+
+    fallback.innerHTML = `
+
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+        >
+
+            <rect
+                x="3"
+                y="8"
+                width="18"
+                height="13"
+                rx="2"
+            />
+
+            <path d="M12 8v13"/>
+
+            <path d="M3 12h18"/>
+
+            <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
+
+            <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+
+        </svg>
+
+    `;
+
+    return fallback;
 
 }
 
@@ -1379,6 +1475,11 @@ function createGiftCard(
         'gift-card';
 
 
+
+    /* =====================================================
+       IMAGE CONTAINER
+    ===================================================== */
+
     const imageContainer =
         document.createElement(
             'div'
@@ -1388,9 +1489,15 @@ function createGiftCard(
         'gift-image-container';
 
 
+
     /*
-     * Support both imageUrls array
-     * and a possible single imageUrl.
+     * Support:
+     *
+     * imageUrls: [...]
+     *
+     * and:
+     *
+     * imageUrl: "..."
      */
 
     let imageUrls = [];
@@ -1425,180 +1532,306 @@ function createGiftCard(
     }
 
 
+
+    /* =====================================================
+       NO IMAGE
+    ===================================================== */
+
     if (
         !imageUrls.length
     ) {
 
-        const fallback =
-            document.createElement(
-                'div'
-            );
-
-        fallback.className =
-            'gift-image-fallback';
-
-        fallback.innerHTML = `
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-            >
-                <rect
-                    x="3"
-                    y="8"
-                    width="18"
-                    height="13"
-                    rx="2"
-                />
-                <path d="M12 8v13"/>
-                <path d="M3 12h18"/>
-                <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
-                <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
-            </svg>
-        `;
-
         imageContainer.appendChild(
-            fallback
+            createImageFallback()
         );
 
     } else {
 
-        const image =
+        /*
+         * Create horizontal image track.
+         */
+
+        const track =
             document.createElement(
-                'img'
+                'div'
             );
 
-        image.alt =
-            gift.name ||
-            'Gift';
-
-        image.loading =
-            index < 4
-                ? 'eager'
-                : 'lazy';
-
-        image.decoding =
-            'async';
-
-        image.src =
-            imageUrls[0];
+        track.className =
+            'gift-image-track';
 
 
-        image.addEventListener(
-            'error',
-            () => {
 
-                image.style.display =
-                    'none';
+        /*
+         * Add every image as a
+         * separate horizontal slide.
+         */
 
-                const fallback =
+        imageUrls.forEach(
+            (url, imageIndex) => {
+
+                const image =
                     document.createElement(
-                        'div'
+                        'img'
                     );
 
-                fallback.className =
-                    'gift-image-fallback';
+                image.className =
+                    'gift-image-slide';
 
-                fallback.innerHTML = `
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.6"
-                    >
-                        <rect
-                            x="3"
-                            y="8"
-                            width="18"
-                            height="13"
-                            rx="2"
-                        />
-                        <path d="M12 8v13"/>
-                        <path d="M3 12h18"/>
-                        <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
-                        <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
-                    </svg>
-                `;
+                image.alt =
+                    gift.name ||
+                    'Gift';
 
-                imageContainer.appendChild(
-                    fallback
+                image.loading =
+                    index < 4
+                        ? 'eager'
+                        : 'lazy';
+
+                image.decoding =
+                    'async';
+
+                image.src =
+                    url;
+
+
+                image.addEventListener(
+                    'error',
+                    () => {
+
+                        image.replaceWith(
+                            createImageFallback()
+                        );
+
+                    },
+                    {
+                        once: true
+                    }
                 );
 
-            },
-            {
-                once: true
+
+                track.appendChild(
+                    image
+                );
+
             }
         );
 
 
         imageContainer.appendChild(
-            image
+            track
         );
 
 
-        /*
-         * If a gift has multiple images,
-         * automatically rotate them.
-         *
-         * This does NOT affect loading
-         * of the Firestore data.
-         */
+
+        /* =================================================
+           AUTOMATIC SWIPE
+        ================================================= */
 
         if (
             imageUrls.length > 1
         ) {
 
+            /*
+             * Create dots so the user can
+             * see that the card contains
+             * multiple images.
+             */
+
+            const dots =
+                document.createElement(
+                    'div'
+                );
+
+            dots.className =
+                'gift-image-dots';
+
+
+            const dotElements = [];
+
+
+            imageUrls.forEach(
+                (
+                    _,
+                    dotIndex
+                ) => {
+
+                    const dot =
+                        document.createElement(
+                            'span'
+                        );
+
+                    dot.className =
+                        'gift-image-dot';
+
+
+                    if (
+                        dotIndex === 0
+                    ) {
+
+                        dot.classList.add(
+                            'active'
+                        );
+
+                    }
+
+
+                    dots.appendChild(
+                        dot
+                    );
+
+                    dotElements.push(
+                        dot
+                    );
+
+                }
+            );
+
+
+            imageContainer.appendChild(
+                dots
+            );
+
+
+
             let imageIndex = 0;
 
-            const interval =
-                setInterval(
-                    () => {
+            let interval = null;
 
-                        if (
-                            !document.body.contains(
-                                card
-                            )
-                        ) {
+
+            const moveToNextImage =
+                () => {
+
+                    if (
+                        !document.body.contains(
+                            card
+                        )
+                    ) {
+
+                        if (interval) {
 
                             clearInterval(
                                 interval
                             );
 
-                            return;
-
                         }
 
+                        return;
 
-                        imageIndex =
-                            (
-                                imageIndex + 1
-                            ) %
-                            imageUrls.length;
+                    }
 
 
-                        image.style.opacity =
-                            '.25';
+                    imageIndex =
+                        (
+                            imageIndex + 1
+                        ) %
+                        imageUrls.length;
 
 
-                        setTimeout(
-                            () => {
+                    /*
+                     * Move the entire track
+                     * horizontally.
+                     */
 
-                                image.src =
-                                    imageUrls[
-                                        imageIndex
-                                    ];
+                    track.style.transform =
+                        `translateX(-${
+                            imageIndex * 100
+                        }%)`;
 
-                                image.style.opacity =
-                                    '1';
 
-                            },
-                            120
-                        );
+                    /*
+                     * Update dots.
+                     */
 
-                    },
+                    dotElements.forEach(
+                        (
+                            dot,
+                            dotIndex
+                        ) => {
+
+                            dot.classList.toggle(
+                                'active',
+                                dotIndex === imageIndex
+                            );
+
+                        }
+                    );
+
+                };
+
+
+            /*
+             * Swipe to the next image
+             * every 4 seconds.
+             */
+
+            interval =
+                setInterval(
+                    moveToNextImage,
                     4000
                 );
+
+
+            /*
+             * Pause automatic swipe
+             * when the user touches.
+             */
+
+            imageContainer.addEventListener(
+                'touchstart',
+                () => {
+
+                    if (interval) {
+
+                        clearInterval(
+                            interval
+                        );
+
+                        interval =
+                            null;
+
+                    }
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /*
+             * Restart automatic swiping
+             * after touch ends.
+             */
+
+            imageContainer.addEventListener(
+                'touchend',
+                () => {
+
+                    if (
+                        !document.body.contains(
+                            card
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (!interval) {
+
+                        interval =
+                            setInterval(
+                                moveToNextImage,
+                                4000
+                            );
+
+                    }
+
+                },
+                {
+                    passive: true
+                }
+            );
 
         }
 
@@ -1619,6 +1852,11 @@ function createGiftCard(
         'gift-content';
 
 
+
+    /* =====================================================
+       NAME
+    ===================================================== */
+
     const name =
         document.createElement(
             'div'
@@ -1631,6 +1869,11 @@ function createGiftCard(
         gift.name ||
         'Unnamed Gift';
 
+
+
+    /* =====================================================
+       DESCRIPTION
+    ===================================================== */
 
     const description =
         document.createElement(
@@ -1645,6 +1888,11 @@ function createGiftCard(
         'A special gift for someone special.';
 
 
+
+    /* =====================================================
+       BOTTOM
+    ===================================================== */
+
     const bottom =
         document.createElement(
             'div'
@@ -1653,6 +1901,11 @@ function createGiftCard(
     bottom.className =
         'gift-bottom';
 
+
+
+    /* =====================================================
+       PRICE
+    ===================================================== */
 
     const price =
         document.createElement(
@@ -1667,6 +1920,11 @@ function createGiftCard(
             gift.price
         )}`;
 
+
+
+    /* =====================================================
+       SEND BUTTON
+    ===================================================== */
 
     const sendButton =
         document.createElement(
@@ -1691,8 +1949,8 @@ function createGiftCard(
 
 
             /*
-             * Logged-out users must login
-             * before purchasing.
+             * Logged-out users
+             * must login first.
              */
 
             if (!currentUser) {
@@ -1706,8 +1964,8 @@ function createGiftCard(
 
 
             /*
-             * Logged-in users go directly
-             * to the gift checkout page.
+             * Logged-in users go
+             * directly to checkout.
              */
 
             window.location.href =
@@ -1718,6 +1976,12 @@ function createGiftCard(
         }
     );
 
+
+
+    /*
+     * PRICE FIRST
+     * BUTTON SECOND
+     */
 
     bottom.appendChild(
         price
@@ -1764,11 +2028,6 @@ function renderGifts(
     gifts
 ) {
 
-    /*
-     * Clear the loading spinner only
-     * after Firestore has finished.
-     */
-
     giftGrid.replaceChildren();
 
 
@@ -1794,6 +2053,7 @@ function renderGifts(
                     stroke="currentColor"
                     stroke-width="1.7"
                 >
+
                     <rect
                         x="3"
                         y="8"
@@ -1809,6 +2069,7 @@ function renderGifts(
                     <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
 
                     <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+
                 </svg>
 
             </div>
@@ -1827,17 +2088,15 @@ function renderGifts(
             empty
         );
 
-        giftCount.textContent =
-            '0 gifts available';
-
         return;
 
     }
 
 
-    /*
-     * Sort newest gifts first.
-     */
+
+    /* =====================================================
+       SORT NEWEST FIRST
+    ===================================================== */
 
     gifts.sort(
         (a, b) => {
@@ -1858,22 +2117,10 @@ function renderGifts(
     );
 
 
-    giftCount.textContent =
-        `${gifts.length} ${
-            gifts.length === 1
-                ? 'gift'
-                : 'gifts'
-        } available`;
 
-
-    /*
-     * Same basic loading/rendering
-     * philosophy as your marketplace.
-     *
-     * Render in small batches so
-     * a large gift collection does
-     * not block the page.
-     */
+    /* =====================================================
+       BATCH RENDER
+    ===================================================== */
 
     const BATCH_SIZE = 10;
 
@@ -2001,24 +2248,6 @@ function getTimestampMs(
 
 async function loadGifts() {
 
-    /*
-     * IMPORTANT:
-     *
-     * We do NOT use onSnapshot()
-     * here.
-     *
-     * This follows the same basic
-     * loading method as your
-     * marketplace page:
-     *
-     * getDocs()
-     *
-     * Wait for Firebase.
-     *
-     * Then render.
-     */
-
-
     giftGrid.innerHTML = `
 
         <div class="loading-state">
@@ -2038,10 +2267,6 @@ async function loadGifts() {
     `;
 
 
-    giftCount.textContent =
-        'Loading gifts...';
-
-
     try {
 
         const giftsQuery =
@@ -2058,11 +2283,6 @@ async function loadGifts() {
                 )
             );
 
-
-        /*
-         * Wait for Firestore to actually
-         * return the collection.
-         */
 
         const snapshot =
             await getDocs(
@@ -2093,18 +2313,9 @@ async function loadGifts() {
         );
 
 
-        /*
-         * Store the complete result.
-         */
-
         allGifts =
             gifts;
 
-
-        /*
-         * ONLY NOW do we remove
-         * the loading spinner.
-         */
 
         renderGifts(
             allGifts
@@ -2118,14 +2329,6 @@ async function loadGifts() {
             error
         );
 
-
-        /*
-         * Important:
-         *
-         * An actual Firestore error
-         * should NOT be displayed as
-         * "No Gifts Available".
-         */
 
         giftGrid.innerHTML = `
 
@@ -2159,10 +2362,6 @@ async function loadGifts() {
             </div>
 
         `;
-
-
-        giftCount.textContent =
-            'Unavailable';
 
 
         const retryButton =
@@ -2215,12 +2414,6 @@ function startBalanceListener(
             ),
 
             snapshot => {
-
-                /*
-                 * We still keep the balance
-                 * realtime because that is
-                 * separate from gift loading.
-                 */
 
                 if (
                     !snapshot.exists()
@@ -2313,13 +2506,6 @@ onAuthStateChanged(
             user || null;
 
 
-        /*
-         * Gift loading is NOT dependent
-         * on authentication.
-         *
-         * Everyone can browse gifts.
-         */
-
         if (user) {
 
             startBalanceListener(
@@ -2327,11 +2513,6 @@ onAuthStateChanged(
             );
 
         } else {
-
-            /*
-             * Logged-out users simply
-             * see ₦0.00.
-             */
 
             if (
                 balanceUnsubscribe
@@ -2364,20 +2545,8 @@ onAuthStateChanged(
 
 
 /* =========================================================
-   START GIFT LOADING IMMEDIATELY
+   START GIFT LOADING
 ========================================================= */
-
-/*
- * IMPORTANT:
- *
- * This is intentionally outside
- * onAuthStateChanged().
- *
- * Therefore the gift collection
- * starts loading immediately,
- * whether the visitor is logged
- * in or logged out.
- */
 
 loadGifts();
 
