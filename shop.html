@@ -14,15 +14,18 @@
         --stock-red: #ff4b4b;
         --stock-green: #00ff88;
     }
+
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
     }
+
     html {
         scroll-behavior: smooth;
     }
+
     body {
         background:
             radial-gradient(circle at 10% 20%, rgba(188,19,254,.08) 0%, transparent 35%),
@@ -35,16 +38,20 @@
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeSpeed;
     }
+
     button,
     a {
         -webkit-tap-highlight-color: transparent;
     }
+
     .hidden {
         display: none !important;
     }
+
     /* =========================
        LOADER
     ========================= */
+
     .spinner {
         width: 24px;
         height: 24px;
@@ -54,20 +61,24 @@
         animation: spin .8s linear infinite;
         display: inline-block;
     }
+
     @keyframes spin {
         to {
             transform: rotate(360deg);
         }
     }
+
     /* =========================
        HEADER
     ========================= */
+
     header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 4px 8px 16px;
     }
+
     .logo {
         font-size: 1.4rem;
         font-weight: 800;
@@ -75,7 +86,15 @@
         color: #fff;
         text-shadow: 0 0 10px rgba(0,243,255,.45);
     }
-    .menu-btn {
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .menu-btn,
+    .notification-btn {
         background: rgba(255,255,255,.04);
         border: 1px solid var(--glass-border);
         color: #fff;
@@ -85,31 +104,77 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background .15s ease, border-color .15s ease;
+        transition:
+            background .15s ease,
+            border-color .15s ease;
     }
-    .menu-btn:hover {
+
+    .menu-btn:hover,
+    .notification-btn:hover {
         background: rgba(255,255,255,.08);
         border-color: rgba(255,255,255,.16);
     }
+
+    /* =========================
+       NOTIFICATION BUTTON
+    ========================= */
+
+    .notification-btn {
+        position: relative;
+    }
+
+    .notification-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        min-width: 15px;
+        height: 15px;
+        padding: 0 4px;
+        border-radius: 10px;
+        background: #ff3030;
+        color: #fff;
+        font-size: 8px;
+        line-height: 15px;
+        font-weight: 800;
+        text-align: center;
+        border: 1px solid #060608;
+        display: none;
+        pointer-events: none;
+    }
+
+    .notification-badge.visible {
+        display: block;
+    }
+
     /* =========================
        WELCOME
     ========================= */
+
     .welcome-container {
         padding: 0 8px 16px;
     }
+
     .welcome-text {
         font-size: 1.1rem;
         font-weight: 500;
         color: #cbd5e0;
     }
+
     .welcome-username {
         color: var(--neon-cyan);
         font-weight: 700;
         text-shadow: 0 0 7px rgba(0,243,255,.25);
     }
+
     /* =========================
        DASHBOARD
     ========================= */
+
     .dashboard-card {
         background:
             linear-gradient(
@@ -126,6 +191,7 @@
         box-shadow: 0 6px 20px rgba(0,0,0,.25);
         contain: layout paint;
     }
+
     .dashboard-card::after {
         content: '';
         position: absolute;
@@ -141,12 +207,14 @@
         border-radius: 50%;
         pointer-events: none;
     }
+
     .balance-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 12px;
     }
+
     .balance-label {
         font-size: .85rem;
         font-weight: 500;
@@ -154,6 +222,7 @@
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+
     .balance-amount {
         font-size: 2.4rem;
         font-weight: 700;
@@ -164,6 +233,7 @@
         color: #fff;
         letter-spacing: -.5px;
     }
+
     .fund-btn-new {
         background: linear-gradient(90deg,var(--neon-purple),#9d4edd);
         color: #fff;
@@ -180,19 +250,23 @@
         box-shadow: 0 4px 12px rgba(188,19,254,.22);
         transition: transform .15s ease, opacity .15s ease;
     }
+
     .fund-btn-new:hover {
         transform: translateY(-1px);
         opacity: .95;
     }
+
     /* =========================
        QUICK CATEGORIES
     ========================= */
+
     .quick-category-grid {
         display: grid;
         grid-template-columns: repeat(3,1fr);
         gap: 12px;
         margin-bottom: 28px;
     }
+
     .quick-card {
         background: rgba(255,255,255,.045);
         border: 1px solid var(--glass-border);
@@ -208,9 +282,11 @@
         overflow: hidden;
         transition: transform .12s ease, background .12s ease;
     }
+
     .quick-card:active {
         transform: scale(.97);
     }
+
     .quick-icon-circle {
         width: 45px;
         height: 45px;
@@ -220,27 +296,33 @@
         justify-content: center;
         background: rgba(255,255,255,.05);
     }
+
     .quick-card.blue .quick-icon-circle {
         background: #3b82f6;
         color: #fff;
     }
+
     .quick-card.green .quick-icon-circle {
         background: #10b981;
         color: #fff;
     }
+
     .quick-card.pink {
         background: linear-gradient(135deg,#f43f5e,#e11d48);
         border: none;
     }
+
     .quick-card.pink .quick-icon-circle {
         background: rgba(255,255,255,.18);
     }
+
     .quick-label {
         font-size: .75rem;
         font-weight: 600;
         color: #e2e8f0;
         line-height: 1.2;
     }
+
     .badge-soon,
     .badge-active {
         position: absolute;
@@ -252,22 +334,27 @@
         border-radius: 8px;
         text-transform: uppercase;
     }
+
     .badge-soon {
         background: #fff;
         color: #e11d48;
     }
+
     .badge-active {
         background: rgba(0,243,255,.12);
         border: 1px solid rgba(0,243,255,.35);
         color: var(--neon-cyan);
     }
+
     .disabled-card {
         opacity: .6;
         cursor: not-allowed !important;
     }
+
     /* =========================
        CATEGORY NAV
     ========================= */
+
     .category-nav-container {
         width: 100%;
         overflow-x: auto;
@@ -285,14 +372,17 @@
         border-radius: 30px;
         box-shadow: 0 5px 18px rgba(0,0,0,.28);
     }
+
     .category-nav-container::-webkit-scrollbar {
         display: none;
     }
+
     .category-navbar {
         display: inline-flex;
         gap: 8px;
         padding: 0 4px;
     }
+
     .nav-category-btn {
         background: rgba(255,255,255,.035);
         border: 1px solid rgba(255,255,255,.08);
@@ -311,6 +401,7 @@
             border-color .15s ease,
             color .15s ease;
     }
+
     .nav-category-btn:hover,
     .nav-category-btn.active {
         background: rgba(255,255,255,.11);
@@ -318,9 +409,11 @@
         color: #fff;
         box-shadow: 0 0 12px rgba(0,243,255,.10);
     }
+
     /* =========================
        SECTION
     ========================= */
+
     .section-title {
         font-size: .8rem;
         color: #718096;
@@ -330,9 +423,11 @@
         margin-bottom: 16px;
         padding-left: 4px;
     }
+
     /* =========================
        PRODUCTS
     ========================= */
+
     .product-list {
         display: flex;
         flex-direction: column;
@@ -340,9 +435,11 @@
         margin-bottom: 40px;
         contain: layout;
     }
+
     .product-list.switching {
         opacity: .5;
     }
+
     .product-list-row {
         background: rgba(255,255,255,.025);
         border: 1px solid var(--glass-border);
@@ -360,10 +457,12 @@
             background .15s ease,
             border-color .15s ease;
     }
+
     .product-list-row:hover {
         background: rgba(255,255,255,.045);
         border-color: rgba(255,255,255,.12);
     }
+
     .product-left {
         display: flex;
         align-items: center;
@@ -371,6 +470,7 @@
         flex: 1;
         min-width: 0;
     }
+
     .product-media-frame {
         width: 48px;
         height: 48px;
@@ -384,6 +484,7 @@
         flex-shrink: 0;
         box-shadow: 0 0 8px rgba(0,243,255,.06);
     }
+
     .product-media-frame img,
     .product-media-frame video {
         width: 100%;
@@ -392,6 +493,7 @@
         display: block;
         pointer-events: none;
     }
+
     .product-text-details {
         display: flex;
         flex-direction: column;
@@ -399,6 +501,7 @@
         flex: 1;
         min-width: 0;
     }
+
     .product-name {
         font-weight: 600;
         font-size: .88rem;
@@ -407,6 +510,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
     .product-meta-subline {
         display: flex;
         align-items: center;
@@ -414,6 +518,7 @@
         font-size: .8rem;
         color: #a0aec0;
     }
+
     .stock-indicator {
         font-weight: 700;
         font-size: .75rem;
@@ -421,12 +526,15 @@
         align-items: center;
         gap: 4px;
     }
+
     .stock-indicator.low {
         color: var(--stock-red);
     }
+
     .stock-indicator.high {
         color: var(--stock-green);
     }
+
     .product-price-container {
         display: flex;
         align-items: center;
@@ -434,11 +542,13 @@
         color: var(--neon-cyan);
         font-weight: 700;
     }
+
     .product-right {
         display: flex;
         align-items: center;
         flex-shrink: 0;
     }
+
     .purchase-btn {
         background: rgba(255,255,255,.05);
         border: 1px solid var(--glass-border);
@@ -455,30 +565,37 @@
             color .15s ease,
             border-color .15s ease;
     }
+
     .purchase-btn:hover {
         background: var(--neon-cyan);
         border-color: var(--neon-cyan);
         color: #060608;
     }
+
     /* =========================
        ENTRY ANIMATION
     ========================= */
+
     .fade-slide-entry {
         animation: productEntry .14s ease-out both;
     }
+
     @keyframes productEntry {
         from {
             opacity: 0;
             transform: translateY(5px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
+
     /* =========================
        SIDE NAV
     ========================= */
+
     .side-nav {
         position: fixed;
         top: 0;
@@ -495,9 +612,11 @@
         gap: 14px;
         box-shadow: -8px 0 25px rgba(0,0,0,.35);
     }
+
     .side-nav.active {
         right: 0;
     }
+
     .nav-item {
         color: #e2e8f0;
         text-decoration: none;
@@ -512,26 +631,32 @@
         gap: 14px;
         transition: background .15s ease;
     }
+
     .nav-item:hover {
         background: rgba(255,255,255,.07);
         color: #fff;
     }
+
     .nav-icon {
         width: 20px;
         height: 20px;
         stroke-width: 2;
         color: var(--neon-cyan);
     }
+
     /* =========================
        POPUP / MODALS
     ========================= */
+
     #tg-popup,
     .modal,
-    #tg-confirm-modal {
+    #tg-confirm-modal,
+    #notification-modal {
         background: rgba(10,10,14,.98);
         border: 1px solid rgba(0,243,255,.25);
         box-shadow: 0 10px 35px rgba(0,0,0,.55);
     }
+
     #tg-popup {
         position: fixed;
         top: 50%;
@@ -547,11 +672,13 @@
         pointer-events: none;
         transition: opacity .22s ease, transform .22s ease;
     }
+
     #tg-popup.active {
         opacity: 1;
         pointer-events: auto;
         transform: translate(-50%,-50%) scale(1);
     }
+
     .modal {
         position: fixed;
         top: 50%;
@@ -566,11 +693,13 @@
         pointer-events: none;
         transition: opacity .2s ease, transform .2s ease;
     }
+
     .modal.active {
         opacity: 1;
         pointer-events: auto;
         transform: translate(-50%,-50%) scale(1);
     }
+
     .modal textarea {
         width: 100%;
         height: 130px;
@@ -582,6 +711,143 @@
         outline: none;
         resize: vertical;
     }
+
+    /* =========================
+       NOTIFICATIONS MODAL
+    ========================= */
+
+    #notification-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%) scale(.94);
+        width: 92%;
+        max-width: 420px;
+        max-height: 78vh;
+        border-radius: 24px;
+        padding: 22px;
+        z-index: 7000;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+            opacity .2s ease,
+            transform .2s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #notification-modal.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%,-50%) scale(1);
+    }
+
+    .notification-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .notification-title {
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        overflow-y: auto;
+        max-height: 48vh;
+        padding-right: 2px;
+        overscroll-behavior: contain;
+    }
+
+    .notification-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .notification-list::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.12);
+        border-radius: 10px;
+    }
+
+    .notification-item {
+        background: rgba(255,255,255,.035);
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 14px;
+        padding: 13px;
+    }
+
+    .notification-item.unread {
+        border-color: rgba(0,243,255,.20);
+        background: rgba(0,243,255,.045);
+    }
+
+    .notification-item-title {
+        color: #fff;
+        font-size: .86rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .notification-item-message {
+        color: #a0aec0;
+        font-size: .8rem;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .notification-item-time {
+        color: #5f6b7a;
+        font-size: .68rem;
+        margin-top: 8px;
+    }
+
+    .notification-empty {
+        text-align: center;
+        padding: 34px 14px;
+        color: #718096;
+        font-size: .85rem;
+    }
+
+    .notification-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .notification-action-btn {
+        flex: 1;
+        min-height: 42px;
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: .78rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,.045);
+        color: #fff;
+    }
+
+    .notification-action-btn.primary {
+        background: linear-gradient(
+            90deg,
+            var(--neon-cyan),
+            #00a8ff
+        );
+        border-color: transparent;
+        color: #060608;
+    }
+
+    .notification-action-btn:active {
+        transform: scale(.98);
+    }
+
     .nav-overlay {
         position: fixed;
         inset: 0;
@@ -591,12 +857,15 @@
         display: none;
         z-index: 999;
     }
+
     .nav-overlay.active {
         display: block;
     }
+
     /* =========================
        EMPTY
     ========================= */
+
     .empty-products {
         padding: 32px;
         text-align: center;
@@ -604,9 +873,11 @@
         border: 1px dashed var(--glass-border);
         border-radius: 16px;
     }
+
     /* =========================
        TELEGRAM FLOAT
     ========================= */
+
     .telegram-float {
         position: fixed;
         bottom: 24px;
@@ -625,22 +896,27 @@
         overflow: hidden;
         cursor: pointer;
     }
+
     .telegram-float:hover {
         transform: translateY(-3px);
         background: rgba(255,255,255,.1);
     }
+
     .telegram-float:active {
         transform: scale(.96);
     }
+
     .telegram-float svg {
         width: 26px;
         height: 26px;
         fill: #fff;
         opacity: .92;
     }
+
     /* =========================
        TELEGRAM CONFIRM MODAL
     ========================= */
+
     #tg-confirm-modal {
         position: fixed;
         top: 50%;
@@ -656,48 +932,68 @@
         pointer-events: none;
         transition: opacity .22s ease, transform .22s ease;
     }
+
     #tg-confirm-modal.active {
         opacity: 1;
         pointer-events: auto;
         transform: translate(-50%,-50%) scale(1);
     }
+
     /* =========================
        MOBILE
     ========================= */
+
     @media (max-width: 520px) {
+
         body {
             padding: 18px 12px;
         }
+
         .dashboard-card {
             padding: 24px 20px;
         }
+
         .balance-amount {
             font-size: 2.15rem;
         }
+
         .product-list-row {
             padding: 13px;
             gap: 10px;
         }
+
         .product-left {
             gap: 10px;
         }
+
         .product-media-frame {
             width: 44px;
             height: 44px;
         }
+
         .purchase-btn {
             padding: 8px 13px;
         }
+
         .product-meta-subline {
             gap: 8px;
         }
+
         .telegram-float {
             right: 18px;
             bottom: 18px;
         }
+
+        #notification-modal {
+            width: 94%;
+            padding: 18px;
+        }
     }
+
     /* Respect reduced-motion preferences */
+
     @media (prefers-reduced-motion: reduce) {
+
         *,
         *::before,
         *::after {
@@ -709,13 +1005,19 @@
     }
 </style>
 </head>
+
 <body>
+
 <div class="nav-overlay" id="overlay"></div>
+
 <!-- WHATSAPP POPUP -->
+
 <div id="tg-popup">
+
     <p style="color:#cbd5e0;margin-bottom:24px;">
         Stay updated with the latest tools, daily giveaway & early access drops on our WhatsApp community.
     </p>
+
     <a
         href="https://chat.whatsapp.com/C1vMoJBhZ2MEoW8yjekEnT"
         class="fund-btn-new"
@@ -723,20 +1025,29 @@
         target="_blank"
         rel="noopener noreferrer"
     >
+
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
         </svg>
+
         Join WhatsApp Community
+
     </a>
+
     <button
         id="close-tg-popup"
         style="background:none;border:none;color:#718096;cursor:pointer;"
     >
         Maybe later
     </button>
+
 </div>
+
+
 <!-- TELEGRAM CONFIRM -->
+
 <div id="tg-confirm-modal">
+
     <div style="
         width:56px;
         height:56px;
@@ -748,17 +1059,23 @@
         justify-content:center;
         margin:0 auto 20px;
     ">
+
         <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff">
             <path d="M9.04 15.47 8.67 20.7c.53 0 .76-.23 1.04-.5l2.5-2.39 5.18 3.79c.95.52 1.62.25 1.88-.88l3.4-15.92h0c.31-1.45-.52-2.02-1.45-1.67L1.46 10.3c-1.4.55-1.38 1.33-.24 1.68l5.14 1.6L18.3 6.1c.56-.34 1.07-.15.65.22"/>
         </svg>
+
     </div>
+
     <h3 style="color:#fff;font-size:1.25rem;font-weight:700;margin-bottom:10px;">
         Redirecting to Telegram
     </h3>
+
     <p style="color:#cbd5e0;margin-bottom:28px;font-size:.9rem;line-height:1.6;">
         You will be redirected to our telegram bot to continue with your sms verification process. Click Confirm to continue.
     </p>
+
     <div style="display:flex;gap:12px;">
+
         <button
             onclick="confirmTelegramRedirect()"
             class="fund-btn-new"
@@ -770,6 +1087,7 @@
         >
             CONFIRM
         </button>
+
         <button
             onclick="closeTgConfirmModal()"
             class="menu-btn"
@@ -777,10 +1095,80 @@
         >
             CANCEL
         </button>
+
     </div>
+
 </div>
+
+
+<!-- NOTIFICATIONS MODAL -->
+
+<div id="notification-modal">
+
+    <div class="notification-header">
+
+        <div class="notification-title">
+            Notifications
+        </div>
+
+        <button
+            id="notification-close-top"
+            class="menu-btn"
+            type="button"
+            aria-label="Close notifications"
+            style="padding:7px;"
+        >
+            <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+
+    </div>
+
+    <div
+        class="notification-list"
+        id="notification-list"
+    >
+        <div class="notification-empty">
+            No notifications yet.
+        </div>
+    </div>
+
+    <div class="notification-actions">
+
+        <button
+            class="notification-action-btn"
+            id="notification-cancel"
+            type="button"
+        >
+            Cancel
+        </button>
+
+        <button
+            class="notification-action-btn primary"
+            id="mark-all-read"
+            type="button"
+        >
+            Mark all as read
+        </button>
+
+    </div>
+
+</div>
+
+
 <!-- SIDE NAV -->
+
 <nav class="side-nav" id="sideNav">
+
     <a href="prof.html" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -788,6 +1176,7 @@
         </svg>
         Profile
     </a>
+
     <a href="mine.html" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
@@ -796,6 +1185,7 @@
         </svg>
         Order History
     </a>
+
     <a href="fund.html" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="2" y="5" width="20" height="14" rx="2"/>
@@ -803,6 +1193,7 @@
         </svg>
         Top Up Wallet
     </a>
+
     <a
         href="https://t.me/pr1me_logs_support_bot"
         class="nav-item"
@@ -810,37 +1201,57 @@
         rel="noopener noreferrer"
         onclick="event.preventDefault();openTgConfirmModal('https://t.me/pr1me_logs_support_bot');"
     >
+
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M4 12a8 8 0 0 1 16 0"/>
             <rect x="2" y="12" width="4" height="8" rx="2"/>
             <rect x="18" y="12" width="4" height="8" rx="2"/>
             <path d="M12 20v2"/>
         </svg>
+
         Support
+
     </a>
+
     <a href="rules.html" class="nav-item">
+
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
             <path d="M6.5 20v-20H6.5A2.5 2.5 0 0 1 4 4.5v15A2.5 2.5 0 0 1 6.5 20z"/>
         </svg>
+
         Rules
+
     </a>
+
     <a href="#" class="nav-item" id="logout-btn" style="margin-top:auto;color:#ff4b4b;">
+
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#ff4b4b">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
             <polyline points="16 17 21 12 16 7"/>
             <line x1="21" y1="12" x2="9" y2="12"/>
         </svg>
+
         Sign Out
+
     </a>
+
 </nav>
+
+
 <!-- SUPPORT MODAL -->
+
 <div class="modal" id="supportModal">
-    <h2 style="color:#fff;margin-bottom:18px;">Support Ticket</h2>
+
+    <h2 style="color:#fff;margin-bottom:18px;">
+        Support Ticket
+    </h2>
+
     <textarea
         id="ticketMsg"
         placeholder="Describe your issue..."
     ></textarea>
+
     <button
         class="fund-btn-new"
         style="width:100%;margin-top:12px;"
@@ -848,6 +1259,7 @@
     >
         Submit
     </button>
+
     <button
         class="menu-btn"
         style="width:100%;margin-top:12px;"
@@ -855,37 +1267,133 @@
     >
         Cancel
     </button>
+
 </div>
+
+
 <!-- HEADER -->
+
 <header>
-    <div class="logo">PR1MΞ L0GS</div>
-    <button class="menu-btn" id="menu-button" aria-label="Open menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
-    </button>
+
+    <div class="logo">
+        PR1MΞ L0GS
+    </div>
+
+    <div class="header-actions">
+
+        <!-- NOTIFICATION BELL -->
+
+        <button
+            class="notification-btn"
+            id="notification-button"
+            type="button"
+            aria-label="Notifications"
+        >
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+
+            <span
+                id="notification-badge"
+                class="notification-badge"
+            >
+                0
+            </span>
+
+        </button>
+
+
+        <!-- HAMBURGER -->
+
+        <button
+            class="menu-btn"
+            id="menu-button"
+            aria-label="Open menu"
+        >
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+
+        </button>
+
+    </div>
+
 </header>
+
+
 <!-- WELCOME -->
+
 <div class="welcome-container">
+
     <span class="welcome-text">
+
         welcome back 👋,
-        <span id="username-display" class="welcome-username">User</span>
-    </span>
-</div>
-<!-- DASHBOARD -->
-<div class="dashboard-card">
-    <div class="balance-header">
-        <div class="balance-label">Available Balance</div>
-    </div>
-    <div class="balance-amount">
-        <div id="balance-loader" class="spinner"></div>
-        <span id="balance-text" class="hidden">
-            <span id="currency-symbol">₦</span>
-            <span id="balance">0.00</span>
+
+        <span
+            id="username-display"
+            class="welcome-username"
+        >
+            User
         </span>
+
+    </span>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div class="dashboard-card">
+
+    <div class="balance-header">
+
+        <div class="balance-label">
+            Available Balance
+        </div>
+
     </div>
+
+    <div class="balance-amount">
+
+        <div
+            id="balance-loader"
+            class="spinner"
+        ></div>
+
+        <span
+            id="balance-text"
+            class="hidden"
+        >
+
+            <span id="currency-symbol">
+                ₦
+            </span>
+
+            <span id="balance">
+                0.00
+            </span>
+
+        </span>
+
+    </div>
+
     <a
         href="fund.html"
         class="fund-btn-new"
@@ -893,160 +1401,362 @@
     >
         + Top Up Wallet
     </a>
+
 </div>
+
+
 <!-- QUICK CATEGORIES -->
+
 <div class="quick-category-grid">
+
     <div
         class="quick-card blue"
         onclick="window.location.href='sms.html'"
     >
-        <div class="badge-active">ADMIN</div>
+
+        <div class="badge-active">
+            ADMIN
+        </div>
+
         <div class="quick-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
             </svg>
+
         </div>
+
         <span class="quick-label">
             Buy<br>Numbers
         </span>
+
     </div>
+
+
     <div
         class="quick-card green"
         onclick="window.location.href='celeb.html?category=other'"
     >
+
         <div class="quick-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
                 <rect x="2" y="3" width="20" height="14" rx="2"/>
                 <line x1="2" y1="10" x2="22" y2="10"/>
             </svg>
+
         </div>
+
         <span class="quick-label">
             CELEB<br>FAN CARD
         </span>
+
     </div>
-    <div class="quick-card pink disabled-card">
-        <div class="badge-soon">Soon</div>
-        <div class="quick-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
+
+
+    <!-- GIFT STORE -->
+
+    <div
+        class="quick-card pink"
+        onclick="window.location.href='gift.html'"
+    >
+
+        <div class="badge-active">
+            NEW
         </div>
+
+        <div class="quick-icon-circle">
+
+            <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
+                <rect x="3" y="8" width="18" height="13" rx="2"/>
+                <path d="M12 8v13"/>
+                <path d="M3 12h18"/>
+                <path d="M12 8H8.5a2.5 2.5 0 1 1 0-5C10.5 3 12 8 12 8Z"/>
+                <path d="M12 8h3.5a2.5 2.5 0 1 0 0-5C13.5 3 12 8 12 8Z"/>
+            </svg>
+
+        </div>
+
         <span class="quick-label">
-            Boost<br>Followers
+            Gift<br>Store
         </span>
+
     </div>
+
 </div>
-<div class="section-title">Marketplace Categories</div>
+
+
+<div class="section-title">
+    Marketplace Categories
+</div>
+
+
 <!-- CATEGORY NAV -->
+
 <div class="category-nav-container">
-    <div class="category-navbar" id="categoryNavbar">
-        <button class="nav-category-btn active" data-category="All">
+
+    <div
+        class="category-navbar"
+        id="categoryNavbar"
+    >
+
+        <button
+            class="nav-category-btn active"
+            data-category="All"
+        >
             All Products
         </button>
-        <button class="nav-category-btn" data-category="TikTok Logs">
+
+        <button
+            class="nav-category-btn"
+            data-category="TikTok Logs"
+        >
             TikTok Logs
         </button>
-        <button class="nav-category-btn" data-category="X/Twitter Logs">
+
+        <button
+            class="nav-category-btn"
+            data-category="X/Twitter Logs"
+        >
             X/Twitter Logs
         </button>
-        <button class="nav-category-btn" data-category="FB Logs">
+
+        <button
+            class="nav-category-btn"
+            data-category="FB Logs"
+        >
             FB Logs
         </button>
-        <button class="nav-category-btn" data-category="IG Logs">
+
+        <button
+            class="nav-category-btn"
+            data-category="IG Logs"
+        >
             IG Logs
         </button>
-<button class="nav-category-btn" data-category="MAIL Logs">
-    MAIL Logs
-</button>
-        <button class="nav-category-btn" data-category="OTHER Logs">
+
+        <button
+            class="nav-category-btn"
+            data-category="MAIL Logs"
+        >
+            MAIL Logs
+        </button>
+
+        <button
+            class="nav-category-btn"
+            data-category="OTHER Logs"
+        >
             OTHER Logs
         </button>
-        <button class="nav-category-btn" data-category="Texting Apps">
+
+        <button
+            class="nav-category-btn"
+            data-category="Texting Apps"
+        >
             Texting Apps
         </button>
-        <button class="nav-category-btn" data-category="Working Pics">
+
+        <button
+            class="nav-category-btn"
+            data-category="Working Pics"
+        >
             Working Pics
         </button>
-        <button class="nav-category-btn" data-category="Modded Apps">
+
+        <button
+            class="nav-category-btn"
+            data-category="Modded Apps"
+        >
             📱 Modded Apps
         </button>
-        <button class="nav-category-btn" data-category="Websites">
+
+        <button
+            class="nav-category-btn"
+            data-category="Websites"
+        >
             Websites
         </button>
-        <button class="nav-category-btn" data-category="VPNs and Proxies">
+
+        <button
+            class="nav-category-btn"
+            data-category="VPNs and Proxies"
+        >
             VPNs/Proxies
         </button>
-        <button class="nav-category-btn" data-category="iCloud">
+
+        <button
+            class="nav-category-btn"
+            data-category="iCloud"
+        >
              iCloud
         </button>
-        <button class="nav-category-btn" data-category="Courses and Digital Guides">
+
+        <button
+            class="nav-category-btn"
+            data-category="Courses and Digital Guides"
+        >
             Courses/Guides
         </button>
-        <button class="nav-category-btn" data-category="FMT and Updates">
+
+        <button
+            class="nav-category-btn"
+            data-category="FMT and Updates"
+        >
             FMT & Updates
         </button>
-        <button class="nav-category-btn" data-category="Tools">
+
+        <button
+            class="nav-category-btn"
+            data-category="Tools"
+        >
             Tools
         </button>
-        <button class="nav-category-btn" data-category="Bots">
+
+        <button
+            class="nav-category-btn"
+            data-category="Bots"
+        >
             Bots
         </button>
-        <button class="nav-category-btn" data-category="Movie and TV">
+
+        <button
+            class="nav-category-btn"
+            data-category="Movie and TV"
+        >
             Movie/TV
         </button>
-        <button class="nav-category-btn" data-category="Freebies">
+
+        <button
+            class="nav-category-btn"
+            data-category="Freebies"
+        >
             Freebies
         </button>
+
     </div>
+
 </div>
-<div class="section-title" id="current-category-title">
+
+
+<div
+    class="section-title"
+    id="current-category-title"
+>
     All Products
 </div>
-<div class="product-list" id="productList">
+
+
+<div
+    class="product-list"
+    id="productList"
+>
+
     <div style="text-align:center;padding:20px;">
+
         <div class="spinner"></div>
+
     </div>
+
 </div>
+
+
 <!-- TELEGRAM FLOAT -->
+
 <a
     onclick="openTgConfirmModal('https://t.me/pr1me_logs_support_bot')"
     class="telegram-float"
     aria-label="Telegram Support"
 >
+
     <svg viewBox="0 0 24 24">
+
         <path d="M9.04 15.47 8.67 20.7c.53 0 .76-.23 1.04-.5l2.5-2.39 5.18 3.79c.95.52 1.62.25 1.88-.88l3.4-15.92h0c.31-1.45-.52-2.02-1.45-1.67L1.46 10.3c-1.4.55-1.38 1.33-.24 1.68l5.14 1.6L18.3 6.1c.56-.34 1.07-.15.65.22"/>
+
     </svg>
+
 </a>
+
+
 <script>
+
     let pendingTelegramUrl = '';
+
     function openTgConfirmModal(url) {
+
         pendingTelegramUrl = url;
-        document.getElementById('tg-confirm-modal')
+
+        document
+            .getElementById('tg-confirm-modal')
             .classList.add('active');
-        document.getElementById('overlay')
+
+        document
+            .getElementById('overlay')
             .classList.add('active');
+
     }
+
     function closeTgConfirmModal() {
-        document.getElementById('tg-confirm-modal')
+
+        document
+            .getElementById('tg-confirm-modal')
             .classList.remove('active');
-        document.getElementById('overlay')
+
+        document
+            .getElementById('overlay')
             .classList.remove('active');
+
         pendingTelegramUrl = '';
+
     }
+
     function confirmTelegramRedirect() {
+
         if (!pendingTelegramUrl) return;
+
         const url = pendingTelegramUrl;
+
         closeTgConfirmModal();
+
         window.location.href = url;
+
     }
+
 </script>
+
+
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
     import {
         getAuth,
         onAuthStateChanged,
         signOut
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
     import {
         getFirestore,
         doc,
@@ -1054,473 +1764,1670 @@
         addDoc,
         collection,
         getDocs,
-        serverTimestamp
+        serverTimestamp,
+        query,
+        where,
+        updateDoc,
+        writeBatch
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
     /* =========================
        FIREBASE
     ========================= */
+
     const firebaseConfig = {
+
         apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+
         authDomain: "primelogs-web.firebaseapp.com",
+
         projectId: "primelogs-web",
+
         storageBucket: "primelogs-web.firebasestorage.app",
+
         messagingSenderId: "732956069251",
-        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
+
+        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab3"
+
     };
+
+
     const app = initializeApp(firebaseConfig);
+
     const auth = getAuth(app);
+
     const db = getFirestore(app);
+
+
     /* =========================
        DOM CACHE
     ========================= */
-    const $ = id => document.getElementById(id);
-    const balanceLoader = $('balance-loader');
-    const balanceText = $('balance-text');
-    const balanceDisplay = $('balance');
-    const productListContainer = $('productList');
-    const usernameDisplay = $('username-display');
-    const tgPopup = $('tg-popup');
-    const overlay = $('overlay');
-    const sideNav = $('sideNav');
-    const supportModal = $('supportModal');
-    const logoutBtn = $('logout-btn');
-    const sendTicketBtn = $('sendTicket');
-    const ticketMsg = $('ticketMsg');
-    const menuButton = $('menu-button');
-    const categoryNavbar = $('categoryNavbar');
-    const categoryTitle = $('current-category-title');
-    const closeTgPopupBtn = $('close-tg-popup');
+
+    const $ = id =>
+        document.getElementById(id);
+
+    const balanceLoader =
+        $('balance-loader');
+
+    const balanceText =
+        $('balance-text');
+
+    const balanceDisplay =
+        $('balance');
+
+    const productListContainer =
+        $('productList');
+
+    const usernameDisplay =
+        $('username-display');
+
+    const tgPopup =
+        $('tg-popup');
+
+    const overlay =
+        $('overlay');
+
+    const sideNav =
+        $('sideNav');
+
+    const supportModal =
+        $('supportModal');
+
+    const logoutBtn =
+        $('logout-btn');
+
+    const sendTicketBtn =
+        $('sendTicket');
+
+    const ticketMsg =
+        $('ticketMsg');
+
+    const menuButton =
+        $('menu-button');
+
+    const categoryNavbar =
+        $('categoryNavbar');
+
+    const categoryTitle =
+        $('current-category-title');
+
+    const closeTgPopupBtn =
+        $('close-tg-popup');
+
+
+    /* =========================
+       NOTIFICATION DOM
+    ========================= */
+
+    const notificationButton =
+        $('notification-button');
+
+    const notificationBadge =
+        $('notification-badge');
+
+    const notificationModal =
+        $('notification-modal');
+
+    const notificationList =
+        $('notification-list');
+
+    const notificationCancel =
+        $('notification-cancel');
+
+    const notificationCloseTop =
+        $('notification-close-top');
+
+    const markAllReadButton =
+        $('mark-all-read');
+
+
     /* =========================
        STATE
     ========================= */
+
     let currentUser = null;
+
     let shopBalance = 0;
+
     let allProducts = [];
+
     let renderToken = 0;
+
     let balanceUnsubscribe = null;
+
+    let notificationUnsubscribe = null;
+
+    let notifications = [];
+
+
     /* =========================
        TELEGRAM / POPUP
     ========================= */
-    closeTgPopupBtn.addEventListener('click', closeTgPopup);
-    overlay.addEventListener('click', () => {
-        closeMenu();
-        closeTgConfirmModal();
-    });
-    function showCommunityPopup() {
-        if (!currentUser) return;
-        tgPopup.classList.add('active');
-        overlay.classList.add('active');
-    }
-    function closeTgPopup() {
-        tgPopup.classList.remove('active');
-        if (!sideNav.classList.contains('active')) {
-            overlay.classList.remove('active');
+
+    closeTgPopupBtn.addEventListener(
+        'click',
+        closeTgPopup
+    );
+
+
+    overlay.addEventListener(
+        'click',
+        () => {
+
+            closeMenu();
+
+            closeTgConfirmModal();
+
+            closeNotificationModal();
+
         }
+    );
+
+
+    function showCommunityPopup() {
+
+        if (!currentUser) return;
+
+        tgPopup.classList.add('active');
+
+        overlay.classList.add('active');
+
     }
+
+
+    function closeTgPopup() {
+
+        tgPopup.classList.remove('active');
+
+        if (
+            !sideNav.classList.contains('active') &&
+            !supportModal.classList.contains('active') &&
+            !notificationModal.classList.contains('active') &&
+            !document
+                .getElementById('tg-confirm-modal')
+                .classList.contains('active')
+        ) {
+
+            overlay.classList.remove('active');
+
+        }
+
+    }
+
+
     /* =========================
        MENU
     ========================= */
+
     function toggleMenu() {
-        const active = sideNav.classList.toggle('active');
+
+        const active =
+            sideNav.classList.toggle('active');
+
         if (active) {
+
             overlay.classList.add('active');
+
         } else {
-            overlay.classList.remove('active');
+
+            closeMenu();
+
         }
+
     }
+
+
     function closeMenu() {
+
         sideNav.classList.remove('active');
+
         if (
             !tgPopup.classList.contains('active') &&
             !supportModal.classList.contains('active') &&
-            !document.getElementById('tg-confirm-modal').classList.contains('active')
+            !notificationModal.classList.contains('active') &&
+            !document
+                .getElementById('tg-confirm-modal')
+                .classList.contains('active')
         ) {
+
             overlay.classList.remove('active');
+
         }
+
     }
-    menuButton.addEventListener('click', toggleMenu);
+
+
+    menuButton.addEventListener(
+        'click',
+        toggleMenu
+    );
+
+
+    /* =========================
+       NOTIFICATIONS
+    ========================= */
+
+    function getNotificationTime(value) {
+
+        if (!value) return '';
+
+        let date = null;
+
+        if (
+            value &&
+            typeof value.toDate === 'function'
+        ) {
+
+            date = value.toDate();
+
+        } else if (
+            typeof value === 'number'
+        ) {
+
+            date = new Date(value);
+
+        } else {
+
+            const parsed =
+                new Date(value);
+
+            if (!isNaN(parsed.getTime())) {
+                date = parsed;
+            }
+
+        }
+
+        if (!date) return '';
+
+        return date.toLocaleString(
+            undefined,
+            {
+                dateStyle: 'short',
+                timeStyle: 'short'
+            }
+        );
+
+    }
+
+
+    function renderNotifications() {
+
+        notificationList.replaceChildren();
+
+        if (!notifications.length) {
+
+            const empty =
+                document.createElement('div');
+
+            empty.className =
+                'notification-empty';
+
+            empty.textContent =
+                'No notifications yet.';
+
+            notificationList.appendChild(empty);
+
+            return;
+        }
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        notifications.forEach(notification => {
+
+            const item =
+                document.createElement('div');
+
+            item.className =
+                `notification-item ${
+                    notification.read ? '' : 'unread'
+                }`;
+
+
+            const title =
+                document.createElement('div');
+
+            title.className =
+                'notification-item-title';
+
+            title.textContent =
+                notification.title ||
+                'Notification';
+
+
+            const message =
+                document.createElement('div');
+
+            message.className =
+                'notification-item-message';
+
+            message.textContent =
+                notification.message ||
+                '';
+
+
+            const time =
+                document.createElement('div');
+
+            time.className =
+                'notification-item-time';
+
+            time.textContent =
+                getNotificationTime(
+                    notification.createdAt
+                );
+
+
+            item.appendChild(title);
+
+            item.appendChild(message);
+
+            if (time.textContent) {
+                item.appendChild(time);
+            }
+
+            fragment.appendChild(item);
+
+        });
+
+
+        notificationList.appendChild(
+            fragment
+        );
+
+    }
+
+
+    function updateNotificationBadge() {
+
+        const unreadCount =
+            notifications.filter(
+                notification =>
+                    notification.read !== true
+            ).length;
+
+
+        if (unreadCount <= 0) {
+
+            notificationBadge.classList.remove(
+                'visible'
+            );
+
+            notificationBadge.textContent =
+                '0';
+
+            return;
+        }
+
+
+        notificationBadge.classList.add(
+            'visible'
+        );
+
+
+        notificationBadge.textContent =
+            unreadCount > 99
+                ? '99+'
+                : String(unreadCount);
+
+    }
+
+
+    function openNotificationModal() {
+
+        closeMenu();
+
+        renderNotifications();
+
+        notificationModal.classList.add(
+            'active'
+        );
+
+        overlay.classList.add('active');
+
+    }
+
+
+    function closeNotificationModal() {
+
+        notificationModal.classList.remove(
+            'active'
+        );
+
+        if (
+            !sideNav.classList.contains('active') &&
+            !tgPopup.classList.contains('active') &&
+            !supportModal.classList.contains('active') &&
+            !document
+                .getElementById('tg-confirm-modal')
+                .classList.contains('active')
+        ) {
+
+            overlay.classList.remove('active');
+
+        }
+
+    }
+
+
+    notificationButton.addEventListener(
+        'click',
+        openNotificationModal
+    );
+
+
+    notificationCancel.addEventListener(
+        'click',
+        closeNotificationModal
+    );
+
+
+    notificationCloseTop.addEventListener(
+        'click',
+        closeNotificationModal
+    );
+
+
+    async function markAllNotificationsRead() {
+
+        if (
+            !currentUser ||
+            !notifications.length
+        ) {
+            return;
+        }
+
+
+        const unread =
+            notifications.filter(
+                notification =>
+                    notification.read !== true
+            );
+
+
+        if (!unread.length) {
+
+            closeNotificationModal();
+
+            return;
+        }
+
+
+        markAllReadButton.disabled =
+            true;
+
+        markAllReadButton.style.opacity =
+            '.5';
+
+
+        try {
+
+            const batch =
+                writeBatch(db);
+
+
+            unread.forEach(notification => {
+
+                const notificationRef =
+                    doc(
+                        db,
+                        "notifications",
+                        notification.id
+                    );
+
+
+                batch.update(
+                    notificationRef,
+                    {
+                        read: true,
+                        readAt: serverTimestamp()
+                    }
+                );
+
+            });
+
+
+            await batch.commit();
+
+        } catch (error) {
+
+            console.error(
+                "Mark notifications read error:",
+                error
+            );
+
+            alert(
+                "Unable to mark notifications as read. Please try again."
+            );
+
+        } finally {
+
+            markAllReadButton.disabled =
+                false;
+
+            markAllReadButton.style.opacity =
+                '1';
+
+        }
+
+    }
+
+
+    markAllReadButton.addEventListener(
+        'click',
+        markAllNotificationsRead
+    );
+
+
+    function listenForNotifications(user) {
+
+        if (notificationUnsubscribe) {
+
+            notificationUnsubscribe();
+
+            notificationUnsubscribe =
+                null;
+
+        }
+
+
+        /*
+         * Expected future structure:
+         *
+         * notifications/{notificationId}
+         * userId
+         * title
+         * message
+         * read
+         * createdAt
+         */
+
+        const notificationQuery =
+            query(
+                collection(db, "notifications"),
+                where(
+                    "userId",
+                    "==",
+                    user.uid
+                )
+            );
+
+
+        notificationUnsubscribe =
+            onSnapshot(
+                notificationQuery,
+                snapshot => {
+
+                    const items = [];
+
+                    snapshot.forEach(
+                        notificationDoc => {
+
+                            items.push({
+                                id:
+                                    notificationDoc.id,
+                                ...notificationDoc.data()
+                            });
+
+                        }
+                    );
+
+
+                    /*
+                     * Sort locally so no Firestore
+                     * composite index is required.
+                     */
+                    items.sort(
+                        (a, b) => {
+
+                            const aMs =
+                                getTimestampMs(
+                                    a.createdAt
+                                );
+
+                            const bMs =
+                                getTimestampMs(
+                                    b.createdAt
+                                );
+
+                            return bMs - aMs;
+
+                        }
+                    );
+
+
+                    notifications =
+                        items;
+
+                    updateNotificationBadge();
+
+                    if (
+                        notificationModal
+                            .classList
+                            .contains('active')
+                    ) {
+
+                        renderNotifications();
+
+                    }
+
+                },
+                error => {
+
+                    console.error(
+                        "Notification listener error:",
+                        error
+                    );
+
+                }
+            );
+
+    }
+
+
     /* =========================
        SUPPORT
     ========================= */
+
     window.openSupport = () => {
+
         closeMenu();
-        supportModal.classList.add('active');
-        overlay.classList.add('active');
+
+        supportModal.classList.add(
+            'active'
+        );
+
+        overlay.classList.add(
+            'active'
+        );
+
     };
+
+
     window.closeSupport = () => {
-        supportModal.classList.remove('active');
+
+        supportModal.classList.remove(
+            'active'
+        );
+
         if (
             !tgPopup.classList.contains('active') &&
-            !sideNav.classList.contains('active')
+            !sideNav.classList.contains('active') &&
+            !notificationModal.classList.contains('active')
         ) {
-            overlay.classList.remove('active');
+
+            overlay.classList.remove(
+                'active'
+            );
+
         }
+
     };
-    sendTicketBtn.addEventListener('click', async () => {
-        if (!currentUser) return;
-        const msg = ticketMsg.value.trim();
-        if (!msg) {
-            alert("Please enter a message to send.");
-            return;
+
+
+    sendTicketBtn.addEventListener(
+        'click',
+        async () => {
+
+            if (!currentUser) return;
+
+            const msg =
+                ticketMsg.value.trim();
+
+
+            if (!msg) {
+
+                alert(
+                    "Please enter a message to send."
+                );
+
+                return;
+
+            }
+
+
+            sendTicketBtn.innerText =
+                "Submitting...";
+
+            sendTicketBtn.style.opacity =
+                ".5";
+
+            sendTicketBtn.disabled =
+                true;
+
+
+            try {
+
+                await addDoc(
+                    collection(
+                        db,
+                        "support_tickets"
+                    ),
+                    {
+                        userId:
+                            currentUser.uid,
+                        email:
+                            currentUser.email,
+                        message: msg,
+                        status:
+                            "Pending",
+                        timestamp:
+                            serverTimestamp()
+                    }
+                );
+
+
+                alert(
+                    "Support ticket submitted successfully!"
+                );
+
+                ticketMsg.value = "";
+
+                closeSupport();
+
+            } catch (error) {
+
+                console.error(
+                    "Ticket Error:",
+                    error
+                );
+
+                alert(
+                    "Failed to submit ticket. Please try again later."
+                );
+
+            } finally {
+
+                sendTicketBtn.innerText =
+                    "Submit";
+
+                sendTicketBtn.style.opacity =
+                    "1";
+
+                sendTicketBtn.disabled =
+                    false;
+
+            }
+
         }
-        sendTicketBtn.innerText = "Submitting...";
-        sendTicketBtn.style.opacity = ".5";
-        sendTicketBtn.disabled = true;
-        try {
-            await addDoc(collection(db, "support_tickets"), {
-                userId: currentUser.uid,
-                email: currentUser.email,
-                message: msg,
-                status: "Pending",
-                timestamp: serverTimestamp()
-            });
-            alert("Support ticket submitted successfully!");
-            ticketMsg.value = "";
-            closeSupport();
-        } catch (error) {
-            console.error("Ticket Error:", error);
-            alert("Failed to submit ticket. Please try again later.");
-        } finally {
-            sendTicketBtn.innerText = "Submit";
-            sendTicketBtn.style.opacity = "1";
-            sendTicketBtn.disabled = false;
-        }
-    });
+    );
+
+
     /* =========================
        LOGOUT
     ========================= */
-    logoutBtn.addEventListener('click', async event => {
-        event.preventDefault();
-        if (logoutBtn.dataset.busy === "true") return;
-        logoutBtn.dataset.busy = "true";
-        logoutBtn.style.opacity = ".5";
-        logoutBtn.innerText = "Signing Out...";
-        try {
-            await signOut(auth);
-            window.location.href = "index.html";
-        } catch (error) {
-            console.error("Logout Error:", error);
-            logoutBtn.dataset.busy = "false";
-            logoutBtn.style.opacity = "1";
-            logoutBtn.innerText = "Sign Out";
-            alert("Logout failed. Please check your connection.");
+
+    logoutBtn.addEventListener(
+        'click',
+        async event => {
+
+            event.preventDefault();
+
+            if (
+                logoutBtn.dataset.busy ===
+                "true"
+            ) {
+                return;
+            }
+
+
+            logoutBtn.dataset.busy =
+                "true";
+
+            logoutBtn.style.opacity =
+                ".5";
+
+            logoutBtn.innerText =
+                "Signing Out...";
+
+
+            try {
+
+                await signOut(auth);
+
+                window.location.href =
+                    "index.html";
+
+            } catch (error) {
+
+                console.error(
+                    "Logout Error:",
+                    error
+                );
+
+                logoutBtn.dataset.busy =
+                    "false";
+
+                logoutBtn.style.opacity =
+                    "1";
+
+                logoutBtn.innerText =
+                    "Sign Out";
+
+                alert(
+                    "Logout failed. Please check your connection."
+                );
+
+            }
+
         }
-    });
+    );
+
+
     /* =========================
        PRODUCT LOADING
     ========================= */
+
     async function fetchProducts() {
+
         try {
-            const snapshot = await getDocs(
-                collection(db, "products")
-            );
+
+            const snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "products"
+                    )
+                );
+
+
             const products = [];
-            snapshot.forEach(productDoc => {
-                products.push({
-                    id: productDoc.id,
-                    ...productDoc.data()
-                });
-            });
-            allProducts = products;
-            renderProducts(allProducts);
+
+
+            snapshot.forEach(
+                productDoc => {
+
+                    products.push({
+                        id:
+                            productDoc.id,
+                        ...productDoc.data()
+                    });
+
+                }
+            );
+
+
+            allProducts =
+                products;
+
+
+            renderProducts(
+                allProducts
+            );
+
         } catch (error) {
-            console.error("Product loading error:", error);
+
+            console.error(
+                "Product loading error:",
+                error
+            );
+
             productListContainer.innerHTML =
                 '<div class="empty-products">Error loading marketplace.</div>';
+
         }
+
     }
+
+
     /* =========================
        PRODUCT ROW
     ========================= */
-    function createProductRow(product, index) {
-        const row = document.createElement('div');
-        row.className = 'product-list-row';
+
+    function createProductRow(
+        product,
+        index
+    ) {
+
+        const row =
+            document.createElement('div');
+
+
+        row.className =
+            'product-list-row';
+
+
         /*
          * Only animate the first few products.
-         * This prevents dozens/hundreds of simultaneous animations.
+         * This prevents dozens/hundreds of
+         * simultaneous animations.
          */
+
         if (index < 8) {
-            row.classList.add('fade-slide-entry');
+
+            row.classList.add(
+                'fade-slide-entry'
+            );
+
         }
-        const isSingleSecret = product.mode === 'SINGLE';
+
+
+        const isSingleSecret =
+            product.mode === 'SINGLE';
+
+
         const stockCount =
             Array.isArray(product.stock)
                 ? product.stock.length
-                : Number(product.stockCount || 0);
+                : Number(
+                    product.stockCount || 0
+                );
+
+
         const stockClass =
             isSingleSecret
                 ? 'high'
                 : stockCount < 10
                     ? 'low'
                     : 'high';
+
+
         const roundedPrice =
             typeof product.price === 'number'
                 ? product.price
-                : parseFloat(product.price || 0);
+                : parseFloat(
+                    product.price || 0
+                );
+
+
         const mediaUrl =
             product.image ||
             product.imageUrl ||
             product.icon ||
             'https://i.postimg.cc/m2pGVsSV/images.jpg';
+
+
         const isVideo =
             typeof mediaUrl === 'string' &&
-            /\.(mp4|webm|ogg)(\?.*)?$/i.test(mediaUrl);
+            /\.(mp4|webm|ogg)(\?.*)?$/i.test(
+                mediaUrl
+            );
+
+
         let mediaElement;
+
+
         if (isVideo) {
-            mediaElement = document.createElement('video');
-            mediaElement.src = mediaUrl;
-            mediaElement.muted = true;
-            mediaElement.playsInline = true;
-            mediaElement.preload = "none";
+
+            mediaElement =
+                document.createElement(
+                    'video'
+                );
+
+            mediaElement.src =
+                mediaUrl;
+
+            mediaElement.muted =
+                true;
+
+            mediaElement.playsInline =
+                true;
+
+            mediaElement.preload =
+                "none";
+
+
             mediaElement.addEventListener(
                 'error',
                 () => {
-                    const fallback = document.createElement('img');
+
+                    const fallback =
+                        document.createElement(
+                            'img'
+                        );
+
                     fallback.src =
                         'https://i.postimg.cc/m2pGVsSV/images.jpg';
-                    fallback.alt = "";
-                    fallback.loading = "lazy";
-                    fallback.decoding = "async";
-                    mediaElement.replaceWith(fallback);
+
+                    fallback.alt =
+                        "";
+
+                    fallback.loading =
+                        "lazy";
+
+                    fallback.decoding =
+                        "async";
+
+                    mediaElement.replaceWith(
+                        fallback
+                    );
+
                 },
                 { once: true }
             );
+
         } else {
-            mediaElement = document.createElement('img');
-            mediaElement.src = mediaUrl;
-            mediaElement.alt = "";
-            mediaElement.loading = index < 4 ? "eager" : "lazy";
-            mediaElement.decoding = "async";
+
+            mediaElement =
+                document.createElement(
+                    'img'
+                );
+
+            mediaElement.src =
+                mediaUrl;
+
+            mediaElement.alt =
+                "";
+
+            mediaElement.loading =
+                index < 4
+                    ? "eager"
+                    : "lazy";
+
+            mediaElement.decoding =
+                "async";
+
+
             mediaElement.addEventListener(
                 'error',
                 () => {
+
                     if (
                         mediaElement.src !==
                         'https://i.postimg.cc/m2pGVsSV/images.jpg'
                     ) {
+
                         mediaElement.src =
                             'https://i.postimg.cc/m2pGVsSV/images.jpg';
+
                     }
+
                 },
                 { once: true }
             );
+
         }
-        mediaElement.width = 48;
-        mediaElement.height = 48;
-        const mediaFrame = document.createElement('div');
-        mediaFrame.className = 'product-media-frame';
-        mediaFrame.appendChild(mediaElement);
-        const nameElement = document.createElement('div');
-        nameElement.className = 'product-name';
-        nameElement.textContent = product.name || "Unnamed Product";
-        const metaElement = document.createElement('div');
-        metaElement.className = 'product-meta-subline';
-        const stockElement = document.createElement('span');
+
+
+        mediaElement.width =
+            48;
+
+        mediaElement.height =
+            48;
+
+
+        const mediaFrame =
+            document.createElement(
+                'div'
+            );
+
+        mediaFrame.className =
+            'product-media-frame';
+
+        mediaFrame.appendChild(
+            mediaElement
+        );
+
+
+        const nameElement =
+            document.createElement(
+                'div'
+            );
+
+        nameElement.className =
+            'product-name';
+
+        nameElement.textContent =
+            product.name ||
+            "Unnamed Product";
+
+
+        const metaElement =
+            document.createElement(
+                'div'
+            );
+
+        metaElement.className =
+            'product-meta-subline';
+
+
+        const stockElement =
+            document.createElement(
+                'span'
+            );
+
         stockElement.className =
             `stock-indicator ${stockClass}`;
+
+
         if (isSingleSecret) {
+
             stockElement.innerHTML = `
-                <svg width="16" height="16"
+                <svg
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2.5">
+                    stroke-width="2.5"
+                >
                     <path d="M12 12c-2-2.67-4-4-6-4a6 6 0 1 0 0 12c2 0 4-1.33 6-4zm0 0c2 2.67 4 4 6 4a6 6 0 1 0 0-12c-2 0-4 1.33-6 4z"/>
                 </svg>
             `;
+
         } else {
+
             stockElement.textContent =
                 `${stockCount} left`;
+
         }
-        const priceElement = document.createElement('div');
-        priceElement.className = 'product-price-container';
+
+
+        const priceElement =
+            document.createElement(
+                'div'
+            );
+
+        priceElement.className =
+            'product-price-container';
+
         priceElement.textContent =
-            `₦${roundedPrice.toLocaleString(undefined, {
-                minimumFractionDigits: 2
-            })}`;
-        metaElement.appendChild(stockElement);
-        metaElement.appendChild(priceElement);
-        const textDetails = document.createElement('div');
-        textDetails.className = 'product-text-details';
-        textDetails.appendChild(nameElement);
-        textDetails.appendChild(metaElement);
-        const left = document.createElement('div');
-        left.className = 'product-left';
-        left.appendChild(mediaFrame);
-        left.appendChild(textDetails);
-        const buyButton = document.createElement('button');
-        buyButton.className = 'purchase-btn';
-        buyButton.type = 'button';
-        buyButton.textContent = 'Buy';
-        buyButton.addEventListener('click', () => {
-            window.processPurchase(product.id, roundedPrice);
-        });
-        const right = document.createElement('div');
-        right.className = 'product-right';
-        right.appendChild(buyButton);
-        row.appendChild(left);
-        row.appendChild(right);
+            `₦${roundedPrice.toLocaleString(
+                undefined,
+                {
+                    minimumFractionDigits: 2
+                }
+            )}`;
+
+
+        metaElement.appendChild(
+            stockElement
+        );
+
+        metaElement.appendChild(
+            priceElement
+        );
+
+
+        const textDetails =
+            document.createElement(
+                'div'
+            );
+
+        textDetails.className =
+            'product-text-details';
+
+        textDetails.appendChild(
+            nameElement
+        );
+
+        textDetails.appendChild(
+            metaElement
+        );
+
+
+        const left =
+            document.createElement(
+                'div'
+            );
+
+        left.className =
+            'product-left';
+
+        left.appendChild(
+            mediaFrame
+        );
+
+        left.appendChild(
+            textDetails
+        );
+
+
+        const buyButton =
+            document.createElement(
+                'button'
+            );
+
+        buyButton.className =
+            'purchase-btn';
+
+        buyButton.type =
+            'button';
+
+        buyButton.textContent =
+            'Buy';
+
+
+        buyButton.addEventListener(
+            'click',
+            () => {
+
+                window.processPurchase(
+                    product.id,
+                    roundedPrice
+                );
+
+            }
+        );
+
+
+        const right =
+            document.createElement(
+                'div'
+            );
+
+        right.className =
+            'product-right';
+
+        right.appendChild(
+            buyButton
+        );
+
+
+        row.appendChild(
+            left
+        );
+
+        row.appendChild(
+            right
+        );
+
+
         return row;
+
     }
+
+
     /* =========================
        PRODUCT RENDER
     ========================= */
-    function renderProducts(productsArray) {
-        const currentToken = ++renderToken;
+
+    function renderProducts(
+        productsArray
+    ) {
+
+        const currentToken =
+            ++renderToken;
+
+
         productListContainer.replaceChildren();
+
+
         if (!productsArray.length) {
-            const empty = document.createElement('div');
-            empty.className = 'empty-products';
+
+            const empty =
+                document.createElement(
+                    'div'
+                );
+
+            empty.className =
+                'empty-products';
+
             empty.textContent =
                 'No items found in this category.';
-            productListContainer.appendChild(empty);
+
+            productListContainer.appendChild(
+                empty
+            );
+
             return;
+
         }
+
+
         /*
-         * Small batches prevent a huge synchronous DOM operation.
+         * Small batches prevent a huge
+         * synchronous DOM operation.
          */
-        const BATCH_SIZE = 12;
-        let currentIndex = 0;
+
+        const BATCH_SIZE =
+            12;
+
+        let currentIndex =
+            0;
+
+
         function renderBatch() {
-            if (currentToken !== renderToken) return;
+
+            if (
+                currentToken !==
+                renderToken
+            ) {
+                return;
+            }
+
+
             const fragment =
                 document.createDocumentFragment();
+
+
             const end =
                 Math.min(
-                    currentIndex + BATCH_SIZE,
+                    currentIndex +
+                        BATCH_SIZE,
                     productsArray.length
                 );
+
+
             for (
                 let i = currentIndex;
                 i < end;
                 i++
             ) {
+
                 fragment.appendChild(
                     createProductRow(
                         productsArray[i],
                         i
                     )
                 );
+
             }
-            productListContainer.appendChild(fragment);
-            currentIndex = end;
-            if (currentIndex < productsArray.length) {
-                requestAnimationFrame(renderBatch);
+
+
+            productListContainer.appendChild(
+                fragment
+            );
+
+
+            currentIndex =
+                end;
+
+
+            if (
+                currentIndex <
+                productsArray.length
+            ) {
+
+                requestAnimationFrame(
+                    renderBatch
+                );
+
             }
+
         }
+
+
         renderBatch();
+
     }
+
+
     /* =========================
        CATEGORY FILTER
     ========================= */
-    function filterCategory(category, element) {
+
+    function filterCategory(
+        category,
+        element
+    ) {
+
         const buttons =
             categoryNavbar.children;
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].classList.remove('active');
+
+
+        for (
+            let i = 0;
+            i < buttons.length;
+            i++
+        ) {
+
+            buttons[i].classList.remove(
+                'active'
+            );
+
         }
+
+
         if (element) {
-            element.classList.add('active');
+
+            element.classList.add(
+                'active'
+            );
+
         }
-        categoryTitle.textContent = category;
+
+
+        categoryTitle.textContent =
+            category;
+
+
         const filtered =
             category === 'All'
                 ? allProducts
                 : allProducts.filter(
                     product =>
-                        product.category === category
+                        product.category ===
+                        category
                 );
-        renderProducts(filtered);
-    }
-    categoryNavbar.addEventListener('click', event => {
-        const button =
-            event.target.closest('.nav-category-btn');
-        if (!button) return;
-        filterCategory(
-            button.dataset.category,
-            button
+
+
+        renderProducts(
+            filtered
         );
-    });
-    window.filterCategory = filterCategory;
+
+    }
+
+
+    categoryNavbar.addEventListener(
+        'click',
+        event => {
+
+            const button =
+                event.target.closest(
+                    '.nav-category-btn'
+                );
+
+
+            if (!button) return;
+
+
+            filterCategory(
+                button.dataset.category,
+                button
+            );
+
+        }
+    );
+
+
+    window.filterCategory =
+        filterCategory;
+
+
     /* =========================
        PURCHASE
     ========================= */
-    window.processPurchase = (id) => {
-        window.location.href =
-            `buy.html?id=${encodeURIComponent(id)}`;
-    };
+
+    window.processPurchase =
+        (id) => {
+
+            window.location.href =
+                `buy.html?id=${encodeURIComponent(id)}`;
+
+        };
+
+
     /* =========================
        AUTH
     ========================= */
-    onAuthStateChanged(auth, user => {
-        if (!user) {
-            window.location.href = "index.html";
-            return;
-        }
-        currentUser = user;
-        /*
-         * Delay popup so it doesn't compete with
-         * the initial marketplace rendering.
-         */
-        setTimeout(showCommunityPopup, 1800);
-        /*
-         * Balance listener.
-         * Keep realtime balance functionality.
-         */
-        balanceUnsubscribe =
-            onSnapshot(
-                doc(db, "users", user.uid),
-                docSnap => {
-                    if (!docSnap.exists()) return;
-                    const data = docSnap.data();
-                    usernameDisplay.textContent =
-                        data.username ||
-                        user.email?.split('@')[0] ||
-                        "User";
-                    shopBalance =
-                        Number(data.balance || 0);
-                    balanceLoader.classList.add('hidden');
-                    balanceText.classList.remove('hidden');
-                    balanceDisplay.textContent =
-                        shopBalance.toLocaleString(
-                            undefined,
-                            {
-                                minimumFractionDigits: 2
-                            }
-                        );
-                },
-                error => {
-                    console.error(
-                        "Balance listener error:",
-                        error
-                    );
-                    balanceLoader.classList.add('hidden');
-                    balanceText.classList.remove('hidden');
-                    balanceDisplay.textContent = "0.00";
-                }
+
+    onAuthStateChanged(
+        auth,
+        user => {
+
+            if (!user) {
+
+                window.location.href =
+                    "index.html";
+
+                return;
+
+            }
+
+
+            currentUser =
+                user;
+
+
+            /*
+             * Start notification listener
+             * immediately after authentication.
+             */
+
+            listenForNotifications(
+                user
             );
-        /*
-         * Start products immediately after authentication.
-         */
-        fetchProducts();
-    });
+
+
+            /*
+             * Delay popup so it doesn't
+             * compete with initial rendering.
+             */
+
+            setTimeout(
+                showCommunityPopup,
+                1800
+            );
+
+
+            /*
+             * Balance listener.
+             * Keep realtime balance functionality.
+             */
+
+            balanceUnsubscribe =
+                onSnapshot(
+                    doc(
+                        db,
+                        "users",
+                        user.uid
+                    ),
+
+                    docSnap => {
+
+                        if (
+                            !docSnap.exists()
+                        ) {
+                            return;
+                        }
+
+
+                        const data =
+                            docSnap.data();
+
+
+                        usernameDisplay.textContent =
+                            data.username ||
+                            user.email
+                                ?.split('@')[0] ||
+                            "User";
+
+
+                        shopBalance =
+                            Number(
+                                data.balance || 0
+                            );
+
+
+                        balanceLoader.classList.add(
+                            'hidden'
+                        );
+
+
+                        balanceText.classList.remove(
+                            'hidden'
+                        );
+
+
+                        balanceDisplay.textContent =
+                            shopBalance.toLocaleString(
+                                undefined,
+                                {
+                                    minimumFractionDigits: 2
+                                }
+                            );
+
+                    },
+
+                    error => {
+
+                        console.error(
+                            "Balance listener error:",
+                            error
+                        );
+
+
+                        balanceLoader.classList.add(
+                            'hidden'
+                        );
+
+
+                        balanceText.classList.remove(
+                            'hidden'
+                        );
+
+
+                        balanceDisplay.textContent =
+                            "0.00";
+
+                    }
+                );
+
+
+            /*
+             * Start products immediately
+             * after authentication.
+             */
+
+            fetchProducts();
+
+        }
+    );
+
+
     /* =========================
        CLEANUP
     ========================= */
+
     window.addEventListener(
         'beforeunload',
         () => {
-            if (balanceUnsubscribe) {
+
+            if (
+                balanceUnsubscribe
+            ) {
+
                 balanceUnsubscribe();
+
             }
+
+
+            if (
+                notificationUnsubscribe
+            ) {
+
+                notificationUnsubscribe();
+
+            }
+
         }
     );
-    /* Make functions available to existing inline handlers */
-    window.openTgConfirmModal = openTgConfirmModal;
-    window.closeTgConfirmModal = closeTgConfirmModal;
-    window.confirmTelegramRedirect = confirmTelegramRedirect;
-    window.toggleMenu = toggleMenu;
-    window.closeTgPopup = closeTgPopup;
+
+
+    /* =========================
+       MAKE FUNCTIONS AVAILABLE
+    ========================= */
+
+    window.openTgConfirmModal =
+        openTgConfirmModal;
+
+    window.closeTgConfirmModal =
+        closeTgConfirmModal;
+
+    window.confirmTelegramRedirect =
+        confirmTelegramRedirect;
+
+    window.toggleMenu =
+        toggleMenu;
+
+    window.closeTgPopup =
+        closeTgPopup;
+
 </script>
+
 </body>
 </html>
