@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMM History - PR1MΞ Market</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --glass-border: rgba(255,255,255,.08);
+            --dark-bg: #060608;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        body {
+            background: #060608;
+            color: #f1f1f3;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .order-card {
+            background: rgba(255,255,255,.025);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .order-title { font-weight: 700; font-size: .9rem; color: #fff; margin-bottom: 6px; }
+        .order-meta { font-size: .8rem; color: #a0aec0; display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .status-badge {
+            font-size: .7rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            background: rgba(0,243,255,.1);
+            color: var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <button class="back-btn" onclick="history.back()" aria-label="Go Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <h1 style="font-size: 1.2rem;">SMM Order History</h1>
+</header>
+
+<div id="history-container">
+    <div style="text-align:center; padding: 40px; color: #718096;">Loading orders...</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
+        authDomain: "primelogs-web.firebaseapp.com",
+        projectId: "primelogs-web",
+        storageBucket: "primelogs-web.firebasestorage.app",
+        messagingSenderId: "732956069251",
+        appId: "1:732956069251:web:b9c8be37e6db4f98db3ab3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const container = document.getElementById('history-container');
+
+    onAuthStateChanged(auth, async user => {
+        if (!user) { window.location.href = "index.html"; return; }
+
+        try {
+            const q = query(collection(db, "smm_orders"), where("userId", "==", user.uid));
+            const snap = await getDocs(q);
+            
+            if (snap.empty) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#718096;">No orders found.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            snap.forEach(docSnap => {
+                const data = docSnap.data();
+                container.innerHTML += `
+                    <div class="order-card">
+                        <div class="order-title">${data.serviceName}</div>
+                        <div class="order-meta">
+                            <span>Qty: ${data.quantity}</span>
+                            <span>₦${data.charge.toFixed(2)}</span>
+                        </div>
+                        <div class="order-meta">
+                            <span class="status-badge">${data.status}</span>
+                            <span>ID: ${data.smmOrderId}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#718096;">Failed to load history.</div>';
+        }
+    });
+</script>
+</body>
+</html>
