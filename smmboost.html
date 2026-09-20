@@ -476,13 +476,23 @@
 
             if (orderResult.order) {
                 const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, { balance: increment(-totalNGN) });
-                await addDoc(collection(db, "smm_orders"), {
+
+                await updateDoc(userRef, {
+                    balance: increment(-totalNGN)
+                });
+
+                // Save to the same Firestore collection used by the Telegram bot.
+                // This allows the bot's existing realtime listener to send:
+                // 🚀 NEW BOOSTING ORDER
+                await addDoc(collection(db, "smmOrders"), {
                     userId: currentUser.uid,
                     smmOrderId: orderResult.order,
+                    serviceId: selectedService.service,
                     serviceName: selectedService.name,
+                    category: selectedService.category || "N/A",
                     link: link,
                     quantity: qty,
+                    totalPaid: totalNGN,
                     charge: totalNGN,
                     status: 'Pending',
                     createdAt: serverTimestamp()
