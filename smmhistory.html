@@ -96,7 +96,11 @@
         if (!user) { window.location.href = "index.html"; return; }
 
         try {
-            const q = query(collection(db, "smm_orders"), where("userId", "==", user.uid));
+            const q = query(
+                collection(db, "smmOrders"),
+                where("userId", "==", user.uid)
+            );
+
             const snap = await getDocs(q);
             
             if (snap.empty) {
@@ -105,15 +109,19 @@
             }
 
             container.innerHTML = '';
+
             snap.forEach(docSnap => {
                 const data = docSnap.data();
+
                 container.innerHTML += `
                     <div class="order-card">
                         <div class="order-title">${data.serviceName}</div>
+
                         <div class="order-meta">
                             <span>Qty: ${data.quantity}</span>
                             <span>₦${data.charge.toFixed(2)}</span>
                         </div>
+
                         <div class="order-meta">
                             <span class="status-badge">DONE</span>
                             <span>ID: ${data.smmOrderId}</span>
@@ -121,6 +129,7 @@
                     </div>
                 `;
             });
+
         } catch (err) {
             container.innerHTML = '<div style="text-align:center; padding:40px; color:#718096;">Failed to load history.</div>';
         }
