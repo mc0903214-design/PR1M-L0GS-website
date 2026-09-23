@@ -15,13 +15,16 @@
             --stock-red: #ff4b4b;
             --stock-green: #00ff88;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
         body {
             background-color: var(--dark-bg);
             color: #f1f1f3;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 50% 50%, #0d0d16 0%, #060608 100%);
@@ -30,21 +33,21 @@
             padding: 24px 16px;
             -webkit-font-smoothing: antialiased;
         }
-
         .reveal {
             opacity: 0;
             transform: translateY(15px);
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 4px 8px 24px 8px;
         }
-
         .back-btn {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--glass-border);
@@ -55,7 +58,6 @@
             display: flex;
             align-items: center;
         }
-
         .spinner {
             width: 32px;
             height: 32px;
@@ -65,9 +67,11 @@
             animation: spin 0.8s linear infinite;
             margin: 40px auto;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- PREVIEW BLOCK --- */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* PREVIEW */
         .preview-media-wrapper {
             width: 100%;
             border-radius: 20px;
@@ -80,13 +84,13 @@
             align-items: center;
             justify-content: center;
         }
-        .preview-media-wrapper img, .preview-media-wrapper video {
+        .preview-media-wrapper img,
+        .preview-media-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        /* --- CONTENT BODY --- */
+        /* CONTENT */
         .info-card {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(14px);
@@ -96,14 +100,12 @@
             padding: 24px;
             margin-bottom: 24px;
         }
-
         .product-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: #fff;
             margin-bottom: 8px;
         }
-
         .meta-row {
             display: flex;
             align-items: center;
@@ -111,10 +113,15 @@
             margin-bottom: 20px;
             font-size: 0.85rem;
         }
-        .stock-label { font-weight: 700; }
-        .stock-label.low { color: var(--stock-red); }
-        .stock-label.high { color: var(--stock-green); }
-
+        .stock-label {
+            font-weight: 700;
+        }
+        .stock-label.low {
+            color: var(--stock-red);
+        }
+        .stock-label.high {
+            color: var(--stock-green);
+        }
         .desc-title {
             font-size: 0.8rem;
             text-transform: uppercase;
@@ -130,8 +137,7 @@
             margin-bottom: 24px;
             white-space: pre-wrap;
         }
-
-        /* --- QUANTITY & TOTAL CONTROLS --- */
+        /* QUANTITY */
         .interactive-purchase-block {
             border-top: 1px solid rgba(255,255,255,0.06);
             padding-top: 20px;
@@ -139,14 +145,16 @@
             flex-direction: column;
             gap: 16px;
         }
-
         .qty-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .qty-label { font-weight: 600; font-size: 0.95rem; color: #a0aec0; }
-        
+        .qty-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #a0aec0;
+        }
         .qty-selectors {
             display: flex;
             align-items: center;
@@ -165,14 +173,15 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .qty-btn:active { background: rgba(255,255,255,0.05); }
+        .qty-btn:active {
+            background: rgba(255,255,255,0.05);
+        }
         .qty-value {
             width: 44px;
             text-align: center;
             font-weight: 700;
             font-size: 1rem;
         }
-
         .total-row {
             display: flex;
             justify-content: space-between;
@@ -181,9 +190,10 @@
             font-weight: 700;
             margin-top: 4px;
         }
-        .total-amount { color: var(--neon-cyan); }
-
-        /* --- ACTION BUTTON --- */
+        .total-amount {
+            color: var(--neon-cyan);
+        }
+        /* ACTION BUTTON */
         .btn-action-submit {
             width: 100%;
             background: linear-gradient(90deg, #9d4edd 0%, var(--neon-purple) 100%);
@@ -201,9 +211,11 @@
             box-shadow: 0 4px 20px rgba(188, 19, 254, 0.3);
             transition: transform 0.2s, opacity 0.2s;
         }
-        .btn-action-submit:active { transform: scale(0.98); opacity: 0.95; }
-
-        /* --- SUCCESS INVENTORY BLOCK --- */
+        .btn-action-submit:active {
+            transform: scale(0.98);
+            opacity: 0.95;
+        }
+        /* SUCCESS */
         .success-panel {
             text-align: center;
             padding: 12px 8px;
@@ -220,9 +232,17 @@
             margin: 0 auto 16px;
             color: var(--stock-green);
         }
-        .success-heading { font-size: 1.4rem; font-weight: 700; color: white; margin-bottom: 6px; }
-        .success-subline { font-size: 0.85rem; color: #718096; margin-bottom: 24px; }
-        
+        .success-heading {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .success-subline {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 24px;
+        }
         .output-data-container {
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--glass-border);
@@ -231,7 +251,14 @@
             text-align: left;
             margin-bottom: 24px;
         }
-        .output-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--neon-cyan); letter-spacing: 0.5px; margin-bottom: 8px; }
+        .output-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
         .output-box {
             width: 100%;
             max-height: 180px;
@@ -246,8 +273,7 @@
             word-break: break-all;
             border: 1px solid rgba(255,255,255,0.03);
         }
-
-        /* --- STEPS CONTAINER FOR TELEGRAM METHOD --- */
+        /* TELEGRAM */
         .instruction-steps {
             text-align: left;
             display: flex;
@@ -301,8 +327,7 @@
             font-weight: 600;
             margin-top: 8px;
         }
-
-        /* --- CUSTOM NOTIFICATION TOAST --- */
+        /* TOAST */
         .notification-toast {
             position: fixed;
             bottom: 30px;
@@ -319,83 +344,49 @@
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             white-space: nowrap;
         }
-        .notification-toast.active { transform: translateX(-50%) translateY(0); }
-        .notification-toast.info-style { background: var(--neon-cyan); color: #000; box-shadow: 0 8px 24px rgba(0, 243, 255, 0.3); }
-
-        /* --- DYNAMIC REFERRAL POPUP BLOCK --- */
-        .ref-modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 4000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+        .notification-toast.active {
+            transform: translateX(-50%) translateY(0);
         }
-        .ref-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .ref-modal-content {
-            background: rgba(14, 14, 18, 0.98);
-            border: 1px solid rgba(188, 19, 254, 0.4);
-            border-radius: 24px;
-            padding: 28px;
-            width: 90%;
-            max-width: 360px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        .notification-toast.info-style {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 8px 24px rgba(0, 243, 255, 0.3);
         }
-        .ref-modal-overlay.active .ref-modal-content { transform: scale(1); }
-        .ref-modal-title { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
-        .ref-modal-text { font-size: 0.9rem; color: #cbd5e0; line-height: 1.5; margin-bottom: 20px; }
-        .progress-badge { font-weight: 700; color: var(--neon-purple); font-size: 1.1rem; }
-        .ref-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #a0aec0;
-            word-break: break-all;
-            margin-bottom: 16px;
+        .hidden {
+            display: none !important;
         }
-        .ref-modal-btn-row { display: flex; flex-direction: column; gap: 10px; }
-
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-
     <header class="reveal active">
-        <!-- CHANGED: Uses browser history instead of navigating directly to shop.html -->
         <a href="#" class="back-btn" onclick="history.back(); return false;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
         </a>
-        <div style="font-weight: 700; letter-spacing: 1px; color: var(--neon-cyan);">SECURE CHECKOUT</div>
+        <div style="font-weight: 700; letter-spacing: 1px; color: var(--neon-cyan);">
+            SECURE CHECKOUT
+        </div>
         <div style="width: 40px;"></div>
     </header>
-
     <div id="loader-screen" class="spinner"></div>
-
     <div id="purchase-view" class="hidden">
         <div class="preview-media-wrapper reveal active" id="media-block"></div>
-
         <div class="info-card reveal active">
             <div class="product-title" id="p-title">...</div>
             <div class="meta-row">
                 <div id="p-stock" class="stock-label">...</div>
                 <div style="color: rgba(255,255,255,0.15);">|</div>
-                <div style="color: var(--neon-cyan); font-weight:700;" id="p-unit-price">₦0.00</div>
+                <div style="color: var(--neon-cyan); font-weight:700;" id="p-unit-price">
+                    ₦0.00
+                </div>
             </div>
-
             <div class="desc-title">Product details</div>
-            <div class="product-description" id="p-desc">...</div>
-
+            <div class="product-description" id="p-desc">
+                ...
+            </div>
             <div class="interactive-purchase-block">
                 <div class="qty-row" id="qty-container-row">
                     <div class="qty-label">Quantity</div>
@@ -405,89 +396,121 @@
                         <button class="qty-btn" onclick="adjustQuantity(1)">+</button>
                     </div>
                 </div>
-
                 <div class="total-row">
                     <div>Total Cost:</div>
                     <div class="total-amount" id="p-total">₦0.00</div>
                 </div>
-
-                <button class="btn-action-submit" id="buy-now-btn" onclick="executePurchase()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <button
+                    class="btn-action-submit"
+                    id="buy-now-btn"
+                    onclick="executePurchase()"
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
                     <span id="btn-text">Buy Now</span>
                 </button>
             </div>
         </div>
     </div>
-
     <!-- SUCCESS CONTAINER -->
     <div id="success-view" class="info-card reveal hidden" style="margin-top: 10px;">
         <div class="success-panel">
             <div class="status-badge-circle">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
             </div>
             <div class="success-heading">Order Delivered</div>
-            <div class="success-subline" id="success-message-sub">Your items have been extracted from inventory.</div>
-
-            <!-- NORMAL OUTPUT VIEW (TOGGLE WAS OFF) -->
+            <div class="success-subline" id="success-message-sub">
+                Your items have been extracted from inventory.
+            </div>
+            <!-- NORMAL OUTPUT -->
             <div class="output-data-container" id="normal-output-wrapper">
-                <div class="output-label">Credentials / Secrets Attached:</div>
-                <div class="output-box" id="payload-display">...</div>
-                <button class="btn-action-submit" style="background: var(--neon-cyan); color: #000; box-shadow: 0 4px 15px rgba(0, 243, 255, 0.2); margin-top: 16px;" onclick="copyPayload()">
+                <div class="output-label">
+                    Credentials / Secrets Attached:
+                </div>
+                <div class="output-box" id="payload-display">
+                    ...
+                </div>
+                <button
+                    class="btn-action-submit"
+                    style="background: var(--neon-cyan); color: #000; box-shadow: 0 4px 15px rgba(0, 243, 255, 0.2); margin-top: 16px;"
+                    onclick="copyPayload()"
+                >
                     Copy Credentials
                 </button>
             </div>
-
-            <!-- TELEGRAM STEP VIEW (TOGGLE WAS ON) -->
+            <!-- TELEGRAM METHOD -->
             <div class="instruction-steps hidden" id="telegram-output-wrapper">
                 <div class="step-block">
-                    <div class="step-title">STEP 1: COPY THIS CODE(if u bought more than one do this process seperately)</div>
-                    <div class="output-box" id="tg-code-display" style="max-height: 100px;">...</div>
-                    <button class="copy-sub-btn" onclick="copyTelegramCode()">Copy Code</button>
+                    <div class="step-title">
+                        STEP 1: COPY THIS CODE(if u bought more than one do this process seperately)
+                    </div>
+                    <div class="output-box" id="tg-code-display" style="max-height: 100px;">
+                        ...
+                    </div>
+                    <button class="copy-sub-btn" onclick="copyTelegramCode()">
+                        Copy Code
+                    </button>
                 </div>
-
                 <div class="step-block">
-                    <div class="step-title">STEP 2: CLICK LINK TO GO TO OUR TELEGRAM BOT</div>
-                    <a href="https://t.me/my_product_delivery_bot" target="_blank" class="tg-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <div class="step-title">
+                        STEP 2: CLICK LINK TO GO TO OUR TELEGRAM BOT
+                    </div>
+                    <a
+                        href="https://t.me/my_product_delivery_bot"
+                        target="_blank"
+                        class="tg-btn"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
                         Open Telegram Bot
                     </a>
                 </div>
-
                 <div class="step-block">
-                    <div class="step-title">STEP 3: START THE BOT AND CLICK ON THE /CLAIM COMMAND</div>
+                    <div class="step-title">
+                        STEP 3: START THE BOT AND CLICK ON THE /CLAIM COMMAND
+                    </div>
                 </div>
-
                 <div class="step-block">
-                    <div class="step-title">STEP 4: PASTE THE CODE YOU COPIED IN STEP 1 AND WAIT FOR YOUR PURCHASE TO BE DELIVERED, THIS MAY TAKE A WHILE</div>
+                    <div class="step-title">
+                        STEP 4: PASTE THE CODE YOU COPIED IN STEP 1 AND WAIT FOR YOUR PURCHASE TO BE DELIVERED, THIS MAY TAKE A WHILE
+                    </div>
                 </div>
             </div>
-
-            <a href="shop.html" class="back-btn" style="justify-content: center; margin-top: 14px; border-radius: 14px; padding: 14px;">Return to Marketplace</a>
+            <a
+                href="shop.html"
+                class="back-btn"
+                style="justify-content: center; margin-top: 14px; border-radius: 14px; padding: 14px;"
+            >
+                Return to Marketplace
+            </a>
         </div>
     </div>
-
-    <div class="ref-modal-overlay" id="refModal">
-        <div class="ref-modal-content">
-            <div class="ref-modal-title">🔒 Category Locked</div>
-            <div class="ref-modal-text">
-                Items inside the Freebies category require at least 4 completed invites.<br><br>
-                Your Current Progress: <span class="progress-badge" id="modal-progress-text">0/4</span>
-            </div>
-            <div class="ref-box" id="modal-ref-link">...</div>
-            <div class="ref-modal-btn-row">
-                <button class="btn-action-submit" onclick="copyModalRef()">Copy Link</button>
-                <button class="back-btn" style="justify-content: center;" onclick="closeRefModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
     <div id="toast-notif" class="notification-toast"></div>
-
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, runTransaction, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+        import { initializeApp }
+            from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getAuth,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            runTransaction,
+            collection,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         const firebaseConfig = {
             apiKey: "AIzaSyB4X-pWsM2Z66tMZEOfH7A7KNIRBb-yPLk",
             authDomain: "primelogs-web.firebaseapp.com",
@@ -496,23 +519,18 @@
             messagingSenderId: "732956069251",
             appId: "1:732956069251:web:b9c8be37e6db4f98db3ab6"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
         let userSession = null;
         let productDetails = null;
         let productID = null;
         let currentQuantity = 1;
         let runningTotal = 0;
         let availableStockCount = 0;
-        let userDataCache = null;
         let authInitialized = false;
-
         const urlParams = new URLSearchParams(window.location.search);
         productID = urlParams.get('id');
-
         function triggerNotification(msg, type = 'error') {
             const toast = document.getElementById('toast-notif');
             toast.innerText = msg;
@@ -522,267 +540,456 @@
                 toast.classList.remove('info-style');
             }
             toast.classList.add('active');
-            setTimeout(() => { toast.classList.remove('active'); }, 3500);
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3500);
         }
-
         async function fetchProductOnly() {
-            if(!productID) {
+            if (!productID) {
                 triggerNotification("No valid items requested.");
-                setTimeout(() => location.href = 'shop.html', 2000);
+                setTimeout(() => {
+                    location.href = 'shop.html';
+                }, 2000);
                 return;
             }
-
             try {
-                const productDoc = await getDoc(doc(db, "products", productID));
+                const productDoc = await getDoc(
+                    doc(db, "products", productID)
+                );
                 if (!productDoc.exists()) {
                     triggerNotification("Target product does not exist.");
                     return;
                 }
-
-                productDetails = { id: productDoc.id, ...productDoc.data() };
+                productDetails = {
+                    id: productDoc.id,
+                    ...productDoc.data()
+                };
                 setupUI(productDetails);
             } catch(err) {
                 console.error(err);
                 triggerNotification("Error loading product data.");
             }
         }
-
-        async function syncUserData(user) {
-            try {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if(userDoc.exists()) {
-                    userDataCache = userDoc.data();
-                }
-            } catch(e) { console.error("User sync failed", e); }
-        }
-
         function setupUI(prod) {
-            document.getElementById('loader-screen').classList.add('hidden');
-            document.getElementById('purchase-view').classList.remove('hidden');
-
-            const mediaBlock = document.getElementById('media-block');
-            const url = prod.image || prod.imageUrl || prod.icon || 'https://i.postimg.cc/m2pGVsSV/images.jpg';
-            const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
-            
-            mediaBlock.innerHTML = isVideo 
+            document
+                .getElementById('loader-screen')
+                .classList.add('hidden');
+            document
+                .getElementById('purchase-view')
+                .classList.remove('hidden');
+            const mediaBlock =
+                document.getElementById('media-block');
+            const url =
+                prod.image ||
+                prod.imageUrl ||
+                prod.icon ||
+                'https://i.postimg.cc/m2pGVsSV/images.jpg';
+            const isVideo =
+                url.match(/\.(mp4|webm|ogg)$/i);
+            mediaBlock.innerHTML = isVideo
                 ? `<video src="${url}" controls playsinline></video>`
                 : `<img src="${url}" onerror="this.src='https://i.postimg.cc/m2pGVsSV/images.jpg'">`;
-
-            document.getElementById('p-title').innerText = prod.name || "Unnamed Asset";
-            document.getElementById('p-desc').innerText = prod.description || "No product description added.";
-            
-            const unitPrice = typeof prod.price === 'number' ? prod.price : parseFloat(prod.price || 0);
-            document.getElementById('p-unit-price').innerText = `₦${unitPrice.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-
-            const stockLabel = document.getElementById('p-stock');
+            document.getElementById('p-title').innerText =
+                prod.name || "Unnamed Asset";
+            document.getElementById('p-desc').innerText =
+                prod.description || "No product description added.";
+            const unitPrice =
+                typeof prod.price === 'number'
+                    ? prod.price
+                    : parseFloat(prod.price || 0);
+            document.getElementById('p-unit-price').innerText =
+                `₦${unitPrice.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
+                })}`;
+            const stockLabel =
+                document.getElementById('p-stock');
             if (prod.mode === 'SINGLE') {
-                stockLabel.className = "stock-label high";
-                stockLabel.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle; margin-right:4px;"><path d="M12 12c-2-2.67-4-4-6-4a6 6 0 1 0 0 12c2 0 4-1.33 6-4zm0 0c2 2.67 4 4 6 4a6 6 0 1 0 0-12c0-4.33-1.33-6-4-6z"/></svg> Always Available`;
-                document.getElementById('qty-container-row').classList.add('hidden');
+                stockLabel.className =
+                    "stock-label high";
+                stockLabel.innerHTML = `
+                    <svg width="14" height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        style="vertical-align:middle; margin-right:4px;">
+                        <path d="M12 12c-2-2.67-4-4-6-4a6 6 0 1 0 0 12c2 0 4-1.33 6-4zm0 0c2 2.67 4 4 6 4a6 6 0 1 0 0-12c0-4.33-1.33-6-4-6z"/>
+                    </svg>
+                    Always Available
+                `;
+                document
+                    .getElementById('qty-container-row')
+                    .classList.add('hidden');
                 availableStockCount = 999999;
             } else {
-                availableStockCount = Array.isArray(prod.stock) ? prod.stock.length : Number(prod.stockCount || 0);
+                availableStockCount =
+                    Array.isArray(prod.stock)
+                        ? prod.stock.length
+                        : Number(prod.stockCount || 0);
                 if (availableStockCount <= 0) {
-                    stockLabel.className = "stock-label low";
-                    stockLabel.innerText = "OUT OF STOCK";
-                    document.getElementById('buy-now-btn').disabled = true;
-                    document.getElementById('buy-now-btn').style.opacity = "0.4";
+                    stockLabel.className =
+                        "stock-label low";
+                    stockLabel.innerText =
+                        "OUT OF STOCK";
+                    const buyButton =
+                        document.getElementById('buy-now-btn');
+                    buyButton.disabled = true;
+                    buyButton.style.opacity = "0.4";
                 } else {
-                    stockLabel.className = availableStockCount < 10 ? "stock-label low" : "stock-label high";
-                    stockLabel.innerText = `${availableStockCount} units available`;
+                    stockLabel.className =
+                        availableStockCount < 10
+                            ? "stock-label low"
+                            : "stock-label high";
+                    stockLabel.innerText =
+                        `${availableStockCount} units available`;
                 }
             }
             recalcCosts();
         }
-
         window.adjustQuantity = function(amount) {
             if (productDetails?.mode === 'SINGLE') return;
-            const target = currentQuantity + amount;
-            if (target >= 1 && target <= availableStockCount) {
+            const target =
+                currentQuantity + amount;
+            if (
+                target >= 1 &&
+                target <= availableStockCount
+            ) {
                 currentQuantity = target;
-                document.getElementById('qty-num').innerText = currentQuantity;
+                document.getElementById('qty-num').innerText =
+                    currentQuantity;
                 recalcCosts();
             }
         };
-
         function recalcCosts() {
             if (!productDetails) return;
-            const price = typeof productDetails.price === 'number' ? productDetails.price : parseFloat(productDetails.price || 0);
-            runningTotal = price * currentQuantity;
-            document.getElementById('p-total').innerText = `₦${runningTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            const price =
+                typeof productDetails.price === 'number'
+                    ? productDetails.price
+                    : parseFloat(productDetails.price || 0);
+            runningTotal =
+                price * currentQuantity;
+            document.getElementById('p-total').innerText =
+                `₦${runningTotal.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
+                })}`;
         }
-
-        window.closeRefModal = function() {
-            document.getElementById('refModal').classList.remove('active');
-        };
-
-        window.copyModalRef = function() {
-            const linkText = document.getElementById('modal-ref-link').innerText;
-            navigator.clipboard.writeText(linkText);
-            triggerNotification("Referral Link copied successfully!", "info");
-        };
-
+        /*
+         * PURCHASE PROCESS
+         *
+         * Referral/invite checking has been completely removed.
+         * Freebies now use the exact same purchase flow as every
+         * other product category.
+         */
         window.executePurchase = async function() {
             if (!authInitialized) {
-                triggerNotification("Verifying connection...", "info");
+                triggerNotification(
+                    "Verifying connection...",
+                    "info"
+                );
                 return;
             }
-
             if (!userSession) {
                 window.location.href = 'index.html';
                 return;
             }
-
             if (!productDetails) return;
-
-            if(productDetails.category === "Freebies") {
-                const invitesCount = userDataCache ? Number(userDataCache.invites || 0) : 0;
-                if(invitesCount < 4) {
-                    const username = userDataCache?.username || "User";
-                    const baseUrl = window.location.origin;
-                    document.getElementById('modal-progress-text').innerText = `${invitesCount}/4`;
-                    document.getElementById('modal-ref-link').innerText = `${baseUrl}/register.html?ref=${username}`;
-                    document.getElementById('refModal').classList.add('active');
-                    return;
-                }
-            }
-
-            const btn = document.getElementById('buy-now-btn');
-            const txt = document.getElementById('btn-text');
+            const btn =
+                document.getElementById('buy-now-btn');
+            const txt =
+                document.getElementById('btn-text');
             btn.disabled = true;
             txt.innerText = "Processing Transaction...";
-
-            const userDocRef = doc(db, "users", userSession.uid);
-            const productDocRef = doc(db, "products", productDetails.id);
-            const orderCollectionRef = collection(db, "orders");
-
+            const userDocRef =
+                doc(db, "users", userSession.uid);
+            const productDocRef =
+                doc(db, "products", productDetails.id);
+            const orderCollectionRef =
+                collection(db, "orders");
             try {
                 let deliveryPayload = "";
-
-                await runTransaction(db, async (transaction) => {
-                    const userSnap = await transaction.get(userDocRef);
-                    const prodSnap = await transaction.get(productDocRef);
-
-                    if (!userSnap.exists() || !prodSnap.exists()) {
-                        throw new Error("Target core nodes no longer exist.");
-                    }
-
-                    const userData = userSnap.data();
-                    const currentBalance = Number(userData.balance || 0);
-                    const freshProdData = prodSnap.data();
-
-                    if (currentBalance < runningTotal) {
-                        throw new Error("Insufficient balance inside wallet.");
-                    }
-
-                    if (freshProdData.mode === 'SINGLE') {
-                        deliveryPayload = freshProdData.secret || freshProdData.stock || "No secret string compiled.";
-                    } else {
-                        const currentStockArr = Array.isArray(freshProdData.stock) ? [...freshProdData.stock] : [];
-                        if (currentStockArr.length < currentQuantity) {
-                            throw new Error("Inventory ran out during transaction processing.");
+                await runTransaction(
+                    db,
+                    async (transaction) => {
+                        const userSnap =
+                            await transaction.get(userDocRef);
+                        const prodSnap =
+                            await transaction.get(productDocRef);
+                        if (
+                            !userSnap.exists() ||
+                            !prodSnap.exists()
+                        ) {
+                            throw new Error(
+                                "Target core nodes no longer exist."
+                            );
                         }
-
-                        const poppedItems = [];
-                        for (let i = 0; i < currentQuantity; i++) {
-                            poppedItems.push(currentStockArr.shift());
+                        const userData =
+                            userSnap.data();
+                        const currentBalance =
+                            Number(userData.balance || 0);
+                        const freshProdData =
+                            prodSnap.data();
+                        if (
+                            currentBalance <
+                            runningTotal
+                        ) {
+                            throw new Error(
+                                "Insufficient balance inside wallet."
+                            );
                         }
-                        deliveryPayload = poppedItems.join("\n");
-
-                        transaction.update(productDocRef, {
-                            stock: currentStockArr,
-                            stockCount: currentStockArr.length
-                        });
+                        /*
+                         * SINGLE PRODUCTS
+                         */
+                        if (
+                            freshProdData.mode === 'SINGLE'
+                        ) {
+                            deliveryPayload =
+                                freshProdData.secret ||
+                                freshProdData.stock ||
+                                "No secret string compiled.";
+                        } else {
+                            /*
+                             * STOCK PRODUCTS
+                             */
+                            const currentStockArr =
+                                Array.isArray(
+                                    freshProdData.stock
+                                )
+                                    ? [...freshProdData.stock]
+                                    : [];
+                            if (
+                                currentStockArr.length <
+                                currentQuantity
+                            ) {
+                                throw new Error(
+                                    "Inventory ran out during transaction processing."
+                                );
+                            }
+                            const poppedItems = [];
+                            for (
+                                let i = 0;
+                                i < currentQuantity;
+                                i++
+                            ) {
+                                poppedItems.push(
+                                    currentStockArr.shift()
+                                );
+                            }
+                            deliveryPayload =
+                                poppedItems.join("\n");
+                            transaction.update(
+                                productDocRef,
+                                {
+                                    stock: currentStockArr,
+                                    stockCount:
+                                        currentStockArr.length
+                                }
+                            );
+                        }
+                        /*
+                         * PURCHASE HISTORY
+                         */
+                        const dateOptions = {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        };
+                        const formattedDate =
+                            new Date().toLocaleDateString(
+                                'en-US',
+                                dateOptions
+                            );
+                        const historicalItemNode = {
+                            name:
+                                productDetails.name ||
+                                "Crypto Asset Item",
+                            price:
+                                productDetails.price || 0,
+                            secret:
+                                deliveryPayload,
+                            date:
+                                formattedDate
+                        };
+                        const existingPurchases =
+                            Array.isArray(
+                                userData.myPurchases
+                            )
+                                ? [...userData.myPurchases]
+                                : [];
+                        existingPurchases.push(
+                            historicalItemNode
+                        );
+                        /*
+                         * UPDATE USER BALANCE
+                         */
+                        transaction.update(
+                            userDocRef,
+                            {
+                                balance:
+                                    currentBalance -
+                                    runningTotal,
+                                myPurchases:
+                                    existingPurchases
+                            }
+                        );
+                        /*
+                         * CREATE ORDER
+                         */
+                        const newOrderRef =
+                            doc(orderCollectionRef);
+                        transaction.set(
+                            newOrderRef,
+                            {
+                                userId:
+                                    userSession.uid,
+                                productId:
+                                    productDetails.id,
+                                productName:
+                                    productDetails.name,
+                                price:
+                                    productDetails.price,
+                                quantity:
+                                    currentQuantity,
+                                totalPaid:
+                                    runningTotal,
+                                data:
+                                    deliveryPayload,
+                                timestamp:
+                                    serverTimestamp(),
+                                createdAt:
+                                    Date.now()
+                            }
+                        );
                     }
-
-                    const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-                    const formattedDate = new Date().toLocaleDateString('en-US', dateOptions);
-
-                    const historicalItemNode = {
-                        name: productDetails.name || "Crypto Asset Item",
-                        price: productDetails.price || 0,
-                        secret: deliveryPayload,
-                        date: formattedDate
-                    };
-
-                    const existingPurchases = Array.isArray(userData.myPurchases) ? [...userData.myPurchases] : [];
-                    existingPurchases.push(historicalItemNode);
-
-                    transaction.update(userDocRef, {
-                        balance: currentBalance - runningTotal,
-                        myPurchases: existingPurchases
-                    });
-
-                    const newOrderRef = doc(orderCollectionRef);
-                    transaction.set(newOrderRef, {
-                        userId: userSession.uid,
-                        productId: productDetails.id,
-                        productName: productDetails.name,
-                        price: productDetails.price,
-                        quantity: currentQuantity,
-                        totalPaid: runningTotal,
-                        data: deliveryPayload,
-                        timestamp: serverTimestamp(),
-                        createdAt: Date.now()
-                    });
-                });
-
-                // Check toggle configuration setting from the product database object
-                // Checks for field variations matching showProduct / telegramToggle / formatMethod toggle setup
-                const isTelegramMethod = productDetails.showInstructions === true;
+                );
+                /*
+                 * DELIVERY METHOD
+                 */
+                const isTelegramMethod =
+                    productDetails.showInstructions === true;
                 if (isTelegramMethod) {
-                    document.getElementById('success-message-sub').innerText = "Follow the instructions below to complete claim via Telegram Bot.";
-                    document.getElementById('normal-output-wrapper').classList.add('hidden');
-                    
-                    document.getElementById('tg-code-display').innerText = deliveryPayload;
-                    document.getElementById('telegram-output-wrapper').classList.remove('hidden');
+                    document
+                        .getElementById(
+                            'success-message-sub'
+                        )
+                        .innerText =
+                        "Follow the instructions below to complete claim via Telegram Bot.";
+                    document
+                        .getElementById(
+                            'normal-output-wrapper'
+                        )
+                        .classList.add('hidden');
+                    document
+                        .getElementById(
+                            'tg-code-display'
+                        )
+                        .innerText =
+                        deliveryPayload;
+                    document
+                        .getElementById(
+                            'telegram-output-wrapper'
+                        )
+                        .classList.remove('hidden');
                 } else {
-                    document.getElementById('success-message-sub').innerText = "Your items have been extracted from inventory.";
-                    document.getElementById('telegram-output-wrapper').classList.add('hidden');
-                    
-                    document.getElementById('payload-display').innerText = deliveryPayload;
-                    document.getElementById('normal-output-wrapper').classList.remove('hidden');
+                    document
+                        .getElementById(
+                            'success-message-sub'
+                        )
+                        .innerText =
+                        "Your items have been extracted from inventory.";
+                    document
+                        .getElementById(
+                            'telegram-output-wrapper'
+                        )
+                        .classList.add('hidden');
+                    document
+                        .getElementById(
+                            'payload-display'
+                        )
+                        .innerText =
+                        deliveryPayload;
+                    document
+                        .getElementById(
+                            'normal-output-wrapper'
+                        )
+                        .classList.remove('hidden');
                 }
-
-                document.getElementById('purchase-view').classList.add('hidden');
-                const successPanel = document.getElementById('success-view');
-                successPanel.classList.remove('hidden');
-                successPanel.classList.add('active');
-                
-                triggerNotification("Purchase Successful!", "info");
-
+                /*
+                 * SHOW SUCCESS
+                 */
+                document
+                    .getElementById('purchase-view')
+                    .classList.add('hidden');
+                const successPanel =
+                    document.getElementById(
+                        'success-view'
+                    );
+                successPanel.classList.remove(
+                    'hidden'
+                );
+                successPanel.classList.add(
+                    'active'
+                );
+                triggerNotification(
+                    "Purchase Successful!",
+                    "info"
+                );
             } catch (err) {
-                console.error("TRANSACTION ERROR:", err.message, err);
-                triggerNotification(err.message || "Transaction aborted.");
+                console.error(
+                    "TRANSACTION ERROR:",
+                    err.message,
+                    err
+                );
+                triggerNotification(
+                    err.message ||
+                    "Transaction aborted."
+                );
                 btn.disabled = false;
                 txt.innerText = "Buy Now";
             }
         };
-
         window.copyPayload = function() {
-            const dataStr = document.getElementById('payload-display').innerText;
-            navigator.clipboard.writeText(dataStr);
-            triggerNotification("Credentials copied directly!", "info");
+            const dataStr =
+                document.getElementById(
+                    'payload-display'
+                ).innerText;
+            navigator.clipboard.writeText(
+                dataStr
+            );
+            triggerNotification(
+                "Credentials copied directly!",
+                "info"
+            );
         };
-
         window.copyTelegramCode = function() {
-            const codeStr = document.getElementById('tg-code-display').innerText;
-            navigator.clipboard.writeText(codeStr);
-            triggerNotification("Code copied! Go to Telegram now.", "info");
+            const codeStr =
+                document.getElementById(
+                    'tg-code-display'
+                ).innerText;
+            navigator.clipboard.writeText(
+                codeStr
+            );
+            triggerNotification(
+                "Code copied! Go to Telegram now.",
+                "info"
+            );
         };
-
-        // Execution Start
+        /*
+         * INITIALIZATION
+         */
         fetchProductOnly();
-
-        onAuthStateChanged(auth, (user) => {
-            authInitialized = true;
-            if (user) {
-                userSession = user;
-                syncUserData(user);
-            } else {
-                userSession = null;
+        onAuthStateChanged(
+            auth,
+            (user) => {
+                authInitialized = true;
+                if (user) {
+                    userSession = user;
+                } else {
+                    userSession = null;
+                }
             }
-        });
+        );
     </script>
 </body>
 </html>
